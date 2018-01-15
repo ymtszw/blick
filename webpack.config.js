@@ -1,12 +1,14 @@
 const Uglifier = require('uglifyjs-webpack-plugin')
 
+const BASE = `${__dirname}/priv/static`
+
 module.exports = {
   entry: {
     blick: `${__dirname}/ui/src/blick.js`
   },
   output: {
-    path: `${__dirname}/priv/static/dist`,
-    filename: 'index.js',
+    path: BASE,
+    filename: 'dist/index.js',
     libraryTarget: 'window',
   },
   module: {
@@ -22,7 +24,7 @@ module.exports = {
   },
   plugins: (process.env.WEBPACK_BUILD_ENV === 'cloud') ? [new Uglifier()] : [],
   devServer: {
-    contentBase: `${__dirname}/priv/static`,
+    contentBase: BASE,
     port: '8081',
   }
 }
