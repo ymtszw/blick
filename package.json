@@ -11,8 +11,7 @@
     "package": "elm-package",
     "build": "webpack",
     "start": "iex -S mix & webpack-dev-server",
-    "solomon_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "solomon_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack"
   },
   "repository": {
     "type": "git",
