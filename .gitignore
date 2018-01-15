@@ -1,0 +1,11 @@
+/_build
+/deps
+/cover
+/exdoc
+erl_crash.dump
+*.ez
+/node_modules
+/priv/static/js
+/priv/static/css
+/web/static/css
+/web/static/.sass-cache
