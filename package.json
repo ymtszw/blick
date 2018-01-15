@@ -1,8 +1,8 @@
 {
   "name": "blick",
   "version": "1.0.0",
-  "description": "Blick wall with whole lota slides on it",
-  "main": "index.js",
+  "description": "Blick wall with whole lotta slides on it",
+  "main": "ui/src/blick.js",
   "directories": {
     "test": "test"
   },
@@ -11,6 +11,7 @@
     "package": "elm-package",
     "build": "webpack",
     "start": "iex -S mix & webpack-dev-server",
+    "solomon_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +23,7 @@
   "devDependencies": {
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.4.0",
+    "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
   }

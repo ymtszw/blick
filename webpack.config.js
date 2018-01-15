@@ -1,3 +1,5 @@
+const Uglifier = require('uglifyjs-webpack-plugin')
+
 module.exports = {
   entry: {
     blick: `${__dirname}/ui/src/blick.js`
@@ -18,6 +20,7 @@ module.exports = {
       }
     ]
   },
+  plugins: (process.env.WEBPACK_BUILD_ENV === 'cloud') ? [new Uglifier()] : [],
   devServer: {
     contentBase: `${__dirname}/priv/static`,
     port: '8081',
