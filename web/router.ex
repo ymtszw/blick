@@ -1,5 +1,5 @@
 defmodule Blick.Router do
   use SolomonLib.Router
 
-  get "/hello", Hello, :hello
+  get "/*path", Root, :index
 end
