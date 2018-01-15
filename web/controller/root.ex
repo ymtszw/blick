@@ -4,7 +4,7 @@ defmodule Blick.Controller.Root do
   use SolomonLib.Controller
   alias SolomonLib.IpAddress
 
-  plug __MODULE__, :filter_by_sender_identity, [only: :index]
+  plug __MODULE__, :filter_by_sender_identity, [], [only: :index]
 
   # GET /login
   def public_login(conn) do
@@ -51,6 +51,7 @@ defmodule Blick.Controller.Root do
       end
     end
   else
+    # Local development
     defp intra_or_public(_ip) do
       :intra
     end
