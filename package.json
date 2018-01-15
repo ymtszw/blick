@@ -1,0 +1,28 @@
+{
+  "name": "blick",
+  "version": "1.0.0",
+  "description": "Blick wall with whole lota slides on it",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "postinstall": "elm-package install --yes",
+    "package": "elm-package",
+    "build": "webpack",
+    "start": "iex -S mix & webpack-dev-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitbucket.tok.access-company.com:8080/git/Yu.Matsuzawa/blick.git"
+  },
+  "author": "aYuMatsuzawa",
+  "license": "ISC",
+  "devDependencies": {
+    "elm": "^0.18.0",
+    "elm-webpack-loader": "^4.4.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.0"
+  }
+}
