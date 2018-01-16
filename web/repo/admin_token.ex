@@ -85,7 +85,7 @@ defmodule Blick.Repo.AdminToken do
     end
   end
 
-  def revoke(), do: delete(AdminToken.id(), nil, root_key())
+  def revoke(group_id \\ Blick.Dodai.default_group_id()), do: delete(AdminToken.id(), nil, root_key(), group_id)
 
   # Admin OAuth2 client
 
