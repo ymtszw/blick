@@ -11,7 +11,6 @@ defmodule Blick.Controller.Admin do
     render_with_params(conn, false)
     # TODO
     # 1. Establish admin access_token and refresh_token storage (model?)
-    # 2. Prepare authorization instruction/landing page
     # 3. Check admin authorization status and if not authorized, render instruction page
     # 4. If authorized page, inform that
   end
@@ -26,6 +25,8 @@ defmodule Blick.Controller.Admin do
 
   defp authorize_url!(start_time) do
     Oauth2.authorize_url!(client(), [
+      access_type: "offline",
+      prompt: "consent",
       scope:
         [
           "https://www.googleapis.com/auth/userinfo.profile",
@@ -45,10 +46,20 @@ defmodule Blick.Controller.Admin do
         # Via webpack-dev-server proxy; rerouting to gear host
         redirect(conn, "http://blick.localhost:8080" <> Blick.Router.callback_path() <> "?" <> URI.encode_query(conn.request.query_params))
       _ ->
-        # conn.request.query_params["code"]
-        render_with_params(conn, true)
+        authorize_callback_impl(conn)
     end
   end
+
+  defp authorize_callback_impl(conn) do
+    case Oauth2.code_to_token(client(), conn.request.query_params["code"], []) do
+      {:ok, %OAuth2.AccessToken{access_token: at, refresh_token: rt}} when byte_size(at) > 0 and byte_size(rt) > 0 ->
+        render_with_params(conn, true)
+      otherwise ->
+        redirect(conn, Blick.Router.authorize_path())
+    end
+  end
+
+  # Internals
 
   defp client() do
     %{"google_client_id" => id, "google_client_secret" => secret} = Blick.get_all_env()
