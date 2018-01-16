@@ -22,15 +22,15 @@ defmodule Blick.SecretStringTest do
 
   property "should be encrypted on Poison.encode/1" do
     check all binary <- string(:printable) do
-      refute Poison.encode!(%SS{value: binary}) == binary
+      refute Poison.encode!(%SS{value: binary}) == ~s("#{binary}")
     end
   end
 
   property "should be decrypted on new/1" do
     check all binary <- string(:printable) do
       ss = %SS{value: binary}
-      assert ss |> Poison.encode!() |> SS.new!() == ss
-      refute ss |> Poison.encode!() |> SolomonLib.Crypto.Aes.ctr128_decrypt("wrong key") == binary
+      assert ss |> Poison.encode!() |> Poison.decode!() |> SS.new!() == ss
+      refute ss |> Poison.encode!() |> Poison.decode!() |> SolomonLib.Crypto.Aes.ctr128_decrypt("wrong key") == ~s("#{binary}")
     end
   end
 end

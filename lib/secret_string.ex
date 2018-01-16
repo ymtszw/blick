@@ -37,6 +37,6 @@ end
 
 defimpl Poison.Encoder, for: Blick.SecretString do
   def encode(%Blick.SecretString{value: raw_value}, _opts) do
-    Blick.encrypt_base64!(raw_value)
+    ~s("#{Blick.encrypt_base64!(raw_value)}")
   end
 end
