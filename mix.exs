@@ -14,7 +14,7 @@ try do
     defp version()  , do: "0.0.1"
     defp gear_deps() do
       # Put names of gears which this gear depends on
-      []
+      [:gear_lib]
     end
   end
 rescue
