@@ -1,3 +1,5 @@
+use Croma
+
 defmodule Blick.Repo.AdminToken do
   @moduledoc """
   Repository of AdminToken.
@@ -12,6 +14,7 @@ defmodule Blick.Repo.AdminToken do
   alias GearLib.Oauth2.Provider.Google
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Model.AdminToken
+  alias Blick.External.Google.People
   use SolomonAcs.Dodai.Repo.Datastore, [
     datastore_models: [AdminToken],
     read_permission:  :root,
@@ -20,12 +23,13 @@ defmodule Blick.Repo.AdminToken do
 
   # Convenient CRUD APIs
 
-  def upsert(%AccessToken{access_token: at, expires_at: ea, refresh_token: rt}) do
+  def upsert(%AccessToken{access_token: at, expires_at: ea, refresh_token: rt}, email) do
     data =
       AdminToken.Data.new!(%{
         access_token: %{value: at},
         refresh_token: %{value: rt},
         expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
+        owner: email,
       })
     upsert(%{data: %{"$set" => data}, data_on_insert: data}, AdminToken.id(), root_key())
   end
@@ -33,11 +37,38 @@ defmodule Blick.Repo.AdminToken do
   def retrieve_token_and_save(code) do
     case Oauth2.code_to_token(client(), code, []) do
       {:ok, %AccessToken{access_token: at, refresh_token: rt} = oat} when byte_size(at) > 0 and byte_size(rt) > 0 ->
-        upsert(oat)
+        Croma.Result.bind(ensure_admin_domain(at), fn email -> upsert(oat, email) end)
       otherwise ->
         Blick.Logger.error("Could not retrieve sufficient AccessToken. Got: " <> inspect(otherwise))
         {:error, :insufficient_access_token}
     end
+  end
+
+  @admin_domain "@access-company.com"
+
+  defp ensure_admin_domain(access_token) do
+    case People.me(access_token) do
+      {:ok, %{"emailAddresses" => [%{"value" => email} | _]}} ->
+        if String.ends_with?(email, @admin_domain) do
+          {:ok, email}
+        else
+          {:error, :invalid_domain}
+        end
+      otherwise ->
+        Blick.Logger.error("Could not retrieve authorizing user's identity. Got: " <> inspect(otherwise))
+        {:error, :google_api_error}
+    end
+  end
+
+  def update(%AccessToken{access_token: at, expires_at: ea, refresh_token: rt}) do
+    %{data: %{"$set" =>
+      AdminToken.Data.new!(%{
+        access_token: %{value: at},
+        refresh_token: %{value: rt},
+        expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
+      })
+    }}
+    |> update(AdminToken.id(), root_key())
   end
 
   def retrieve() do
@@ -77,7 +108,7 @@ defmodule Blick.Repo.AdminToken do
     log_refresh(ea, now)
     case Oauth2.refresh(client(), rt.value, grant_type: "refresh_token") do
       {:ok, %AccessToken{access_token: at, refresh_token: rt} = oat} when byte_size(at) > 0 and byte_size(rt) > 0 ->
-        upsert(oat)
+        update(oat)
       otherwise ->
         Blick.Logger.error("Failed to refresh AccessToken. Got: " <> inspect(otherwise))
         {:error, :refresh_failure}

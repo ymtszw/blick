@@ -12,6 +12,7 @@ defmodule Blick.Model.AdminToken do
       access_token: Blick.SecretString,
       refresh_token: Blick.SecretString,
       expires_at: SolomonLib.Time,
+      owner: SolomonLib.Email,
     ],
   ]
 

@@ -59,7 +59,7 @@ defmodule Blick.Plug.Auth do
   If not, redirect to /admin/authorize
   """
   def ensure_admin_authorization(conn, _opts) do
-    if admin_authorized?() do
+    if admin() do
       assign(conn, :authorized?, true)
     else
       redirect(conn, Blick.Router.authorize_path())
@@ -67,12 +67,12 @@ defmodule Blick.Plug.Auth do
   end
 
   if Mix.env() == :test do
-    def admin_authorized?(), do: true
+    def admin(), do: "blick-admin-gr@access-company.com"
   else
-    def admin_authorized?() do
+    def admin() do
       case Blick.Repo.AdminToken.retrieve() do
-        {:ok, %Blick.Model.AdminToken{}} -> true
-        {:error, _} -> false
+        {:ok, %Blick.Model.AdminToken{data: data}} -> data.owner
+        {:error, _} -> nil
       end
     end
   end

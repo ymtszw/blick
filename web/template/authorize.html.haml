@@ -1,8 +1,9 @@
 .admin
   %h1 Blick Admin
-  - if authorized? do
+  - if admin do
     %p
-      Blick is authorized!
+      Blick is authorized! Current admin:
+      %code= admin
     %p
       %a(href="/")
         Go to top page

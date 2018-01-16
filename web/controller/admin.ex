@@ -11,12 +11,12 @@ defmodule Blick.Controller.Admin do
 
   # GET /admin/authorize
   def authorize(conn) do
-    render_with_params(conn, Blick.Plug.Auth.admin_authorized?())
+    render_with_params(conn, Blick.Plug.Auth.admin())
   end
 
-  defp render_with_params(conn, authorized?) do
+  defp render_with_params(conn, admin) do
     params = [
-      authorized?: authorized?,
+      admin: admin,
       authorize_url: authorize_url!(conn.context.start_time)
     ]
     render(conn, 200, "authorize", params, layout: :admin)
@@ -82,8 +82,8 @@ defmodule Blick.Controller.Admin do
 
   defp handle_callback_params(conn, %{"code" => code}) do
     case Repo.AdminToken.retrieve_token_and_save(code) do
-      {:ok, _admin_token} ->
-        render_with_params(conn, true)
+      {:ok, admin_token} ->
+        render_with_params(conn, admin_token.data.owner)
       otherwise ->
         Blick.Logger.error("Something went wrong on Admin authorization. Got: " <> inspect(otherwise))
         redirect(conn, Blick.Router.authorize_path())
