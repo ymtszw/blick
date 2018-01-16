@@ -26,6 +26,7 @@ module.exports = {
   devServer: {
     contentBase: BASE,
     port: '8081',
+    noInfo: true,
     proxy: {
       "/admin/authorize/callback": {
         target: 'http://blick.localhost:8080',
