@@ -56,13 +56,7 @@ defmodule Blick.Controller.Admin do
   defp authorize_callback_impl(conn) do
     case verify_state(conn.request.query_params["state"], conn.context.start_time) do
       {:ok, :verified} ->
-        case Repo.AdminToken.retrieve_token_and_save(conn.request.query_params["code"]) do
-          {:ok, _admin_token} ->
-            render_with_params(conn, true)
-          otherwise ->
-            Blick.Logger.error("Something went wrong on Admin authorization. Got: " <> inspect(otherwise))
-            redirect(conn, Blick.Router.authorize_path())
-        end
+        handle_callback_params(conn, conn.request.query_params)
       {:error, _} = e ->
         Blick.Logger.debug("Invalid request to callback path. Got: " <> inspect(e))
         redirect(conn, Blick.Router.authorize_path())
@@ -84,5 +78,22 @@ defmodule Blick.Controller.Admin do
         {:error, {:timeout, time, start_time}}
       end
     end
+  end
+
+  defp handle_callback_params(conn, %{"code" => code}) do
+    case Repo.AdminToken.retrieve_token_and_save(code) do
+      {:ok, _admin_token} ->
+        render_with_params(conn, true)
+      otherwise ->
+        Blick.Logger.error("Something went wrong on Admin authorization. Got: " <> inspect(otherwise))
+        redirect(conn, Blick.Router.authorize_path())
+    end
+  end
+  defp handle_callback_params(conn, %{"error" => "access_denied"}) do
+    redirect(conn, Blick.Router.authorize_path())
+  end
+  defp handle_callback_params(conn, params) do
+    Blick.Logger.debug("Unusual response params from Google. Got: " <> inspect(params))
+    redirect(conn, Blick.Router.authorize_path())
   end
 end
