@@ -39,7 +39,7 @@ defmodule Blick.Controller.Admin do
       state:
         start_time
         |> Time.to_iso_timestamp()
-        |> Blick.encrypt_base64(),
+        |> Blick.encrypt_base64!(),
     ])
   end
 

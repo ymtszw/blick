@@ -18,8 +18,12 @@ defmodule Blick do
 
   # Convenient APIs
 
-  def encrypt_base64(plain_text) do
-    plain_text |> Aes.ctr128_encrypt(get_env("encryption_key")) |> Base.encode64()
+  def encrypt_base64!(plain_text) do
+    if String.printable?(plain_text) do
+      plain_text |> Aes.ctr128_encrypt(get_env("encryption_key")) |> Base.encode64()
+    else
+      raise("Only printable characters are supported.")
+    end
   end
 
   def decrypt_base64(base64_text) do
@@ -36,7 +40,7 @@ defmodule Blick do
           {:ok, string}
         else
           # This indicates the encryption_key differs from the one used on encryption
-          {:error, {:internal_server_error, "A stored token cannot be decoded. Report to developers."}}
+          {:error, {:invalid_value, :aes_encrypted_string}}
         end
       {:error, _} = e -> e
     end

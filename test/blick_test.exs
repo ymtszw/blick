@@ -1,12 +1,12 @@
 defmodule BlickTest do
   use ExUnit.Case
+  use ExUnitProperties
 
-  test "GET / should render HAML template as HTML" do
-    response = Req.get("/")
-    assert response.status == 200
-    assert response.headers["content-type"] == "text/html"
-    body = response.body
-    assert String.starts_with?(body, "<!DOCTYPE html>")
-    assert String.contains?(body, "Blick")
+  property "encrypt_base64!/1 should crash on unprintable binary" do
+    check all binary <- binary(min_length: 1), !String.printable?(binary) do
+      assert_raise RuntimeError, "Only printable characters are supported.", fn ->
+        Blick.encrypt_base64!(binary)
+      end
+    end
   end
 end
