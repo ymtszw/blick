@@ -1,0 +1,17 @@
+.admin
+  %h1 Blick Admin
+  - if authorized? do
+    %p
+      Blick is authorized!
+    %p
+      %a(href="/")
+        Go to top page
+  - else
+    %p
+      One of users in
+      %code access-company.com
+      domain must become an administrator by authorizing Blick to use various Google APIs.
+    %p
+      %a(href="#{authorize_url}")
+        %i.fa.fa-google(aria-hidden="true")
+        Authorize Blick
