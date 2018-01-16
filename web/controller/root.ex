@@ -2,6 +2,7 @@ defmodule Blick.Controller.Root do
   use SolomonLib.Controller
 
   plug Blick.Plug.Auth, :filter_by_sender_identity, [], only: [:index]
+  plug Blick.Plug.Auth, :ensure_admin_authorization, []
 
   # GET /login
   def public_login(conn) do

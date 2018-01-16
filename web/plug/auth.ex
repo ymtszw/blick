@@ -52,4 +52,28 @@ defmodule Blick.Plug.Auth do
     # TODO currently always redirect to login path
     redirect(conn, Blick.Router.public_login_path())
   end
+
+  @doc """
+  Check if AdminToken is present.
+
+  If not, redirect to /admin/authorize
+  """
+  def ensure_admin_authorization(conn, _opts) do
+    if admin_authorized?() do
+      assign(conn, :authorized?, true)
+    else
+      redirect(conn, Blick.Router.authorize_path())
+    end
+  end
+
+  if Mix.env() == :test do
+    def admin_authorized?(), do: true
+  else
+    def admin_authorized?() do
+      case Blick.Repo.AdminToken.retrieve() do
+        {:ok, %Blick.Model.AdminToken{}} -> true
+        {:error, _} -> false
+      end
+    end
+  end
 end
