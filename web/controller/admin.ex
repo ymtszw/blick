@@ -1,18 +1,17 @@
+use Croma
+
 defmodule Blick.Controller.Admin do
   use SolomonLib.Controller
+  alias Croma.Result, as: R
   alias SolomonLib.Time
   alias GearLib.Oauth2
-  alias GearLib.Oauth2.Provider.Google
+  alias Blick.Repo
 
   plug Blick.Plug.Auth, :filter_by_sender_identity, []
 
   # GET /admin/authorize
   def authorize(conn) do
-    render_with_params(conn, false)
-    # TODO
-    # 1. Establish admin access_token and refresh_token storage (model?)
-    # 3. Check admin authorization status and if not authorized, render instruction page
-    # 4. If authorized page, inform that
+    render_with_params(conn, Blick.Plug.Auth.admin_authorized?())
   end
 
   defp render_with_params(conn, authorized?) do
@@ -24,7 +23,7 @@ defmodule Blick.Controller.Admin do
   end
 
   defp authorize_url!(start_time) do
-    Oauth2.authorize_url!(client(), [
+    Oauth2.authorize_url!(Repo.AdminToken.client(), [
       access_type: "offline",
       prompt: "consent",
       scope:
@@ -55,26 +54,35 @@ defmodule Blick.Controller.Admin do
   end
 
   defp authorize_callback_impl(conn) do
-    case Oauth2.code_to_token(client(), conn.request.query_params["code"], []) do
-      {:ok, %OAuth2.AccessToken{access_token: at, refresh_token: rt}} when byte_size(at) > 0 and byte_size(rt) > 0 ->
-        render_with_params(conn, true)
-      _otherwise ->
+    case verify_state(conn.request.query_params["state"], conn.context.start_time) do
+      {:ok, :verified} ->
+        case Repo.AdminToken.retrieve_token_and_save(conn.request.query_params["code"]) do
+          {:ok, _admin_token} ->
+            render_with_params(conn, true)
+          otherwise ->
+            Blick.Logger.error("Something went wrong on Admin authorization. Got: " <> inspect(otherwise))
+            redirect(conn, Blick.Router.authorize_path())
+        end
+      {:error, _} = e ->
+        Blick.Logger.debug("Invalid request to callback path. Got: " <> inspect(e))
         redirect(conn, Blick.Router.authorize_path())
     end
   end
 
-  # Internals
+  @verifyable_window_in_seconds 60
 
-  defp client() do
-    %{"google_client_id" => id, "google_client_secret" => secret} = Blick.get_all_env()
-    Google.client(id, secret, redirect_url())
+  defp verify_state(nil, _start_time) do
+    {:error, :invalid_state}
   end
-
-  if SolomonLib.Env.compiling_for_cloud?() do
-    defp redirect_url(), do: SolomonLib.Env.default_base_url(:blick) <> Blick.Router.callback_path()
-  else
-    # Google only allows "http://localhost" for local development.
-    # webpack-dev-server's (http-proxy-middleware's) proxy function will redirect to gear
-    defp redirect_url(), do: "http://localhost:8081" <> Blick.Router.callback_path()
+  defp verify_state(state, start_time) do
+    R.m do
+      decrypted <- Blick.decrypt_base64(state)
+      time <- Time.from_iso_timestamp(decrypted)
+      if Time.shift_seconds(time, @verifyable_window_in_seconds) > start_time do
+        {:ok, :verified}
+      else
+        {:error, {:timeout, time, start_time}}
+      end
+    end
   end
 end
