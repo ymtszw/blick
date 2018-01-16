@@ -6,5 +6,5 @@ defmodule Blick.Router do
   get "/admin/authorize", Admin, :authorize, as: "authorize"
   get "/admin/authorize/callback", Admin, :authorize_callback, as: "callback"
 
-  get "/*path", Root, :index
+  get "/", Root, :index
 end

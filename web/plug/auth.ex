@@ -4,6 +4,13 @@ defmodule Blick.Plug.Auth do
   use SolomonLib.Controller
   alias SolomonLib.IpAddress
 
+  @doc """
+  Filter request by sender.
+
+  - From intranet: OK
+  - From public network: Prompt login (TODO)
+  - G2g: Reject
+  """
   def filter_by_sender_identity(conn, _opts) do
     case sender_identity(conn.request.sender) do
       :g2g -> json(conn, 403, %{"error" => "g2g request is forbidden"})
@@ -35,14 +42,14 @@ defmodule Blick.Plug.Auth do
       end
     end
   else
-    # Local development
+    # Local development and tests
     defp intra_or_public(_ip) do
       :intra
     end
   end
 
   defp authenticate(conn) do
-    # NYI
+    # TODO currently always redirect to login path
     redirect(conn, Blick.Router.public_login_path())
   end
 end

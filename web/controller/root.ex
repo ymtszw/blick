@@ -8,11 +8,10 @@ defmodule Blick.Controller.Root do
     json(conn, 403, %{"error" => "Access from public network is under development"})
   end
 
-  # GET /*path
+  # GET /
   def index(conn) do
     render(conn, 200, "root", [
       title: "Blick",
-      path: conn.request.path_matches[:path],
     ])
   end
 end
