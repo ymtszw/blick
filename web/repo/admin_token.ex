@@ -12,6 +12,7 @@ defmodule Blick.Repo.AdminToken do
   alias SolomonLib.Time
   alias GearLib.Oauth2
   alias GearLib.Oauth2.Provider.Google
+  alias Blick.SecretString, as: SS
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Model.AdminToken
   alias Blick.External.Google.People
@@ -61,14 +62,13 @@ defmodule Blick.Repo.AdminToken do
   end
 
   def update(%AccessToken{access_token: at, expires_at: ea, refresh_token: rt}) do
-    %{data: %{"$set" =>
-      AdminToken.Data.new!(%{
-        access_token: %{value: at},
-        refresh_token: %{value: rt},
+    data =
+      %{
+        access_token: %SS{value: at},
+        refresh_token: %SS{value: rt},
         expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
-      })
-    }}
-    |> update(AdminToken.id(), root_key())
+      }
+    update(%{data: %{"$set" => data}}, AdminToken.id(), root_key())
   end
 
   def retrieve() do
@@ -117,7 +117,7 @@ defmodule Blick.Repo.AdminToken do
 
   defp log_refresh(expires_at, now) do
     diff = Time.diff_milliseconds(expires_at, now)
-    Blick.Logger.info("Refreshing AdminToken. expires_at: #{inspect(expires_at)} (#{diff}ms)")
+    Blick.Logger.info("Refreshing AdminToken. expires_at: #{inspect(expires_at)} (#{div(diff, 1_000)}s)")
   end
 
   @leeway_second_mean 600
