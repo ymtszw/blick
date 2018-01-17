@@ -9,25 +9,14 @@ defmodule Blick.External.Google.People do
   alias SolomonLib.Httpc
   alias Blick.External.Google
 
-  @people_api_url "https://people.googleapis.com/v1"
+  @base_url "https://people.googleapis.com/v1"
 
   defun me(token :: Google.token_t) :: R.t(map) do
-    Google.with_token(token, &me_impl/1)
-  end
-
-  defunp me_impl(token :: v[String.t]) :: R.t(map) do
-    R.m do
-      header = %{"authorization" => "Bearer #{token}"}
+    Google.with_token(token, fn at ->
+      header = %{"authorization" => "Bearer #{at}"}
       params = %{"personFields" => "emailAddresses,memberships,organizations"}
-      response <- Httpc.get(@people_api_url <> "/people/me", header, params: params)
-      me_response(response)
-    end
-  end
-
-  defp me_response(%Httpc.Response{status: 200, body: res_body}) do
-    {:ok, Poison.decode!(res_body)}
-  end
-  defp me_response(%Httpc.Response{status: code, body: res_body}) do
-    {:error, {code, res_body}}
+      Httpc.get(@base_url <> "/people/me", header, params: params)
+      |> R.bind(&Google.handle_200/1)
+    end)
   end
 end
