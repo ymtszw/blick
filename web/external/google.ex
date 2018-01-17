@@ -13,10 +13,14 @@ defmodule Blick.External.Google do
     api_fun.(access_token)
   end
 
-  def handle_200(%Httpc.Response{status: 200, body: res_body}) do
+  @spec handle_res(Httpc.Response.t) :: R.t(:no_content | map, Httpc.Response.t)
+  def handle_res(%Httpc.Response{status: 204}) do
+    {:ok, :no_content}
+  end
+  def handle_res(%Httpc.Response{status: code, body: res_body}) when code in 200..299 do
     {:ok, Poison.decode!(res_body)}
   end
-  def handle_200(%Httpc.Response{status: code, body: res_body}) do
-    {:error, {code, res_body}}
+  def handle_res(res) do
+    {:error, res}
   end
 end

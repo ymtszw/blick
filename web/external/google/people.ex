@@ -16,7 +16,7 @@ defmodule Blick.External.Google.People do
       header = %{"authorization" => "Bearer #{at}"}
       params = %{"personFields" => "emailAddresses,memberships,organizations"}
       Httpc.get(@base_url <> "/people/me", header, params: params)
-      |> R.bind(&Google.handle_200/1)
+      |> R.bind(&Google.handle_res/1)
     end)
   end
 end
