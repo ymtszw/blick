@@ -1,26 +1,35 @@
+use Croma
+
 defmodule Blick.External.Google do
   alias Croma.Result, as: R
-  alias SolomonLib.Httpc
+  alias SolomonLib.{Httpc, Url}
+  alias SolomonLib.Http.{Method, Headers}
   alias Blick.Model.AdminToken
 
   @type token_t :: AdminToken.t | String.t
+  @type res_t :: R.t(:no_content | map, Httpc.Response.t)
 
-  @spec with_token(token :: token_t, api_fun :: (String.t -> R.t(x))) :: R.t(x) when x: any
-  def with_token(%AdminToken{data: %AdminToken.Data{access_token: %Blick.SecretString{value: at}}}, api_fun) do
-    api_fun.(at)
-  end
-  def with_token(access_token, api_fun) when is_binary(access_token) do
-    api_fun.(access_token)
+  defun request(token :: token_t,
+                method :: v[Method.t],
+                url :: v[Url.t],
+                body :: v[Httpc.ReqBody.t] \\ "",
+                headers :: v[Headers.t] \\ %{},
+                opts :: Keyword.t \\ []) :: res_t do
+    at = access_token(token)
+    authorized_headers = Map.merge(%{"authorization" => "Bearer #{at}"}, headers) # Allow overriding Authorization header by caller
+    Httpc.request(method, url, body, authorized_headers, opts)
+    |> R.bind(&handle_res/1)
   end
 
-  @spec handle_res(Httpc.Response.t) :: R.t(:no_content | map, Httpc.Response.t)
-  def handle_res(%Httpc.Response{status: 204}) do
-    {:ok, :no_content}
-  end
-  def handle_res(%Httpc.Response{status: code, body: res_body}) when code in 200..299 do
-    {:ok, Poison.decode!(res_body)}
-  end
-  def handle_res(res) do
-    {:error, res}
+  def access_token(%AdminToken{data: data}), do: data.access_token.value
+  def access_token(str) when is_binary(str), do: str
+
+  defun handle_res(res :: Httpc.Response.t) :: res_t do
+    %Httpc.Response{status: 204} ->
+      {:ok, :no_content}
+    %Httpc.Response{status: code, body: res_body} when code in 200..299 ->
+      {:ok, Poison.decode!(res_body)}
+    res ->
+      {:error, res}
   end
 end
