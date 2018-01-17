@@ -127,6 +127,8 @@ defmodule Blick.Repo.AdminToken do
 
   defp refresh_preemptively_if_lucky(%AdminToken{data: %AdminToken.Data{expires_at: ea}} = at, now) do
     leeway_seconds = round(:rand.normal(@leeway_second_mean, @leeway_second_variance))
+    Blick.Logger.debug("Leeway this round: #{leeway_seconds}s")
+    Blick.Logger.debug("Expires in: #{div(Time.diff_milliseconds(ea, now), 1_000)}s")
     if Time.shift_seconds(now, leeway_seconds) >= ea do
       refresh_token_and_update(at, now)
     else
