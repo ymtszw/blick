@@ -7,10 +7,15 @@ defmodule Blick.External.Google.People do
 
   alias Croma.Result, as: R
   alias SolomonLib.Httpc
+  alias Blick.External.Google
 
   @people_api_url "https://people.googleapis.com/v1"
 
-  defun me(token :: v[String.t]) :: R.t(map) do
+  defun me(token :: Google.token_t) :: R.t(map) do
+    Google.with_token(token, &me_impl/1)
+  end
+
+  defunp me_impl(token :: v[String.t]) :: R.t(map) do
     R.m do
       header = %{"authorization" => "Bearer #{token}"}
       params = %{"personFields" => "emailAddresses,memberships,organizations"}

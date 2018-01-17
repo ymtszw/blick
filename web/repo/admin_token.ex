@@ -85,6 +85,8 @@ defmodule Blick.Repo.AdminToken do
     end
   end
 
+  Croma.Result.define_bang_version_of([retrieve: 0])
+
   def revoke(group_id \\ Blick.Dodai.default_group_id()), do: delete(AdminToken.id(), nil, root_key(), group_id)
 
   # Admin OAuth2 client
