@@ -47,6 +47,7 @@ defmodule Blick.Repo.AdminToken do
 
   @admin_domain "@access-company.com"
 
+  # TODO: use OIDC id_token
   defp ensure_admin_domain(access_token) do
     case People.me(access_token) do
       {:ok, %{"emailAddresses" => [%{"value" => email} | _]}} ->
