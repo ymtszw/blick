@@ -15,7 +15,7 @@ defmodule Blick.Repo.AdminToken do
   alias Blick.SecretString, as: SS
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Model.AdminToken
-  alias Blick.External.Google.People
+  alias Blick.External.Google.OpenidConnect
   use SolomonAcs.Dodai.Repo.Datastore, [
     datastore_models: [AdminToken],
     read_permission:  :root,
@@ -38,28 +38,27 @@ defmodule Blick.Repo.AdminToken do
   def retrieve_token_and_save(code) do
     case Oauth2.code_to_token(client(), code, []) do
       {:ok, %AccessToken{access_token: at, refresh_token: rt} = oat} when byte_size(at) > 0 and byte_size(rt) > 0 ->
-        Croma.Result.bind(ensure_admin_domain(at), fn email -> upsert(oat, email) end)
+        Croma.Result.bind(ensure_admin_domain(oat), fn email -> upsert(oat, email) end)
       otherwise ->
         Blick.Logger.error("Could not retrieve sufficient AccessToken. Got: " <> inspect(otherwise))
         {:error, :insufficient_access_token}
     end
   end
 
-  @admin_domain "@access-company.com"
+  @admin_domain "access-company.com"
 
-  # TODO: use OIDC id_token
-  defp ensure_admin_domain(access_token) do
-    case People.me(access_token) do
-      {:ok, %{"emailAddresses" => [%{"value" => email} | _]}} ->
-        if String.ends_with?(email, @admin_domain) do
-          {:ok, email}
-        else
-          {:error, :invalid_domain}
-        end
+  defp ensure_admin_domain(%AccessToken{other_params: %{"id_token" => id_token}}) do
+    case OpenidConnect.parse_and_verify_id_token(id_token) do
+      {:ok, %{"email" => email, "hd" => @admin_domain}} ->
+        {:ok, email}
       otherwise ->
-        Blick.Logger.error("Could not retrieve authorizing user's identity. Got: " <> inspect(otherwise))
-        {:error, :google_api_error}
+        Blick.Logger.error("Could not verify authorizing user's identity. Got: " <> inspect(otherwise))
+        {:error, :invalid_id_token}
     end
+  end
+  defp ensure_admin_domain(otherwise) do
+    Blick.Logger.error("Could not retrieve authorizing user's identity. Got: " <> inspect(otherwise))
+    {:error, :id_token_not_found}
   end
 
   def update(%AccessToken{access_token: at, expires_at: ea, refresh_token: rt}) do
