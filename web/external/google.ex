@@ -9,6 +9,8 @@ defmodule Blick.External.Google do
   @type token_t :: AdminToken.t | String.t
   @type res_t :: R.t(:no_content | map, Httpc.Response.t)
 
+  @default_timeout 20_000
+
   defun request(token :: token_t,
                 method :: v[Method.t],
                 url :: v[Url.t],
@@ -17,7 +19,7 @@ defmodule Blick.External.Google do
                 opts :: Keyword.t \\ []) :: res_t do
     at = access_token(token)
     authorized_headers = Map.merge(%{"authorization" => "Bearer #{at}"}, headers) # Allow overriding Authorization header by caller
-    Httpc.request(method, url, body, authorized_headers, opts)
+    Httpc.request(method, url, body, authorized_headers, Keyword.put(opts, :recv_timeout, @default_timeout))
     |> R.bind(&handle_res/1)
   end
 
