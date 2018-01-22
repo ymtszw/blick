@@ -32,11 +32,12 @@ defmodule Blick.SecretString do
     value: Blick.PrintableString,
   ]
 
-  defun new(any :: any) :: Croma.Result.t(t) do
-    str when is_binary(str) ->
-      str |> Blick.decrypt_base64() |> Croma.Result.map(&%__MODULE__{value: &1})
-    otherwise ->
-      super(otherwise)
+  # Overloading new/1
+  def new(str) when is_binary(str) do
+    str |> Blick.decrypt_base64() |> Croma.Result.map(&%__MODULE__{value: &1})
+  end
+  def new(otherwise) do
+    super(otherwise)
   end
 end
 

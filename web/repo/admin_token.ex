@@ -47,7 +47,7 @@ defmodule Blick.Repo.AdminToken do
 
   @admin_domain "access-company.com"
 
-  defp ensure_admin_domain(%AccessToken{other_params: %{"id_token" => id_token}}) do
+  defp ensure_admin_domain(%AccessToken{other_params: %{"id_token" => id_token}}) do # Warned by dialyzer; PRing on https://github.com/scrogson/oauth2/pull/105
     case OpenidConnect.parse_and_verify_id_token(id_token) do
       {:ok, %{"email" => email, "hd" => @admin_domain}} ->
         {:ok, email}
