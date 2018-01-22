@@ -1,13 +1,14 @@
 use Croma
 
 defmodule Blick.Model.Material do
+  import Croma.TypeGen, only: [nilable: 1]
   alias SolomonLib.Url
 
   use SolomonAcs.Dodai.Model.Datastore, data_fields: [
     title: Croma.String,
     url: Url,
-    author_name: Croma.String,
-    author_email: Croma.TypeGen.nilable(SolomonLib.Email),
+    thumbnail_url: nilable(Url),
+    author_email: nilable(SolomonLib.Email),
     type: Type,
     excluded: Croma.Boolean, # Indicates the material is collected but manually excluded for reasons
   ]
@@ -21,7 +22,6 @@ defmodule Blick.Model.Material do
       :slideshare,
       :speakerdeck,
       :qiita,
-      :pdf,
       :html,
     ]
   end
