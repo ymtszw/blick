@@ -14,6 +14,11 @@ defmodule Blick.External.Google.Drive do
       Google.request(token, :get, @base_url <> "/files/#{id}", "", %{}, params: %{"fields" => "id,name,mimeType,createdTime,owners"})
     end
 
+    defun batch_get(ids :: v[[String.t]], token :: Google.token_t) :: Google.res_t do
+      requests = Enum.map(ids, fn id -> {:get, @base_url <> "/files/#{id}", "", %{}, params: %{"fields" => "id,name,mimeType,createdTime,owners"}} end)
+      Google.batch(token, requests)
+    end
+
     Croma.Result.define_bang_version_of(get: 2)
   end
 end
