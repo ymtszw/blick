@@ -8,13 +8,17 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   @type material_t :: {Material.Type.t, SolomonLib.Url.t, String.t}
 
   @rnd_seminar_spreadsheet_id "1j-ag_0n1CyLAjOTNA5bVYuCN4uq-UbFKYavU4dvh1G8"
-  def rnd_seminar_spreadsheet_id(), do: @rnd_seminar_spreadsheet_id
+  @doc """
+  Collect materials from (now-defunct) RnD seminar schedule spreadsheet.
 
-  defun collect_material_urls_from_spreadsheet(token :: Blick.External.Google.token_t) :: R.t([material_t]) do
+  Results are in list of `material_t`.
+  """
+  defun collect_materials_from_rnd_seminar_spreadsheet(token :: Blick.External.Google.token_t) :: R.t([material_t]) do
     R.m do
       file <- Spreadsheets.get(@rnd_seminar_spreadsheet_id, token) # This can take a few seconds
       schedule_sheets <- get_shedule_sheets(file["sheets"] || [])
-      pure parse_schedule_sheets(schedule_sheets)
+      materials = parse_schedule_sheets(schedule_sheets)
+      pure normalize_with_additional_lookups(materials)
     end
   end
 
@@ -61,5 +65,10 @@ defmodule Blick.AsyncJob.MaterialCollecter do
           acc
       end
     end)
+  end
+
+  defp normalize_with_additional_lookups(materials) do
+    # TODO
+    materials
   end
 end
