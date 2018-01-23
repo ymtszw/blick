@@ -44,7 +44,7 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   if SolomonLib.Env.compiling_for_cloud?() do
     def take_sample(materials), do: materials
   else
-    def take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid rate limit
+    def take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
   end
 
   defp uniq_materials(results) do
