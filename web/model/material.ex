@@ -4,7 +4,7 @@ defmodule Blick.Model.Material do
   import Croma.TypeGen, only: [nilable: 1]
   alias SolomonLib.Url
 
-  use SolomonAcs.Dodai.Model.Datastore, data_fields: [
+  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: [
     title: Croma.String,
     url: Url,
     thumbnail_url: nilable(Url),
@@ -24,6 +24,31 @@ defmodule Blick.Model.Material do
       :qiita,
       :html,
     ]
+  end
+
+  @doc """
+  Generates Unique ID of Material.
+
+  This should be calculated from "original" URL,
+  in order to reduce unnecessary renormalization/lookup roundtrips.
+  (This is important since Google Drive API has quota limits,
+  whereas our Dodai API does not, so we should fully utilize Dodai.)
+
+  By "original" here it means:
+  - URLs that are extracted from spreadsheet and other lookup entry points
+  - URLs that are registered directly by users (TODO)
+
+  If the "original" URL is normalized to a different URL,
+  it should be found in `:url` field.
+
+  ## What if different URLs are found/registered but normalized into a single URL?
+
+  Deduplicatoin should be performed "on entry", which means,
+  normalized URL values will be searched from among already registered materials,
+  and removed if a matching material is found.
+  """
+  defun generate_id(original_url :: v[Url.t]) :: Id.t do
+    :crypto.hash(:md5, original_url) |> Base.encode32(padding: false)
   end
 
   defun normalize_url_by_types(raw_url :: Url.t) :: {Type.t, Url.t} do
