@@ -38,32 +38,14 @@ defmodule Blick.External.Google.OpenidConnect do
     end
   end
 
-  @sample """
-  eyJhbGciOiJSUzI1NiIsImtpZCI6Ijk3OGNhNDExOGJmMTg4M2IzMTZiYmNhNmNlOTA0NGQ5OTc3ZjIw
-  MjcifQ.
-  eyJhenAiOiIxOTkzODM4MzIwNjUta2dqbzJmc2hsMTd0aGNpODNwN2IydGJocGlhdWEydjEuYXBwcy5n
-  b29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiIxOTkzODM4MzIwNjUta2dqbzJmc2hsMTd0aGNpODNw
-  N2IydGJocGlhdWEydjEuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDg4MzE1Mjcy
-  MTM2NTM2MjEwNjUiLCJoZCI6ImFjY2Vzcy1jb21wYW55LmNvbSIsImVtYWlsIjoieXUubWF0c3V6YXdh
-  QGFjY2Vzcy1jb21wYW55LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhdF9oYXNoIjoibkdHd0N6
-  SktpeE10Y1ZVY2MzQ0d3dyIsImV4cCI6MTUxNjM1ODU2NywiaXNzIjoiaHR0cHM6Ly9hY2NvdW50cy5n
-  b29nbGUuY29tIiwiaWF0IjoxNTE2MzU0OTY3LCJuYW1lIjoiWXUgTWF0c3V6YXdhIiwicGljdHVyZSI6
-  Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS8tODV6dlZMUDZHWUUvQUFBQUFBQUFBQUkv
-  QUFBQUFBQUFBQmsvWFRMdzZObmw5M1kvczk2LWMvcGhvdG8uanBnIiwiZ2l2ZW5fbmFtZSI6Ill1Iiwi
-  ZmFtaWx5X25hbWUiOiJNYXRzdXphd2EiLCJsb2NhbGUiOiJqYSJ9.
-  cuCTQxfK9CLkL_EsqOFbDLhyhdJSyllgmUiffL0ZZgVVZZjwbMQnI4kTsl15aBKMJlmP1q36e3JNPT_d
-  qZPNZ0KGm27mCPssYXkc75AO5h4P-fEXelfYzW3WwQ_Akd3i6uB0Ws-wE1UZFAkVrrSzs62GTbeJMHtA
-  OU6fv1Ig20kE9z6KQTO096zbQgXpEyubj0p4hDRLQIrON_V5g1dG0QJrp6Onj4Olu5_-Wk1y5FkVAejr
-  88TN1LnW99H_Pb0OhN0PU9Pe0Q4yENxXuE-grxhuU34yJPAGSlBHiw5RYl7y_PL4WmPdbuuCOzhVp7xt
-  IN4u8mWnG4eJZ-PKJhA5vA
-  """ |> String.replace("\n", "") |> String.trim()
-
-  def try_sample(), do: parse_and_verify_id_token(@sample)
-
   @doc """
   Parses and verifies subject id_token.
 
   Only supports algorithms used by Google OpenID Connect, which should be using secure (signed) JWS.
+
+  It retrieves required publickey from Google's publickey endpoint EVERY TIME it is called (without any caching).
+  This should be justified since user authentication is infrequent in this gear.
+  (Only happens on (1) admin authorization and (2) requests from public network (TODO))
   """
   defun parse_and_verify_id_token(id_token :: v[String.t]) :: R.t(map) do
     case String.split(id_token, ".", trim: false) do
