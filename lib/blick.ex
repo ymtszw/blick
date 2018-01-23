@@ -1,6 +1,6 @@
 defmodule Blick do
   use SolomonLib.GearApplication
-  alias SolomonLib.{ExecutorPool, Conn}
+  alias SolomonLib.{ExecutorPool, Conn, Time}
   alias SolomonLib.Crypto.Aes
 
   @spec children :: [Supervisor.Spec.spec]
@@ -44,5 +44,19 @@ defmodule Blick do
         end
       {:error, _} = e -> e
     end
+  end
+
+  def log_elapsed(message, prev_time, start_time \\ nil) do
+    now = Time.now()
+    total = if start_time, do: " (#{Time.diff_milliseconds(now, start_time)}ms)", else: ""
+    Blick.Logger.debug("#{message} #{Time.diff_milliseconds(now, prev_time)}ms#{total}")
+    now
+  end
+
+  def with_logging_elapsed(message, fun) do
+    prev_time = Time.now()
+    res = fun.()
+    log_elapsed(message, prev_time)
+    res
   end
 end

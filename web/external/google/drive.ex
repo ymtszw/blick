@@ -22,11 +22,13 @@ defmodule Blick.External.Google.Drive do
     Batch get Google Drive Files.
     """
     defun batch_get(ids :: v[[String.t]], token :: Google.token_t) :: Google.res_t do
-      ids
-      |> Enum.chunk_every(100) # Batch request for Google Drive API is limited to 100 requests per batch
-      |> Enum.map(&mini_batch_get(&1, token))
-      |> R.sequence()
-      |> R.map(&List.flatten/1)
+      Blick.with_logging_elapsed("Files retrieved in:", fn ->
+        ids
+        |> Enum.chunk_every(100) # Batch request for Google Drive API is limited to 100 requests per batch
+        |> Enum.map(&mini_batch_get(&1, token))
+        |> R.sequence()
+        |> R.map(&List.flatten/1)
+      end)
     end
 
     defp mini_batch_get(ids_upto_100, token) do
