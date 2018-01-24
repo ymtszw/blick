@@ -5,7 +5,7 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   alias SolomonLib.{Url, Email}
   alias Blick.External.Google
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
-  alias Blick.Repo.AdminToken
+  alias Blick.Repo
   alias Blick.Model.Material
 
   @type material_t :: {Material.Type.t, Url.t, String.t}
@@ -14,18 +14,23 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   @rnd_seminar_spreadsheet_id "1j-ag_0n1CyLAjOTNA5bVYuCN4uq-UbFKYavU4dvh1G8"
 
   @doc """
-  Collect materials from (now-defunct) RnD seminar schedule spreadsheet.
+  Collect new materials from (now-defunct) RnD seminar schedule spreadsheet.
 
   Results are in list of `material_t`.
+
+  It deduplicates already existing materials by looking up current Material Repo,
+  so it should produce smaller size of result compared to number of all URLs found in the spreadsheet.
   """
-  defun collect_materials_from_rnd_seminar_spreadsheet() :: R.t([material_t]) do
+  defun collect_new_materials_from_rnd_seminar_spreadsheet() :: R.t([material_t]) do
     R.m do
-      token <- AdminToken.retrieve()
+      current_material_dict <- Repo.Material.dict_all()
+      token <- Repo.AdminToken.retrieve()
       file <- Spreadsheets.get(@rnd_seminar_spreadsheet_id, token) # This can take a few seconds
       schedule_sheets <- get_shedule_sheets(file["sheets"] || [])
       schedule_sheets
       |> parse_schedule_sheets()
       |> take_sample()
+      |> deduplicate(current_material_dict)
       |> normalize_with_additional_lookups(token)
     end
   end
@@ -39,18 +44,6 @@ defmodule Blick.AsyncJob.MaterialCollecter do
 
   defp parse_schedule_sheets(schedule_sheets) do
     schedule_sheets |> Enum.flat_map(&parse_sheet/1) |> uniq_materials()
-  end
-
-  if SolomonLib.Env.compiling_for_cloud?() do
-    def take_sample(materials), do: materials
-  else
-    def take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
-  end
-
-  defp uniq_materials(results) do
-    results
-    |> Enum.uniq_by(fn {_type,  normalized_url, _title} -> normalized_url end)
-    |> Enum.uniq_by(fn {_type, _normalized_url,  title} -> title end)
   end
 
   defp parse_sheet(%{"data" => grid_data_list}) do
@@ -78,6 +71,24 @@ defmodule Blick.AsyncJob.MaterialCollecter do
         _ ->
           acc
       end
+    end)
+  end
+
+  defp uniq_materials(materials) do
+    materials
+    |> Enum.uniq_by(fn {_type,  normalized_url, _title} -> normalized_url end)
+    |> Enum.uniq_by(fn {_type, _normalized_url,  title} -> title end)
+  end
+
+  if SolomonLib.Env.compiling_for_cloud?() do
+    def take_sample(materials), do: materials
+  else
+    def take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
+  end
+
+  defp deduplicate(materials, current_material_dict) do
+    Enum.reject(materials, fn {_type, normalized_url, _title} ->
+      Map.has_key?(current_material_dict, Material.generate_id(normalized_url))
     end)
   end
 
