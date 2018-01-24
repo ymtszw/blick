@@ -9,7 +9,6 @@ defmodule Blick.Controller.Admin do
 
   plug Blick.Plug.Auth, :filter_by_sender_identity, []
 
-  # GET /admin/authorize
   def authorize(conn) do
     render_with_params(conn, Blick.Plug.Auth.admin())
   end
@@ -43,7 +42,6 @@ defmodule Blick.Controller.Admin do
     ])
   end
 
-  # GET /admin/authorize_callback
   def authorize_callback(conn) do
     case conn.request.headers["x-forwarded-host"] do
       "localhost:8081" <> _ ->
