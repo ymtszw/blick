@@ -23,13 +23,13 @@ defmodule Blick.AsyncJob.MaterialCollecter do
       token <- Repo.AdminToken.retrieve()
       file <- Spreadsheets.get(@rnd_seminar_spreadsheet_id, token) # This can take a few seconds
       schedule_sheets <- get_shedule_sheets(file["sheets"] || [])
-      normalized_new_materials <-
+      new_material_with_ids <-
         schedule_sheets
         |> parse_schedule_sheets()
         |> take_sample()
         |> deduplicate(current_material_dict)
         |> normalize_with_additional_lookups(token)
-      pure normalized_new_materials
+      Repo.Material.insert_all(new_material_with_ids)
     end
   end
 

@@ -1,6 +1,7 @@
 use Croma
 
 defmodule Blick.Repo.Material do
+  alias Croma.Result, as: R
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Model.Material
   use SolomonAcs.Dodai.Repo.Datastore, [
@@ -8,6 +9,21 @@ defmodule Blick.Repo.Material do
     read_permission: :anyone,
     write_permission: :anyone,
   ]
+
+  @doc """
+  Insert requested id/data pair list recursively.
+
+  Should only be used from material collecter jobs in order to populate Material Repo,
+  since it can take relatively long time.
+  """
+  defun insert_all(material_id_and_data_list :: [{Material.Id.t, Material.Data.t}]) :: R.t([Material.t]) do
+    root_key = root_key()
+    Blick.with_logging_elapsed("Inserted #{length(material_id_and_data_list)} Materials in:", fn ->
+      material_id_and_data_list
+      |> Enum.map(fn {id, %Material.Data{} = data} -> insert(%{_id: id, data: data}, root_key) end)
+      |> R.sequence()
+    end)
+  end
 
   @doc """
   Retrieves ALL existing materials in `_id`-keyed map.
