@@ -129,12 +129,12 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   end
 
   @spec renormalize_and_add_details_impl({{Material.Id.t, Material.Data.t}, Google.multipart_res_t}) :: nil | {Material.Id.t, Material.Data.t}
-  defp renormalize_and_add_details_impl({_deleted_material, {404, _resp_body}}) do
-    nil
+  defp renormalize_and_add_details_impl({{id, %Material.Data{} = deleted_material}, {404, _resp_body}}) do
+    {id, %Material.Data{deleted_material | excluded: true, exclude_reason: "Not found on Google Drive."}}
   end
-  defp renormalize_and_add_details_impl({found_material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
-    Blick.Logger.debug("Rate Limit on: #{inspect(found_material)}")
-    found_material
+  defp renormalize_and_add_details_impl({id_and_material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
+    Blick.Logger.debug("Rate Limit on: #{inspect(id_and_material)}")
+    nil # Skip on rate limit; if not inserted, it should be retried on next job attempt.
   end
   defp renormalize_and_add_details_impl({{id, %Material.Data{type: :google_slide} = found_material}, {200, file}}) do
     {_file_id, "application/vnd.google-apps.presentation", thumbnail_url, author_email, created_time} = details(file)

@@ -23,6 +23,7 @@ defmodule Blick.Model.Material do
     author_email: nilable(SolomonLib.Email),
     type: Type,
     excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons
+    exclude_reason: nilable(Croma.String),
   ]
 
   @doc """
