@@ -2,14 +2,14 @@ use Croma
 
 defmodule Blick.AsyncJob.MaterialCollecter do
   alias Croma.Result, as: R
-  alias SolomonLib.{Url, Email}
+  alias SolomonLib.{Url, Email, Time}
   alias Blick.External.Google
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
   alias Blick.Repo
   alias Blick.Model.Material
 
   @type material_t :: {Material.Type.t, Url.t, String.t}
-    | {Material.Type.t, Url.t, String.t, Email.t, thumbnail_url :: nil | Url.t}
+    | {Material.Type.t, Url.t, String.t, Email.t, thumbnail_url :: nil | Url.t, created_time :: nil | Time.t}
 
   @rnd_seminar_spreadsheet_id "1j-ag_0n1CyLAjOTNA5bVYuCN4uq-UbFKYavU4dvh1G8"
 
@@ -133,29 +133,30 @@ defmodule Blick.AsyncJob.MaterialCollecter do
     original_material
   end
   defp renormalize_and_add_details_impl({{:google_slide, url, title}, {200, file}}) do
-    {_file_id, "application/vnd.google-apps.presentation", thumbnail_url, author_email} = details(file)
-    {:google_slide, url, title, author_email, thumbnail_url}
+    {_file_id, "application/vnd.google-apps.presentation", thumbnail_url, author_email, created_time} = details(file)
+    {:google_slide, url, title, author_email, thumbnail_url, created_time}
   end
   defp renormalize_and_add_details_impl({{:google_doc, url, title}, {200, file}}) do
-    {_file_id, "application/vnd.google-apps.document", thumbnail_url, author_email} = details(file)
-    {:google_doc, url, title, author_email, thumbnail_url}
+    {_file_id, "application/vnd.google-apps.document", thumbnail_url, author_email, created_time} = details(file)
+    {:google_doc, url, title, author_email, thumbnail_url, created_time}
   end
   defp renormalize_and_add_details_impl({{:google_file, _url, title}, {200, file}}) do
-    {file_id, mimetype, thumbnail_url, author_email} = details(file)
+    {file_id, mimetype, thumbnail_url, author_email, created_time} = details(file)
     case mimetype do
       "application/vnd.google-apps.presentation" ->
-        {:google_slide, "https://docs.google.com/presentation/d/#{file_id}", title, author_email, thumbnail_url}
+        {:google_slide, "https://docs.google.com/presentation/d/#{file_id}", title, author_email, thumbnail_url, created_time}
       "application/vnd.google-apps.document" ->
-        {:google_doc, "https://docs.google.com/document/d/#{file_id}", title, author_email, thumbnail_url}
+        {:google_doc, "https://docs.google.com/document/d/#{file_id}", title, author_email, thumbnail_url, created_time}
       _misc_mimetypes ->
-        {:google_file, "https://docs.google.com/file/d/#{file_id}", title, author_email, thumbnail_url}
+        {:google_file, "https://docs.google.com/file/d/#{file_id}", title, author_email, thumbnail_url, created_time}
     end
   end
 
   defp details(%{"id" => file_id,
                  "mimeType" => mimetype,
+                 "createdTime" => created_time,
                  "owners" => [%{"emailAddress" => author_email} | _]} = file) do
-    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email}
+    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, Time.from_iso_timestamp(created_time) |> R.get!()}
   end
 
   defp enlarge_thumbnail_size(nil), do: nil

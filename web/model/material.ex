@@ -8,6 +8,7 @@ defmodule Blick.Model.Material do
     title: Croma.String,
     url: Url,
     thumbnail_url: nilable(Url),
+    created_time: nilable(SolomonLib.Time),
     author_email: nilable(SolomonLib.Email),
     type: Type,
     excluded: Croma.Boolean, # Indicates the material is collected but manually excluded for reasons
@@ -19,8 +20,6 @@ defmodule Blick.Model.Material do
       :google_doc,
       :google_file,
       :google_folder,
-      :slideshare,
-      :speakerdeck,
       :qiita,
       :html,
     ]
