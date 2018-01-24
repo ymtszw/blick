@@ -79,9 +79,9 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   end
 
   if SolomonLib.Env.compiling_for_cloud?() do
-    def take_sample(materials), do: materials
+    defp take_sample(materials), do: materials
   else
-    def take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
+    defp take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
   end
 
   defunp deduplicate(materials :: v[[Material.Data.t]], current_material_dict :: %{Material.Id.t => Material.t}) :: [{Material.Id.t, Material.Data.t}] do
