@@ -35,7 +35,8 @@ defmodule Blick.Model.Material do
   whereas our Dodai API does not, so we should fully utilize Dodai.)
 
   By "original" here it means:
-  - URLs that are extracted from spreadsheet and other lookup entry points
+  - URLs that are extracted from spreadsheet or other lookup entry points
+    and get normalized only once (without additional lookups)
   - URLs that are registered directly by users (TODO)
 
   If the "original" URL is normalized to a different URL,
