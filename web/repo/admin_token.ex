@@ -108,7 +108,7 @@ defmodule Blick.Repo.AdminToken do
 
   defp refresh_token_and_update(%AdminToken{data: %AdminToken.Data{expires_at: ea, refresh_token: rt}}, now) do
     log_refresh(ea, now)
-    Blick.with_logging_elapsed("Refreshing process finished.", fn ->
+    Blick.with_logging_elapsed("Refreshing process finished in:", fn ->
       case Oauth2.refresh(client(), rt.value, grant_type: "refresh_token") do
         {:ok, %AccessToken{access_token: at, refresh_token: rt} = oat} when byte_size(at) > 0 and byte_size(rt) > 0 ->
           update(oat)

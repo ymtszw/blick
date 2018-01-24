@@ -24,8 +24,8 @@ defmodule Blick.Repo.Material do
   it should not become exceedingly large in byte size.
   (Thus should be possible to handle in gear processes.)
   """
-  defun dict_all() :: Croma.Result.t(%{Material.Id.t => Material.t}) do
-    dict_all_impl(nil, root_key(), %{})
+  defun dict_all() :: R.t(%{Material.Id.t => Material.t}) do
+    Blick.with_logging_elapsed("Fetched all Materials in:", fn -> dict_all_impl(nil, root_key(), %{}) end)
   end
 
   defp dict_all_impl(lowerbound_id_or_nil, root_key, acc_dict) do
