@@ -2,36 +2,34 @@ use Croma
 
 defmodule Blick.AsyncJob.MaterialCollecter do
   alias Croma.Result, as: R
-  alias SolomonLib.{Url, Email, Time}
   alias Blick.External.Google
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
   alias Blick.Repo
   alias Blick.Model.Material
-
-  @type material_t :: {Material.Type.t, Url.t, String.t}
-    | {Material.Type.t, Url.t, String.t, Email.t, thumbnail_url :: nil | Url.t, created_time :: nil | Time.t}
 
   @rnd_seminar_spreadsheet_id "1j-ag_0n1CyLAjOTNA5bVYuCN4uq-UbFKYavU4dvh1G8"
 
   @doc """
   Collect new materials from (now-defunct) RnD seminar schedule spreadsheet.
 
-  Results are in list of `material_t`.
+  Results are inserted to Material Repo.
 
   It deduplicates already existing materials by looking up current Material Repo,
   so it should produce smaller size of result compared to number of all URLs found in the spreadsheet.
   """
-  defun collect_new_materials_from_rnd_seminar_spreadsheet() :: R.t([material_t]) do
+  defun collect_new_materials_from_rnd_seminar_spreadsheet() :: R.t([Material.t]) do
     R.m do
       current_material_dict <- Repo.Material.dict_all()
       token <- Repo.AdminToken.retrieve()
       file <- Spreadsheets.get(@rnd_seminar_spreadsheet_id, token) # This can take a few seconds
       schedule_sheets <- get_shedule_sheets(file["sheets"] || [])
-      schedule_sheets
-      |> parse_schedule_sheets()
-      |> take_sample()
-      |> deduplicate(current_material_dict)
-      |> normalize_with_additional_lookups(token)
+      normalized_new_materials <-
+        schedule_sheets
+        |> parse_schedule_sheets()
+        |> take_sample()
+        |> deduplicate(current_material_dict)
+        |> normalize_with_additional_lookups(token)
+      pure normalized_new_materials
     end
   end
 
@@ -58,13 +56,13 @@ defmodule Blick.AsyncJob.MaterialCollecter do
     "0B6DpgpRl_A1mfl9VblV6Rlk0TTM2YmlmYVYtUDE0VWo3ZmZ0b3BMSk55clRnYXMwN3h4N2c", # RnD seminar material directory ID
   ]
 
-  defunp parse_row_data(%{"values" => cell_data_list} :: map) :: material_t do
+  defunp parse_row_data(%{"values" => cell_data_list} :: map) :: [Material.Data.t] do
     Enum.reduce(cell_data_list, [], fn cell, acc ->
       case cell["hyperlink"] do
         "http" <> _ = url ->
           if not Enum.any?(@excluded_patterns, &String.contains?(url, &1)) do
             {type, normalized_url} = Material.normalize_url_by_types(url)
-            [{type, normalized_url, cell["formattedValue"] || normalized_url} | acc]
+            [%Material.Data{type: type, url: normalized_url, title: cell["formattedValue"] || normalized_url} | acc]
           else
             acc
           end
@@ -76,8 +74,8 @@ defmodule Blick.AsyncJob.MaterialCollecter do
 
   defp uniq_materials(materials) do
     materials
-    |> Enum.uniq_by(fn {_type,  normalized_url, _title} -> normalized_url end)
-    |> Enum.uniq_by(fn {_type, _normalized_url,  title} -> title end)
+    |> Enum.uniq_by(fn %Material.Data{url: normalized_url} -> normalized_url end)
+    |> Enum.uniq_by(fn %Material.Data{title: title} -> title end)
   end
 
   if SolomonLib.Env.compiling_for_cloud?() do
@@ -87,20 +85,20 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   end
 
   defp deduplicate(materials, current_material_dict) do
-    Enum.reject(materials, fn {_type, normalized_url, _title} ->
+    Enum.reject(materials, fn %Material.Data{url: normalized_url} ->
       Map.has_key?(current_material_dict, Material.generate_id(normalized_url))
     end)
   end
 
   defp normalize_with_additional_lookups(materials, token) do
     {google_materials, other_materials} =
-      Enum.split_with(materials, fn {type, _, _} -> type in [:google_doc, :google_slide, :google_file] end)
+      Enum.split_with(materials, fn %Material.Data{type: type} -> type in [:google_doc, :google_slide, :google_file] end)
     google_materials
     |> renormalize_and_add_details_to_google_materials(token)
     |> R.map(&(other_materials ++ &1))
   end
 
-  defunp renormalize_and_add_details_to_google_materials(google_materials :: [material_t], token :: Google.token_t) :: R.t([material_t]) do
+  defunp renormalize_and_add_details_to_google_materials(google_materials :: [Material.Data.t], token :: Google.token_t) :: R.t([Material.Data.t]) do
     batch_get_details(google_materials, token)
     |> R.bind(fn
       get_detail_results when length(get_detail_results) == length(google_materials) ->
@@ -118,37 +116,38 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   defp batch_get_details(google_materials, token) do
     google_materials
     |> Enum.map(fn
-      {:google_doc, "https://docs.google.com/document/d/" <> file_id, _title} -> file_id
-      {:google_slide, "https://docs.google.com/presentation/d/" <> file_id, _title} -> file_id
-      {:google_file, "https://drive.google.com/file/d/" <> file_id, _title} -> file_id
+      %Material.Data{type: :google_doc, url: "https://docs.google.com/document/d/" <> file_id} -> file_id
+      %Material.Data{type: :google_slide, url: "https://docs.google.com/presentation/d/" <> file_id} -> file_id
+      %Material.Data{type: :google_file, url: "https://drive.google.com/file/d/" <> file_id} -> file_id
     end)
     |> Files.batch_get(token)
   end
 
-  defp renormalize_and_add_details_impl({{_type, _url, _title}, {404, _resp_body}}) do
+  @spec renormalize_and_add_details_impl({Material.Data.t, Google.multipart_res_t}) :: nil | Material.Data.t
+  defp renormalize_and_add_details_impl({_deleted_material, {404, _resp_body}}) do
     nil
   end
-  defp renormalize_and_add_details_impl({original_material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
-    Blick.Logger.debug("Rate Limit on: #{inspect(original_material)}")
-    original_material
+  defp renormalize_and_add_details_impl({found_material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
+    Blick.Logger.debug("Rate Limit on: #{inspect(found_material)}")
+    found_material
   end
-  defp renormalize_and_add_details_impl({{:google_slide, url, title}, {200, file}}) do
+  defp renormalize_and_add_details_impl({%Material.Data{type: :google_slide} = found_material, {200, file}}) do
     {_file_id, "application/vnd.google-apps.presentation", thumbnail_url, author_email, created_time} = details(file)
-    {:google_slide, url, title, author_email, thumbnail_url, created_time}
+    %Material.Data{found_material | author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}
   end
-  defp renormalize_and_add_details_impl({{:google_doc, url, title}, {200, file}}) do
+  defp renormalize_and_add_details_impl({%Material.Data{type: :google_doc} = found_material, {200, file}}) do
     {_file_id, "application/vnd.google-apps.document", thumbnail_url, author_email, created_time} = details(file)
-    {:google_doc, url, title, author_email, thumbnail_url, created_time}
+    %Material.Data{found_material | author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}
   end
-  defp renormalize_and_add_details_impl({{:google_file, _url, title}, {200, file}}) do
+  defp renormalize_and_add_details_impl({%Material.Data{type: :google_file} = found_material, {200, file}}) do
     {file_id, mimetype, thumbnail_url, author_email, created_time} = details(file)
     case mimetype do
       "application/vnd.google-apps.presentation" ->
-        {:google_slide, "https://docs.google.com/presentation/d/#{file_id}", title, author_email, thumbnail_url, created_time}
+        %Material.Data{found_material | type: :google_slide, url: "https://docs.google.com/presentation/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}
       "application/vnd.google-apps.document" ->
-        {:google_doc, "https://docs.google.com/document/d/#{file_id}", title, author_email, thumbnail_url, created_time}
+        %Material.Data{found_material | type: :google_doc, url: "https://docs.google.com/document/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}
       _misc_mimetypes ->
-        {:google_file, "https://docs.google.com/file/d/#{file_id}", title, author_email, thumbnail_url, created_time}
+        %Material.Data{found_material | url: "https://docs.google.com/file/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}
     end
   end
 
@@ -156,7 +155,7 @@ defmodule Blick.AsyncJob.MaterialCollecter do
                  "mimeType" => mimetype,
                  "createdTime" => created_time,
                  "owners" => [%{"emailAddress" => author_email} | _]} = file) do
-    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, Time.from_iso_timestamp(created_time) |> R.get!()}
+    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, SolomonLib.Time.from_iso_timestamp(created_time) |> R.get!()}
   end
 
   defp enlarge_thumbnail_size(nil), do: nil
