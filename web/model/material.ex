@@ -4,16 +4,6 @@ defmodule Blick.Model.Material do
   import Croma.TypeGen, only: [nilable: 1]
   alias SolomonLib.Url
 
-  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: [
-    title: Croma.String,
-    url: Url,
-    thumbnail_url: nilable(Url),
-    created_time: nilable(SolomonLib.Time),
-    author_email: nilable(SolomonLib.Email),
-    type: Type,
-    excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons
-  ]
-
   defmodule Type do
     use Croma.SubtypeOfAtom, values: [
       :google_slide,
@@ -24,6 +14,16 @@ defmodule Blick.Model.Material do
       :html,
     ]
   end
+
+  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: [
+    title: Croma.String,
+    url: Url,
+    thumbnail_url: nilable(Url),
+    created_time: nilable(SolomonLib.Time),
+    author_email: nilable(SolomonLib.Email),
+    type: Type,
+    excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons
+  ]
 
   @doc """
   Generates Unique ID of Material.
@@ -45,7 +45,7 @@ defmodule Blick.Model.Material do
 
   Deduplicatoin should be performed "on entry", which means,
   normalized URL values will be searched from among already registered materials,
-  and removed if a matching material is found.
+  and removed if a matching material is found (TODO).
   """
   defun generate_id(original_url :: v[Url.t]) :: Id.t do
     :crypto.hash(:md5, original_url) |> Base.encode32(padding: false)

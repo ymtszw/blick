@@ -54,7 +54,6 @@ defmodule Blick.External.Google do
     {:ok, collect_with_multipart_parser(parser.(res_body), [])}
   end
 
-  @spec collect_with_multipart_parser(:hackney_multipart.part_result | :hackney_multipart.body_result, [multipart_res_t]) :: [multipart_res_t]
   defp collect_with_multipart_parser({:headers, _part_headers, body_cont}, acc) do
     collect_with_multipart_parser(body_cont.(), acc)
   end
@@ -73,7 +72,6 @@ defmodule Blick.External.Google do
     collect_with_http_parser(:hackney_http.execute(res_parser, part_body), nil, {200, ""})
   end
 
-  @spec collect_with_http_parser(:hackney_http.parser_result, nil | :json | :form | :plain, multipart_res_t) :: multipart_res_t
   defp collect_with_http_parser({:response, _version, status, _reason, cont}, nil, {_, res_body}) do
     collect_with_http_parser(:hackney_http.execute(cont), nil, {status, res_body})
   end
