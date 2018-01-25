@@ -58,7 +58,6 @@ defmodule Blick.AsyncJob.MaterialRefresher do
       %Material{data: %Material.Data{url: "https://docs.google.com/document/d/" <> file_id}} -> file_id
       %Material{data: %Material.Data{url: "https://docs.google.com/presentation/d/" <> file_id}} -> file_id
       %Material{data: %Material.Data{url: "https://drive.google.com/file/d/" <> file_id}} -> file_id
-      %Material{data: %Material.Data{url: "https://docs.google.com/file/d/" <> file_id}} -> file_id # Incorrect; Fixed below
     end)
     |> Files.batch_get(token)
   end
@@ -71,17 +70,8 @@ defmodule Blick.AsyncJob.MaterialRefresher do
     Blick.Logger.debug("Rate Limit on: #{inspect(material)}")
     nil # Skip on rate limit; if not inserted, it should be retried on next job attempt.
   end
-  defp make_update_action({%Material{_id: id, data: data}, {200, file}}) do
+  defp make_update_action({%Material{_id: id}, {200, file}}) do
     thumbnail_url = Blick.AsyncJob.MaterialCollecter.enlarge_thumbnail_size(file["thumbnailLink"])
-    data_to_set = data |> lazily_correct_google_file_url() |> Map.merge(%{thumbnail_url: thumbnail_url})
-    {id, %{data: %{"$set" => data_to_set}}}
-  end
-
-  # Can be removed later
-  defp lazily_correct_google_file_url(%Material.Data{url: "https://docs.google.com/file/d/" <> file_id}) do
-    %{url: "https://drive.google.com/file/d/#{file_id}"}
-  end
-  defp lazily_correct_google_file_url(_) do
-    %{}
+    {id, %{data: %{"$set" => %{thumbnail_url: thumbnail_url}}}}
   end
 end
