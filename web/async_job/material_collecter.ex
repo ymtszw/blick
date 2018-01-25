@@ -127,9 +127,9 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   defp batch_get_details(id_and_google_materials, token) do
     id_and_google_materials
     |> Enum.map(fn
-      {_id, %Material.Data{type: :google_doc, url: "https://docs.google.com/document/d/" <> file_id}} -> file_id
-      {_id, %Material.Data{type: :google_slide, url: "https://docs.google.com/presentation/d/" <> file_id}} -> file_id
-      {_id, %Material.Data{type: :google_file, url: "https://drive.google.com/file/d/" <> file_id}} -> file_id
+      {_id, %Material.Data{url: "https://docs.google.com/document/d/" <> file_id}} -> file_id
+      {_id, %Material.Data{url: "https://docs.google.com/presentation/d/" <> file_id}} -> file_id
+      {_id, %Material.Data{url: "https://drive.google.com/file/d/" <> file_id}} -> file_id
     end)
     |> Files.batch_get(token)
   end
@@ -158,7 +158,7 @@ defmodule Blick.AsyncJob.MaterialCollecter do
       "application/vnd.google-apps.document" ->
         {id, %Material.Data{found_material | type: :google_doc, url: "https://docs.google.com/document/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}}
       _misc_mimetypes ->
-        {id, %Material.Data{found_material | url: "https://docs.google.com/file/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}}
+        {id, %Material.Data{found_material | url: "https://drive.google.com/file/d/#{file_id}", author_email: author_email, thumbnail_url: thumbnail_url, created_time: created_time}}
     end
   end
 
@@ -169,6 +169,7 @@ defmodule Blick.AsyncJob.MaterialCollecter do
     {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, SolomonLib.Time.from_iso_timestamp(created_time) |> R.get!()}
   end
 
-  defp enlarge_thumbnail_size(nil), do: nil
-  defp enlarge_thumbnail_size(url) when is_binary(url), do: String.replace(url, "=s220", "=s640") # Yes, it's cheesy
+  # Also used in refresher
+  def enlarge_thumbnail_size(nil), do: nil
+  def enlarge_thumbnail_size(url) when is_binary(url), do: String.replace(url, "=s220", "=s640") # Yes, it's cheesy
 end
