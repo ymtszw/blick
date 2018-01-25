@@ -2,9 +2,10 @@ use Croma
 
 defmodule Blick.Repo.Material do
   alias Croma.Result, as: R
+  alias SolomonAcs.Dodai.Repo.Datastore
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Model.Material
-  use SolomonAcs.Dodai.Repo.Datastore, [
+  use Datastore, [
     datastore_models: [Material],
     read_permission: :anyone,
     write_permission: :anyone,
@@ -21,6 +22,20 @@ defmodule Blick.Repo.Material do
     Blick.with_logging_elapsed("Inserted #{length(material_id_and_data_list)} Materials in:", fn ->
       material_id_and_data_list
       |> Enum.map(fn {id, %Material.Data{} = data} -> insert(%{_id: id, data: data}, root_key) end)
+      |> R.sequence()
+    end)
+  end
+
+  @doc """
+  Apply all update_actions recursively.
+
+  Should only be used from ThumbnailRefresher job.
+  """
+  defun update_all(id_and_update_actions :: [{Material.Id.t, Datastore.update_action_t}]) :: R.t([Material.t]) do
+    root_key = root_key()
+    Blick.with_logging_elapsed("Updated #{length(id_and_update_actions)} Materials in:", fn ->
+      id_and_update_actions
+      |> Enum.map(fn {id, update_action} -> update(update_action, id, root_key) end)
       |> R.sequence()
     end)
   end
