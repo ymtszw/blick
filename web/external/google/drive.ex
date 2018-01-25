@@ -24,15 +24,20 @@ defmodule Blick.External.Google.Drive do
     defun batch_get(ids :: v[[String.t]], token :: Google.token_t) :: Google.res_t do
       Blick.with_logging_elapsed("#{length(ids)} files retrieved in:", fn ->
         ids
-        |> Enum.chunk_every(100) # Batch request for Google Drive API is limited to 100 requests per batch
+        |> Enum.chunk_every(30) # Batch request for Google Drive API is limited to 100 requests per batch
+        |> Enum.intersperse([])
         |> Enum.map(&mini_batch_get(&1, token))
         |> R.sequence()
         |> R.map(&List.flatten/1)
       end)
     end
 
-    defp mini_batch_get(ids_upto_100, token) do
-      requests = Enum.map(ids_upto_100, fn id -> {:get, @base_url <> "/files/#{id}", "", %{}, params: %{"fields" => @fields}} end)
+    defp mini_batch_get([], _token) do
+      :timer.sleep(5_000) # Throttling
+      {:ok, []}
+    end
+    defp mini_batch_get(ids_chunk, token) do
+      requests = Enum.map(ids_chunk, fn id -> {:get, @base_url <> "/files/#{id}", "", %{}, params: %{"fields" => @fields}} end)
       Google.batch(token, requests)
     end
 
