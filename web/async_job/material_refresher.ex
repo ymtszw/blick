@@ -7,8 +7,14 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   alias Blick.External.Google.Drive.Files
   alias Blick.Repo
   alias Blick.Model.Material
+  use SolomonLib.AsyncJob
 
   @type refresh_option_t :: {:force, boolean}
+
+  @impl true
+  def run(_payload, _metadata, _context) do
+    refresh(force: false)
+  end
 
   @doc """
   Refresh Materials, mainly thumbnails and excluded status.
