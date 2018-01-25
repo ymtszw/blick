@@ -6,6 +6,12 @@ defmodule Blick.AsyncJob.MaterialCollecter do
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
   alias Blick.Repo
   alias Blick.Model.Material
+  use SolomonLib.AsyncJob
+
+  @impl true
+  def run(_payload, _metadata, _context) do
+    collect_new_materials_from_rnd_seminar_spreadsheet()
+  end
 
   @rnd_seminar_spreadsheet_id "1j-ag_0n1CyLAjOTNA5bVYuCN4uq-UbFKYavU4dvh1G8"
 
