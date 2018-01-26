@@ -17,7 +17,7 @@ defmodule Blick do
   end
 
   # HACK: unofficial callback injection, performs bootstrap operation in local development
-  if SolomonLib.Env.compiling_for_cloud?() do
+  if SolomonLib.Env.compiling_for_cloud?() or Mix.env() == :test do
     def start_phase(:after_start, _type, []), do: :ok
   else
     def start_phase(:after_start, _type, []) do
