@@ -16,6 +16,13 @@ try do
       # Put names of gears which this gear depends on
       [:gear_lib]
     end
+
+    # HACK: unofficial callback injection
+    defoverridable [application: 0]
+
+    def application() do
+      super() ++ [start_phases: [after_start: []]]
+    end
   end
 rescue
   Code.LoadError ->

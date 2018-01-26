@@ -16,6 +16,17 @@ defmodule Blick do
     {:gear, :blick}
   end
 
+  # HACK: unofficial callback injection, performs bootstrap operation in local development
+  if SolomonLib.Env.compiling_for_cloud?() do
+    def start_phase(:after_start, _type, []), do: :ok
+  else
+    def start_phase(:after_start, _type, []) do
+      {:ok, _id} = Blick.AsyncJob.MaterialRefresher.run_hourly()
+      # Blick.AsyncJob.MaterialCollecter.run_hourly() # Collecter may not need to run after some sample materials are collected
+      :ok
+    end
+  end
+
   # Convenient APIs
 
   def encrypt_base64!(plain_text) do
