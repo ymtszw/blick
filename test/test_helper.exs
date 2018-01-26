@@ -1,4 +1,10 @@
 SolomonLib.Test.Config.init()
+SolomonLib.Test.GearConfigHelper.set_config(%{
+  "root_key" => "rkey_test",
+  "google_client_id" => "google_client_id_test",
+  "google_client_secret" => "google_client_secret_test",
+  "encryption_key" => "TestEncryptionKey",
+})
 
 defmodule Req do
   use SolomonLib.Test.HttpClient

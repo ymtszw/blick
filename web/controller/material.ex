@@ -10,7 +10,6 @@ defmodule Blick.Controller.Material do
 
   defun list(%Conn{request: _req} = conn) :: Conn.t do
     root_key = root_key()
-    IO.inspect(root_key)
     case Repo.Material.retrieve_list(%{}, root_key) do
       {:ok, ms} ->
         json(conn, 200, %{"materials" => ms})

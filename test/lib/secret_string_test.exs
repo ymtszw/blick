@@ -2,12 +2,6 @@ defmodule Blick.SecretStringTest do
   use Croma.TestCase, alias_as: SS
   use ExUnitProperties
 
-  @test_key "TestEncryptionKey"
-
-  setup_all do
-    SolomonLib.Test.GearConfigHelper.set_config(%{"encryption_key" => @test_key})
-  end
-
   property "should accept/reject dicts with plain text on new/1" do
     check all binary <- binary() do
       if String.printable?(binary) do
