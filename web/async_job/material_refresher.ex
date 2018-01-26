@@ -2,6 +2,7 @@ use Croma
 
 defmodule Blick.AsyncJob.MaterialRefresher do
   alias Croma.Result, as: R
+  alias SolomonLib.{Time, Cron}
   alias SolomonAcs.Dodai.Repo.Datastore
   alias Blick.External.Google
   alias Blick.External.Google.Drive.Files
@@ -14,6 +15,18 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   @impl true
   def run(_payload, _metadata, _context) do
     refresh(force: false)
+  end
+
+  @gear_pool {:gear, :blick}
+  @id "MaterialRefresher"
+
+  def run_hourly() do
+    {Time, _ymd, {_h, m, _s}, _ms} = Time.now() |> Time.shift_minutes(1) # Let first one start after a minute
+    register(%{}, @gear_pool, id: @id, schedule: {:cron, Cron.parse!("#{m} * * * *")})
+  end
+
+  def status() do
+    SolomonLib.AsyncJob.status(@gear_pool, @id)
   end
 
   @doc """
