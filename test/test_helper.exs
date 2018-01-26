@@ -5,6 +5,9 @@ SolomonLib.Test.GearConfigHelper.set_config(%{
   "google_client_secret" => "google_client_secret_test",
   "encryption_key" => "TestEncryptionKey",
 })
+Blick.Mocks.inject([
+  {Blick.Repo.AdminToken, StubAdminTokenRepo, exports_as_contract: true},
+])
 
 defmodule Req do
   use SolomonLib.Test.HttpClient

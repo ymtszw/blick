@@ -66,14 +66,10 @@ defmodule Blick.Plug.Auth do
     end
   end
 
-  if Mix.env() == :test do
-    def admin(), do: "blick-admin-gr@access-company.com"
-  else
-    def admin() do
-      case Blick.Repo.AdminToken.retrieve() do
-        {:ok, %Blick.Model.AdminToken{data: data}} -> data.owner
-        {:error, _} -> nil
-      end
+  def admin() do
+    case Blick.Repo.AdminToken.retrieve() do
+      {:ok, %Blick.Model.AdminToken{data: data}} -> data.owner
+      {:error, _} -> nil
     end
   end
 end
