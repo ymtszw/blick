@@ -18,7 +18,7 @@
     "url": "http://gitbucket.tok.access-company.com:8080/git/Yu.Matsuzawa/blick.git"
   },
   "author": "aYuMatsuzawa",
-  "license": "ISC",
+  "license": "Private",
   "devDependencies": {
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.4.0",

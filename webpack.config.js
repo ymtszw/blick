@@ -25,7 +25,7 @@ module.exports = {
   plugins: (process.env.WEBPACK_BUILD_ENV === 'cloud') ? [new Uglifier()] : [],
   devServer: {
     contentBase: BASE,
-    port: '8081',
+    port: '8079',
     noInfo: true,
     proxy: {
       "/admin/authorize/callback": {
