@@ -7,6 +7,7 @@ SolomonLib.Test.GearConfigHelper.set_config(%{
 })
 Blick.Mocks.inject([
   {Blick.Repo.AdminToken, StubAdminTokenRepo, exports_as_contract: true},
+  {SolomonAcs.Dodai.Repo.Datastore, StubDatastore, exports_as_contract: true},
 ])
 
 defmodule Req do
