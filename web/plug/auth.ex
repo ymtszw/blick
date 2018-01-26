@@ -14,8 +14,8 @@ defmodule Blick.Plug.Auth do
   def filter_by_sender_identity(conn, _opts) do
     case sender_identity(conn.request.sender) do
       :g2g -> json(conn, 403, %{"error" => "g2g request is forbidden"})
-      :intra -> conn
-      :public -> authenticate(conn)
+      :intra -> assign(conn, :from, :intra)
+      :public -> conn |> assign(:from, :public) |> authenticate()
     end
   end
 
