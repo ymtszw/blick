@@ -15,6 +15,7 @@ import Regex
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:), date)
 import Json.Encode as E exposing (Value)
+import Http as H
 import String.Extra exposing (underscored)
 
 
@@ -30,7 +31,7 @@ type alias Flags =
 
 
 type Msg
-    = NoOp
+    = ListMaterials (Result H.Error (List Material))
 
 
 

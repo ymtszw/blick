@@ -20,7 +20,14 @@ init flags =
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
 update msg model =
-    model => []
+    case msg of
+        ListMaterials (Ok ms) ->
+            { model | materials = ms } => []
+
+        ListMaterials (Err e) ->
+            Debug.log "Http Error" e
+                |> always model
+                => []
 
 
 
