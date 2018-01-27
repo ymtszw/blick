@@ -11,7 +11,7 @@ import Blick.View exposing (view)
 
 init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
-    {} => []
+    { materials = [] } => []
 
 
 
@@ -20,7 +20,7 @@ init flags =
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
 update msg model =
-    {} => []
+    model => []
 
 
 
