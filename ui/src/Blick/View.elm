@@ -42,8 +42,8 @@ tileColumn ( id, material ) =
 
 
 key : Id -> Html.Attribute msg
-key (Id id) =
-    name id
+key (Id id_) =
+    id id_
 
 
 link : Url -> Html.Attribute msg
@@ -55,9 +55,9 @@ thumbnail : Maybe Url -> Html Msg
 thumbnail maybeUrl =
     case maybeUrl of
         Just (Url url) ->
-            figure [ class "image" ]
+            figure [ class "image is-16by9" ]
                 [ img [ src url ] [] ]
 
         Nothing ->
-            figure [ class "image" ]
+            figure [ class "image is-16by9" ]
                 []
