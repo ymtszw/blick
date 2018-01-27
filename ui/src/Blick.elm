@@ -3,6 +3,7 @@ module Blick exposing (main)
 import Html
 import Rocket exposing ((=>))
 import Blick.Type exposing (..)
+import Blick.Client exposing (listMaterials)
 import Blick.View exposing (view)
 
 
@@ -11,7 +12,7 @@ import Blick.View exposing (view)
 
 init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
-    { materials = [] } => []
+    { materials = [] } => [ listMaterials ]
 
 
 
