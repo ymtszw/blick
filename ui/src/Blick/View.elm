@@ -20,23 +20,29 @@ view model =
 materialTiles : List ( Id, Material ) -> Html Msg
 materialTiles materials =
     materials
-        |> Util.split 3
+        |> Util.split 4
         |> List.map tileRow
         |> div [ class "container is-fullhd" ]
 
 
 tileRow : List ( Id, Material ) -> Html Msg
-tileRow materialsUpto3 =
+tileRow materialsUpto4 =
     div [ class "columns" ] <|
-        List.map tileColumn materialsUpto3
+        List.map tileColumn materialsUpto4
 
 
 tileColumn : ( Id, Material ) -> Html Msg
 tileColumn ( id, material ) =
     div [ class "column" ]
-        [ article [ class "material", key id ]
-            [ p [ class "title" ] [ text material.title ]
-            , a [ link material.url ] [ thumbnail material.thumbnail_url ]
+        [ a [ link material.url ]
+            [ article [ class "material card", key id ]
+                [ div [ class "card-image" ]
+                    [ thumbnail material.thumbnail_url
+                    ]
+                , div [ class "card-content" ]
+                    [ p [ class "subtitle is-size-5-fullhd is-size-6-widescreen is-size-7-desktop" ] [ text material.title ]
+                    ]
+                ]
             ]
         ]
 
