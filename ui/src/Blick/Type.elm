@@ -7,6 +7,7 @@ module Blick.Type
         , Url
         , Email
         , Type_(..)
+        , idDecoder
         , materialDecoder
         )
 
@@ -31,7 +32,7 @@ type alias Flags =
 
 
 type Msg
-    = ListMaterials (Result H.Error (List Material))
+    = ListMaterials (Result H.Error (List ( Id, Material )))
 
 
 
@@ -39,8 +40,17 @@ type Msg
 
 
 type alias Model =
-    { materials : List Material
+    { materials : List ( Id, Material )
     }
+
+
+type Id
+    = Id String
+
+
+idDecoder : Decoder Id
+idDecoder =
+    D.map Id D.string
 
 
 type alias Material =
