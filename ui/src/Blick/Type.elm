@@ -3,9 +3,10 @@ module Blick.Type
         ( Flags
         , Model
         , Msg(..)
+        , Id(Id)
         , Material
-        , Url
-        , Email
+        , Url(Url)
+        , Email(Email)
         , Type_(..)
         , idDecoder
         , materialDecoder
