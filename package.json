@@ -10,7 +10,7 @@
     "postinstall": "elm-package install --yes",
     "package": "elm-package",
     "build": "webpack",
-    "start": "pgrep node | xargs -n1 kill -9; webpack-dev-server & LOG_LEVEL=debug BLICK_CONFIG_JSON=\"$(cat gear_config)\" iex -S mix",
+    "start": "LOG_LEVEL=debug BLICK_CONFIG_JSON=\"$(cat gear_config)\" iex -S mix & webpack-dev-server",
     "solomon_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack"
   },
   "repository": {
