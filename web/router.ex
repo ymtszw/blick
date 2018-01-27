@@ -6,7 +6,7 @@ defmodule Blick.Router do
   get "/admin/authorize", Admin, :authorize, as: "authorize"
   get "/admin/authorize/callback", Admin, :authorize_callback, as: "callback"
 
-  get "/api/material", Material, :list
+  get "/api/materials", Material, :list
 
   get "/", Root, :index
 end
