@@ -2,6 +2,8 @@ const Uglifier = require('uglifyjs-webpack-plugin')
 
 const BASE = `${__dirname}/priv/static`
 
+const IS_CLOUD = (process.env.WEBPACK_BUILD_ENV === 'cloud')
+
 module.exports = {
   entry: {
     blick: `${__dirname}/ui/src/blick.js`
@@ -18,12 +20,12 @@ module.exports = {
         loader: 'elm-webpack-loader',
         options: {
           warn: true,
-          debug: true,
+          debug: !IS_CLOUD,
         }
       }
     ]
   },
-  plugins: (process.env.WEBPACK_BUILD_ENV === 'cloud') ? [new Uglifier()] : [],
+  plugins: IS_CLOUD ? [new Uglifier()] : [],
   devServer: {
     contentBase: BASE,
     port: '8079',
