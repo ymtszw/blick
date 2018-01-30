@@ -8,5 +8,5 @@ defmodule Blick.Router do
 
   get "/api/materials", Material, :list
 
-  get "/", Root, :index
+  get "/*path", Root, :index
 end

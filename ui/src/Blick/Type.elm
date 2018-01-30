@@ -3,6 +3,7 @@ module Blick.Type
         ( Flags
         , Model
         , Msg(..)
+        , Route(..)
         , Id(Id)
         , Material
         , Url(Url)
@@ -18,6 +19,7 @@ import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:), date)
 import Json.Encode as E exposing (Value)
 import Http as H
+import Navigation exposing (Location)
 import String.Extra exposing (underscored)
 
 
@@ -33,7 +35,8 @@ type alias Flags =
 
 
 type Msg
-    = ListMaterials (Result H.Error (List ( Id, Material )))
+    = Loc Location
+    | ListMaterials (Result H.Error (List ( Id, Material )))
     | CarouselNext
     | CarouselPrev
     | Filter String
@@ -48,7 +51,14 @@ type alias Model =
     , matches : List Id
     , filterInput : String
     , carouselPage : Int
+    , route : Route
     }
+
+
+type Route
+    = Root
+    | Detail Id
+    | NotFound
 
 
 type Id

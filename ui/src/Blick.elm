@@ -1,10 +1,11 @@
 module Blick exposing (main)
 
 import Regex
-import Html
+import Navigation exposing (Location)
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
+import Blick.Router exposing (route)
 import Blick.Client exposing (listMaterials)
 import Blick.View exposing (view)
 
@@ -12,12 +13,13 @@ import Blick.View exposing (view)
 -- INIT
 
 
-init : Flags -> ( Model, List (Cmd Msg) )
-init flags =
+init : Flags -> Location -> ( Model, List (Cmd Msg) )
+init flags location =
     { materials = []
     , matches = []
     , filterInput = ""
     , carouselPage = 0
+    , route = route location
     }
         => [ listMaterials ]
 
@@ -29,6 +31,9 @@ init flags =
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
 update msg ({ materials, carouselPage } as model) =
     case msg of
+        Loc location ->
+            { model | route = route location } => []
+
         ListMaterials (Ok ms) ->
             { model | materials = ms } => []
 
@@ -116,8 +121,8 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
 
 main : Program Flags Model Msg
 main =
-    Html.programWithFlags
-        { init = init >> Rocket.batchInit
+    Navigation.programWithFlags Loc
+        { init = (\flags location -> init flags location |> Rocket.batchInit)
         , update = update >> Rocket.batchUpdate
         , subscriptions = always Sub.none
         , view = view
