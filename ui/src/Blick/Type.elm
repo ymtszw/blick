@@ -34,6 +34,8 @@ type alias Flags =
 
 type Msg
     = ListMaterials (Result H.Error (List ( Id, Material )))
+    | CarouselNext
+    | CarouselPrev
 
 
 
@@ -42,7 +44,7 @@ type Msg
 
 type alias Model =
     { materials : List ( Id, Material )
-    , materialsPage : Int
+    , carouselPage : Int
     }
 
 

@@ -13,7 +13,7 @@ import Blick.View exposing (view)
 init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
     { materials = []
-    , materialsPage = 0
+    , carouselPage = 0
     }
         => [ listMaterials ]
 
@@ -23,7 +23,7 @@ init flags =
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg model =
+update msg ({ materials, carouselPage } as model) =
     case msg of
         ListMaterials (Ok ms) ->
             { model | materials = ms } => []
@@ -32,6 +32,26 @@ update msg model =
             Debug.log "Http Error" e
                 |> always model
                 => []
+
+        CarouselNext ->
+            let
+                max =
+                    List.length materials
+            in
+                if carouselPage > max then
+                    { model | carouselPage = max } => []
+                else if carouselPage < max then
+                    { model | carouselPage = model.carouselPage + 1 } => []
+                else
+                    model => []
+
+        CarouselPrev ->
+            if carouselPage < 0 then
+                { model | carouselPage = 0 } => []
+            else if carouselPage > 0 then
+                { model | carouselPage = model.carouselPage - 1 } => []
+            else
+                model => []
 
 
 

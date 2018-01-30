@@ -14,7 +14,7 @@ view model =
     in
         section [ class "main" ]
             [ hero
-            , carousel model.materialsPage withThumbs
+            , carousel model.carouselPage withThumbs
             ]
 
 
@@ -30,7 +30,7 @@ hero =
 
 
 carousel : Int -> List ( Id, Material ) -> Html Msg
-carousel materialsPage materials =
+carousel carouselPage materials =
     div [ class "section" ]
         [ div [ class "container is-fullhd" ]
             [ div [ class "carousel" ]
@@ -39,19 +39,19 @@ carousel materialsPage materials =
                     |> Util.split 4
                     -- 3 per page
                     |> Util.split 3
-                    |> List.indexedMap (carouselItem materialsPage)
+                    |> List.indexedMap (carouselItem carouselPage)
                     |> div [ class "carousel-container" ]
-                , carouselNav materialsPage (List.length materials)
+                , carouselNav carouselPage (List.length materials)
                 ]
             ]
         ]
 
 
 carouselNav : Int -> Int -> Html Msg
-carouselNav materialsPage numberOfPages =
+carouselNav carouselPage numberOfPages =
     nav [ class "carousel-navigation pagination is-centered", attribute "role" "navigation", attribute "aria-label" "pagination" ]
-        [ a (disabled (materialsPage == 0) [ class "pagination-previous" ]) [ i [ class "fa fa-chevron-left" ] [] ]
-        , a (disabled (materialsPage == numberOfPages) [ class "pagination-next" ]) [ i [ class "fa fa-chevron-right" ] [] ]
+        [ a (disabled (carouselPage == 0) [ class "pagination-previous" ]) [ i [ class "fa fa-chevron-left" ] [] ]
+        , a (disabled (carouselPage == numberOfPages) [ class "pagination-next" ]) [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 
 
