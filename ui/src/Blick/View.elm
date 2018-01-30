@@ -25,8 +25,24 @@ hero =
     div [ class "hero is-primary" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
-                [ h1 [ class "title" ] [ text "Blick" ]
+                [ div [ class "columns" ]
+                    [ div [ class "column is-half is-left" ]
+                        [ h1 [ class "title" ] [ text "Blick" ]
+                        ]
+                    , div [ class "column" ]
+                        [ filter ]
+                    ]
                 ]
+            ]
+        ]
+
+
+filter : Html Msg
+filter =
+    div [ class "field is-expanded" ]
+        [ div [ class "control has-icons-left" ]
+            [ input [ type_ "text", placeholder "filter", class "input is-flat" ] []
+            , span [ class "icon is-small is-left" ] [ i [ class "fa fa-filter" ] [] ]
             ]
         ]
 
