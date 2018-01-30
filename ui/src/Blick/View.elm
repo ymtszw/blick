@@ -12,12 +12,19 @@ view : Model -> Html Msg
 view model =
     let
         ( withThumbs, withouts ) =
-            List.partition (\( _, { thumbnail_url } ) -> Util.isJust thumbnail_url) model.materials
+            model.materials
+                |> applyFilter model.matches
+                |> List.partition (\( _, { thumbnail_url } ) -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
             [ hero
             , carousel model.carouselPage withThumbs
             ]
+
+
+applyFilter : List Id -> List ( Id, Material ) -> List ( Id, Material )
+applyFilter matches materials =
+    List.filter (\( id, _ ) -> List.member id matches) materials
 
 
 hero : Html Msg
@@ -56,11 +63,22 @@ carousel carouselPage materials =
                     |> Util.split tilePerRow
                     |> Util.split rowPerPage
                     |> List.indexedMap (carouselItem carouselPage)
+                    |> fillByDummyPage
                     |> div [ class "carousel-container" ]
                 , carouselNav carouselPage (List.length materials)
                 ]
             ]
         ]
+
+
+fillByDummyPage : List (Html Msg) -> List (Html Msg)
+fillByDummyPage pages =
+    case pages of
+        _ :: _ ->
+            pages
+
+        _ ->
+            fillByDummyRow []
 
 
 carouselNav : Int -> Int -> Html Msg
@@ -96,6 +114,7 @@ carouselItem materialPage pageIndex materialsByPage =
     in
         materialsByPage
             |> List.map tileRow
+            |> fillByDummyRow
             |> div [ class "carousel-item", isActive ]
 
 
@@ -115,6 +134,36 @@ tileColumn ( id, material ) =
                     ]
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
+                    ]
+                ]
+            ]
+        ]
+
+
+fillByDummyRow : List (Html Msg) -> List (Html Msg)
+fillByDummyRow rows =
+    case rows of
+        [] ->
+            [ dummyRow, dummyRow, dummyRow ]
+
+        [ _ ] ->
+            rows ++ [ dummyRow, dummyRow ]
+
+        [ _, _ ] ->
+            rows ++ [ dummyRow ]
+
+        _ ->
+            rows
+
+
+dummyRow : Html Msg
+dummyRow =
+    div [ class "columns is-invisible" ]
+        [ div [ class <| "column" ++ columnSizeClass ]
+            [ article [ class "material card" ]
+                [ div [ class "card-image" ] [ thumbnail Nothing ]
+                , div [ class "card-content" ]
+                    [ p [ class "is-size-7 text-nowrap" ] [ text "Dummy" ]
                     ]
                 ]
             ]

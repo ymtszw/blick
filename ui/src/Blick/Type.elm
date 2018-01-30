@@ -36,6 +36,7 @@ type Msg
     = ListMaterials (Result H.Error (List ( Id, Material )))
     | CarouselNext
     | CarouselPrev
+    | Filter String
 
 
 
@@ -44,6 +45,7 @@ type Msg
 
 type alias Model =
     { materials : List ( Id, Material )
+    , matches : List Id
     , carouselPage : Int
     }
 

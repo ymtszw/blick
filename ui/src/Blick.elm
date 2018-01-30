@@ -14,6 +14,7 @@ import Blick.View exposing (view)
 init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
     { materials = []
+    , matches = []
     , carouselPage = 0
     }
         => [ listMaterials ]
@@ -53,6 +54,12 @@ update msg ({ materials, carouselPage } as model) =
                 { model | carouselPage = model.carouselPage - 1 } => []
             else
                 model => []
+
+        Filter "" ->
+            { model | matches = [] } => []
+
+        Filter input ->
+            { model | matches = [] } => []
 
 
 
