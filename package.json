@@ -20,8 +20,10 @@
   "author": "aYuMatsuzawa",
   "private": true,
   "devDependencies": {
+    "css-loader": "^0.28.9",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.4.0",
+    "style-loader": "^0.20.1",
     "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"

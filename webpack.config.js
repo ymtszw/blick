@@ -16,6 +16,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        loader: ['style-loader', 'css-loader'],
+      },
+      {
         test: /\.elm$/,
         loader: 'elm-webpack-loader',
         options: {
