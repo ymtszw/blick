@@ -2,6 +2,7 @@ module Blick exposing (main)
 
 import Html
 import Rocket exposing ((=>))
+import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
 import Blick.Client exposing (listMaterials)
 import Blick.View exposing (view)
@@ -36,7 +37,7 @@ update msg ({ materials, carouselPage } as model) =
         CarouselNext ->
             let
                 max =
-                    List.length materials
+                    maxCarouselPage <| List.length materials
             in
                 if carouselPage > max then
                     { model | carouselPage = max } => []

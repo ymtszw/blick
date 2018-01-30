@@ -2,7 +2,9 @@ module Blick.View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Util
+import Blick.Constant exposing (..)
 import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url))
 
 
@@ -31,14 +33,12 @@ hero =
 
 carousel : Int -> List ( Id, Material ) -> Html Msg
 carousel carouselPage materials =
-    div [ class "section" ]
-        [ div [ class "container is-fullhd" ]
-            [ div [ class "carousel" ]
+    div [ class "hero is-info" ]
+        [ div [ class "hero-body" ]
+            [ div [ class "container carousel is-fullhd" ]
                 [ materials
-                    -- 4 per row
-                    |> Util.split 4
-                    -- 3 per page
-                    |> Util.split 3
+                    |> Util.split tilePerRow
+                    |> Util.split rowPerPage
                     |> List.indexedMap (carouselItem carouselPage)
                     |> div [ class "carousel-container" ]
                 , carouselNav carouselPage (List.length materials)
@@ -49,9 +49,15 @@ carousel carouselPage materials =
 
 carouselNav : Int -> Int -> Html Msg
 carouselNav carouselPage numberOfPages =
-    nav [ class "carousel-navigation pagination is-centered", attribute "role" "navigation", attribute "aria-label" "pagination" ]
-        [ a (disabled (carouselPage == 0) [ class "pagination-previous" ]) [ i [ class "fa fa-chevron-left" ] [] ]
-        , a (disabled (carouselPage == numberOfPages) [ class "pagination-next" ]) [ i [ class "fa fa-chevron-right" ] [] ]
+    nav
+        [ class "carousel-navigation pagination is-centered"
+        , attribute "role" "navigation"
+        , attribute "aria-label" "pagination"
+        ]
+        [ button (disabled (carouselPage <= 0) [ class "pagination-previous", onClick CarouselPrev ])
+            [ i [ class "fa fa-chevron-left" ] [] ]
+        , button (disabled (carouselPage >= maxCarouselPage numberOfPages) [ class "pagination-next", onClick CarouselNext ])
+            [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 
 
@@ -85,18 +91,25 @@ tileRow materialsUpto4 =
 
 tileColumn : ( Id, Material ) -> Html Msg
 tileColumn ( id, material ) =
-    div [ class "column" ]
+    div [ class <| "column" ++ columnSizeClass ]
         [ a [ link material.url ]
             [ article [ class "material card", key id ]
                 [ div [ class "card-image" ]
                     [ thumbnail material.thumbnail_url
                     ]
                 , div [ class "card-content" ]
-                    [ p [ class "subtitle is-size-5-fullhd is-size-6-widescreen is-size-7-desktop" ] [ text material.title ]
+                    [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
                     ]
                 ]
             ]
         ]
+
+
+{-| Must fix size, otherwise it grows when there aren't enough columns
+-}
+columnSizeClass : String
+columnSizeClass =
+    " is-" ++ toString (bulmaColumnScaleMax // tilePerRow)
 
 
 key : Id -> Html.Attribute msg
