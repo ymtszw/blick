@@ -24,7 +24,12 @@ view model =
 
 applyFilter : List Id -> List ( Id, Material ) -> List ( Id, Material )
 applyFilter matches materials =
-    List.filter (\( id, _ ) -> List.member id matches) materials
+    case matches of
+        [] ->
+            materials
+
+        _ ->
+            List.filter (\( id, _ ) -> List.member id matches) materials
 
 
 hero : Html Msg
