@@ -24,7 +24,7 @@ defmodule Blick.External.Google.Drive do
     defun batch_get(ids :: v[[String.t]], token :: Google.token_t) :: Google.res_t do
       Blick.with_logging_elapsed("#{length(ids)} files retrieved in:", fn ->
         ids
-        |> Enum.chunk_every(30) # Batch request for Google Drive API is limited to 100 requests per batch
+        |> Enum.chunk_every(20) # Batch request for Google Drive API is limited to 100 requests per batch
         |> Enum.intersperse([])
         |> Enum.map(&mini_batch_get(&1, token))
         |> R.sequence()
@@ -33,7 +33,7 @@ defmodule Blick.External.Google.Drive do
     end
 
     defp mini_batch_get([], _token) do
-      :timer.sleep(5_000) # Throttling
+      :timer.sleep(10_000) # Throttling
       {:ok, []}
     end
     defp mini_batch_get(ids_chunk, token) do
