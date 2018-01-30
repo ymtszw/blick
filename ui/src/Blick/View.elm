@@ -3,6 +3,7 @@ module Blick.View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
 import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url))
@@ -150,7 +151,7 @@ carouselItem materialPage pageIndex materialsByPage =
 tileRow : List ( Id, Material ) -> Html Msg
 tileRow materialsUpto4 =
     div [ class "columns" ] <|
-        List.map tileColumn materialsUpto4
+        List.map (Z.lazy tileColumn) materialsUpto4
 
 
 tileColumn : ( Id, Material ) -> Html Msg
