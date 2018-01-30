@@ -2,7 +2,7 @@ use Croma
 
 defmodule Blick.Plug.Auth do
   use SolomonLib.Controller
-  alias SolomonLib.IpAddress
+  alias SolomonLib.IpAddress.V4
 
   @doc """
   Filter request by sender.
@@ -21,7 +21,7 @@ defmodule Blick.Plug.Auth do
 
   defunp sender_identity(sender :: SolomonLib.Request.Sender.t) :: :intra | :public | :g2g do
     {:web, ip_str} ->
-      case IpAddress.V4.parse(ip_str) do
+      case V4.parse(ip_str) do
         {:ok, ip} ->
           intra_or_public(ip)
         {:error, _} ->
@@ -33,9 +33,9 @@ defmodule Blick.Plug.Auth do
   end
 
   if SolomonLib.Env.compiling_for_cloud?() do
-    @intra_ranges SolomonAcs.IpAddress.Access.ranges() -- ["221.112.40.64/29"] # Removing visitor/artifact/proxy
+    @intra_ranges SolomonAcs.IpAddress.Access.ranges() -- [V4.parse_range!("221.112.40.64/29")] # Removing visitor/artifact/proxy
     defp intra_or_public(ip) do
-      if Enum.any?(@intra_ranges, &IpAddress.V4.range_include?(&1, ip)) do
+      if Enum.any?(@intra_ranges, &V4.range_include?(&1, ip)) do
         :intra
       else
         :public
