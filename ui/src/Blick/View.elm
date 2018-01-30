@@ -182,11 +182,11 @@ tileRow materialsUpto4 =
 
 tileColumn : ( Id, Material ) -> Html Msg
 tileColumn ( Id id_, material ) =
-    div [ class <| "column" ++ columnSizeClass ]
+    div [ class <| "column" ++ columnSizeClass, title material.title ]
         [ a [ href <| "/" ++ id_ ]
             [ article [ class "material card", id id_ ]
                 [ div [ class "card-image" ]
-                    [ thumbnailSmall material.thumbnail_url
+                    [ tileThumbnail material.thumbnail_url
                     ]
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
@@ -218,7 +218,7 @@ dummyRow =
     div [ class "columns is-invisible" ]
         [ div [ class <| "column" ++ columnSizeClass ]
             [ article [ class "material card" ]
-                [ div [ class "card-image" ] [ thumbnailSmall Nothing ]
+                [ div [ class "card-image" ] [ tileThumbnail Nothing ]
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text "Dummy" ]
                     ]
@@ -239,8 +239,8 @@ link (Url url) =
     href url
 
 
-thumbnailSmall : Maybe Url -> Html Msg
-thumbnailSmall maybeUrl =
+tileThumbnail : Maybe Url -> Html Msg
+tileThumbnail maybeUrl =
     case maybeUrl of
         Just (Url url) ->
             figure [ class "image is-16by9" ]
