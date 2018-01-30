@@ -8,11 +8,11 @@ import Html.Lazy as Z
 import String.Extra as SE
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url), Email(Email))
+import Blick.Type exposing (Model, Msg(..), Route(..), Id(Id), Material, Url(Url), Email(Email))
 
 
 view : Model -> Html Msg
-view { materials, carouselPage, matches, filterInput } =
+view { materials, carouselPage, matches, filterInput, route } =
     let
         ( withThumbs, withouts ) =
             materials
@@ -20,7 +20,8 @@ view { materials, carouselPage, matches, filterInput } =
                 |> List.partition (\( _, { thumbnail_url } ) -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
-            [ hero matches filterInput
+            [ modalByRoute materials route
+            , hero matches filterInput
             , carousel carouselPage withThumbs
             ]
 
@@ -33,6 +34,34 @@ applyFilter matches materials =
 
         _ ->
             List.filter (\( id, _ ) -> List.member id matches) materials
+
+
+modalByRoute : List ( Id, Material ) -> Route -> Html Msg
+modalByRoute materials route =
+    case route of
+        Detail id ->
+            case findMaterialById materials id of
+                Just material ->
+                    detailModal material
+
+                Nothing ->
+                    text ""
+
+        _ ->
+            text ""
+
+
+findMaterialById : List ( Id, Material ) -> Id -> Maybe Material
+findMaterialById materials targetId =
+    case materials of
+        [] ->
+            Nothing
+
+        ( id, material ) :: ms ->
+            if id == targetId then
+                Just material
+            else
+                findMaterialById ms targetId
 
 
 hero : List Id -> String -> Html Msg
@@ -152,12 +181,12 @@ tileRow materialsUpto4 =
 
 
 tileColumn : ( Id, Material ) -> Html Msg
-tileColumn ( id, material ) =
+tileColumn ( Id id_, material ) =
     div [ class <| "column" ++ columnSizeClass ]
-        [ a [ link material.url ]
-            [ article [ class "material card", key id ]
+        [ a [ href <| "/" ++ id_ ]
+            [ article [ class "material card", id id_ ]
                 [ div [ class "card-image" ]
-                    [ thumbnail material.thumbnail_url
+                    [ thumbnailSmall material.thumbnail_url
                     ]
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
@@ -189,7 +218,7 @@ dummyRow =
     div [ class "columns is-invisible" ]
         [ div [ class <| "column" ++ columnSizeClass ]
             [ article [ class "material card" ]
-                [ div [ class "card-image" ] [ thumbnail Nothing ]
+                [ div [ class "card-image" ] [ thumbnailSmall Nothing ]
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text "Dummy" ]
                     ]
@@ -205,18 +234,13 @@ columnSizeClass =
     " is-" ++ toString (bulmaColumnScaleMax // tilePerRow)
 
 
-key : Id -> Html.Attribute msg
-key (Id id_) =
-    id id_
-
-
 link : Url -> Html.Attribute msg
 link (Url url) =
     href url
 
 
-thumbnail : Maybe Url -> Html Msg
-thumbnail maybeUrl =
+thumbnailSmall : Maybe Url -> Html Msg
+thumbnailSmall maybeUrl =
     case maybeUrl of
         Just (Url url) ->
             figure [ class "image is-16by9" ]
@@ -281,3 +305,53 @@ colorClassByNumber num =
 
         _ ->
             "is-danger"
+
+
+
+-- Detail Modal
+
+
+detailModal : Material -> Html Msg
+detailModal material =
+    div [ class "modal is-active" ]
+        [ div [ class "modal-background" ] []
+        , div [ class "hero is-light" ]
+            [ div [ class "container" ]
+                [ div [ class "hero-body" ]
+                    [ detailContents material
+                    ]
+                ]
+            ]
+        , button [ class "modal-close is-large", attribute "aria-label" "close" ] []
+        ]
+
+
+detailContents : Material -> Html Msg
+detailContents { title, url, thumbnail_url, author_email } =
+    div [ class "columns" ]
+        [ div [ class "column is-two-thirds" ]
+            [ a [ link url, target "_blank" ]
+                [ detailThumbnail url thumbnail_url
+                ]
+            ]
+        , div [ class "column" ]
+            [ h1 [ class "title" ] [ text title ]
+            , div [ class "tags" ] [ authorTag author_email ]
+            ]
+        ]
+
+
+detailThumbnail : Url -> Maybe Url -> Html Msg
+detailThumbnail url maybeThumbnailUrl =
+    case maybeThumbnailUrl of
+        Just (Url thumbnailUrl) ->
+            figure [ class "image is-16by9" ]
+                [ img [ src thumbnailUrl ] []
+                , div [ class "colmuns is-overlay" ]
+                    [ div [ class "column" ] [ i [ class "fa fa-external-link fa-5x" ] [] ]
+                    ]
+                ]
+
+        Nothing ->
+            figure [ class "image is-16by9" ]
+                [ h1 [ class "title" ] [ text "No Thumbnail" ] ]

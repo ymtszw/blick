@@ -7,3 +7,10 @@
 .tags-on-tile {
   padding: 2px;
 }
+
+.modal .hero {
+  z-index: 100;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
