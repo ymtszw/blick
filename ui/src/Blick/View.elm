@@ -13,16 +13,68 @@ view model =
             List.partition (\( _, { thumbnail_url } ) -> Util.isJust thumbnail_url) model.materials
     in
         section [ class "main" ]
-            [ materialTiles withThumbs
+            [ hero
+            , carousel model.materialsPage withThumbs
             ]
 
 
-materialTiles : List ( Id, Material ) -> Html Msg
-materialTiles materials =
-    materials
-        |> Util.split 4
-        |> List.map tileRow
-        |> div [ class "container is-fullhd" ]
+hero : Html Msg
+hero =
+    div [ class "hero is-primary" ]
+        [ div [ class "hero-body" ]
+            [ div [ class "container" ]
+                [ h1 [ class "title" ] [ text "Blick" ]
+                ]
+            ]
+        ]
+
+
+carousel : Int -> List ( Id, Material ) -> Html Msg
+carousel materialsPage materials =
+    div [ class "section" ]
+        [ div [ class "container is-fullhd" ]
+            [ div [ class "carousel" ]
+                [ materials
+                    -- 4 per row
+                    |> Util.split 4
+                    -- 3 per page
+                    |> Util.split 3
+                    |> List.indexedMap (carouselItem materialsPage)
+                    |> div [ class "carousel-container" ]
+                , carouselNav materialsPage (List.length materials)
+                ]
+            ]
+        ]
+
+
+carouselNav : Int -> Int -> Html Msg
+carouselNav materialsPage numberOfPages =
+    nav [ class "carousel-navigation pagination is-centered", attribute "role" "navigation", attribute "aria-label" "pagination" ]
+        [ a (disabled (materialsPage == 0) [ class "pagination-previous" ]) [ i [ class "fa fa-chevron-left" ] [] ]
+        , a (disabled (materialsPage == numberOfPages) [ class "pagination-next" ]) [ i [ class "fa fa-chevron-right" ] [] ]
+        ]
+
+
+disabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)
+disabled disabled_ others =
+    if disabled_ then
+        attribute "disabled" "disabled" :: others
+    else
+        others
+
+
+carouselItem : Int -> Int -> List (List ( Id, Material )) -> Html Msg
+carouselItem materialPage pageIndex materialsByPage =
+    let
+        isActive =
+            if pageIndex == materialPage then
+                style []
+            else
+                style [ ( "display", "none" ) ]
+    in
+        materialsByPage
+            |> List.map tileRow
+            |> div [ class "carousel-item", isActive ]
 
 
 tileRow : List ( Id, Material ) -> Html Msg

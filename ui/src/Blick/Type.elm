@@ -42,6 +42,7 @@ type Msg
 
 type alias Model =
     { materials : List ( Id, Material )
+    , materialsPage : Int
     }
 
 

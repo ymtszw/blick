@@ -12,7 +12,10 @@ import Blick.View exposing (view)
 
 init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
-    { materials = [] } => [ listMaterials ]
+    { materials = []
+    , materialsPage = 0
+    }
+        => [ listMaterials ]
 
 
 
