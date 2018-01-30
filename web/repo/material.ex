@@ -14,7 +14,7 @@ defmodule Blick.Repo.Material do
   @doc """
   Insert requested id/data pair list recursively.
 
-  Should only be used from material collecter jobs in order to populate Material Repo,
+  Should only be used from material collector jobs in order to populate Material Repo,
   since it can take relatively long time.
   """
   defun insert_all(material_id_and_data_list :: [{Material.Id.t, Material.Data.t}]) :: R.t([Material.t]) do
@@ -43,7 +43,7 @@ defmodule Blick.Repo.Material do
   @doc """
   Retrieves ALL existing materials in `_id`-keyed map.
 
-  This API will be used by periodically-running material collecter jobs,
+  This API will be used by periodically-running material collector jobs,
   and used as a lookup table for deduplication.
 
   If number of materials exceeds 1000, it continuously scanning through chunks of (up to) 1000 entities,

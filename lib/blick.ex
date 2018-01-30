@@ -22,7 +22,7 @@ defmodule Blick do
   else
     def start_phase(:after_start, _type, []) do
       {:ok, _id} = Blick.AsyncJob.MaterialRefresher.run_hourly()
-      # Blick.AsyncJob.MaterialCollecter.run_hourly() # Collecter may not need to run after some sample materials are collected
+      # Blick.AsyncJob.MaterialCollector.run_hourly() # Collector may not need to run after some sample materials are collected
       :ok
     end
   end

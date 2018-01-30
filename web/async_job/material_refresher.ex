@@ -90,7 +90,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
     nil # Skip on rate limit; if not inserted, it should be retried on next job attempt.
   end
   defp make_update_action({%Material{_id: id}, {200, file}}) do
-    thumbnail_url = Blick.AsyncJob.MaterialCollecter.enlarge_thumbnail_size(file["thumbnailLink"])
+    thumbnail_url = Blick.AsyncJob.MaterialCollector.enlarge_thumbnail_size(file["thumbnailLink"])
     {id, %{data: %{"$set" => %{thumbnail_url: thumbnail_url}}}}
   end
 end

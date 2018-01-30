@@ -1,6 +1,6 @@
 use Croma
 
-defmodule Blick.AsyncJob.MaterialCollecter do
+defmodule Blick.AsyncJob.MaterialCollector do
   alias Croma.Result, as: R
   alias Blick.External.Google
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
