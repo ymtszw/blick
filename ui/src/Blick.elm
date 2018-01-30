@@ -1,5 +1,6 @@
 module Blick exposing (main)
 
+import Regex
 import Html
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
@@ -15,6 +16,7 @@ init : Flags -> ( Model, List (Cmd Msg) )
 init flags =
     { materials = []
     , matches = []
+    , filterInput = ""
     , carouselPage = 0
     }
         => [ listMaterials ]
@@ -56,10 +58,56 @@ update msg ({ materials, carouselPage } as model) =
                 model => []
 
         Filter "" ->
-            { model | matches = [] } => []
+            { model | matches = [], filterInput = "" } => []
 
         Filter input ->
-            { model | matches = [] } => []
+            { model
+                | matches = findMatchingIds materials input
+                , filterInput = input
+                , carouselPage = 0
+            }
+                => []
+
+
+findMatchingIds : List ( Id, Material ) -> String -> List Id
+findMatchingIds materials input =
+    input
+        |> String.toLower
+        |> Regex.split Regex.All (Regex.regex "\\s+")
+        |> findMatchingIdsImpl materials
+
+
+findMatchingIdsImpl : List ( Id, Material ) -> List String -> List Id
+findMatchingIdsImpl materials words =
+    List.filterMap (maybeMatchingId words) materials
+
+
+maybeMatchingId : List String -> ( Id, Material ) -> Maybe Id
+maybeMatchingId words (( _, { excluded } ) as material) =
+    if excluded then
+        Nothing
+    else
+        List.foldl (maybeMatchingIdImpl material) Nothing words
+
+
+maybeMatchingIdImpl : ( Id, Material ) -> String -> Maybe Id -> Maybe Id
+maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
+    case maybeId of
+        Just _ ->
+            maybeId
+
+        Nothing ->
+            if String.contains word <| String.toLower title then
+                Just id
+            else
+                Maybe.andThen
+                    (\(Email email) ->
+                        if String.contains word <| String.toLower email then
+                            Just id
+                        else
+                            Nothing
+                    )
+                    author_email
 
 
 

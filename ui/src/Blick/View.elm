@@ -9,16 +9,16 @@ import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url))
 
 
 view : Model -> Html Msg
-view model =
+view { materials, carouselPage, matches, filterInput } =
     let
         ( withThumbs, withouts ) =
-            model.materials
-                |> applyFilter model.matches
+            materials
+                |> applyFilter matches
                 |> List.partition (\( _, { thumbnail_url } ) -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
-            [ hero
-            , carousel model.carouselPage withThumbs
+            [ hero matches filterInput
+            , carousel carouselPage withThumbs
             ]
 
 
@@ -32,8 +32,8 @@ applyFilter matches materials =
             List.filter (\( id, _ ) -> List.member id matches) materials
 
 
-hero : Html Msg
-hero =
+hero : List Id -> String -> Html Msg
+hero matches input_ =
     div [ class "hero is-primary" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
@@ -42,21 +42,45 @@ hero =
                         [ h1 [ class "title" ] [ text "Blick" ]
                         ]
                     , div [ class "column" ]
-                        [ filter ]
+                        [ filter matches input_ ]
                     ]
                 ]
             ]
         ]
 
 
-filter : Html Msg
-filter =
+filter : List Id -> String -> Html Msg
+filter matches input_ =
     div [ class "field is-expanded" ]
-        [ div [ class "control has-icons-left" ]
-            [ input [ type_ "text", placeholder "filter", class "input is-flat" ] []
+        [ div [ class "control has-icons-left has-icons-right" ]
+            [ input [ type_ "text", placeholder "OR filter", class <| "input is-flat" ++ filterInputColor matches input_, onInput Filter ] []
             , span [ class "icon is-small is-left" ] [ i [ class "fa fa-filter" ] [] ]
+            , filterInputResult matches input_
             ]
         ]
+
+
+filterInputColor : List Id -> String -> String
+filterInputColor matches input_ =
+    if not (String.isEmpty input_) && List.isEmpty matches then
+        " is-danger"
+    else
+        ""
+
+
+filterInputResult : List Id -> String -> Html Msg
+filterInputResult matches input_ =
+    case input_ of
+        "" ->
+            text ""
+
+        _ ->
+            case matches of
+                [] ->
+                    span [ class "icon is-small is-right" ] [ i [ class "fa fa-warning" ] [] ]
+
+                _ ->
+                    span [ class "icon is-small is-right" ] [ text <| toString <| List.length matches ]
 
 
 carousel : Int -> List ( Id, Material ) -> Html Msg

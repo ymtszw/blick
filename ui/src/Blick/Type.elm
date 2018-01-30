@@ -46,6 +46,7 @@ type Msg
 type alias Model =
     { materials : List ( Id, Material )
     , matches : List Id
+    , filterInput : String
     , carouselPage : Int
     }
 
