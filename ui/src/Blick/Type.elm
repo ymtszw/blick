@@ -36,6 +36,7 @@ type alias Flags =
 
 type Msg
     = Loc Location
+    | GoTo String
     | ListMaterials (Result H.Error (List ( Id, Material )))
     | CarouselNext
     | CarouselPrev

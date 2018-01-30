@@ -34,6 +34,9 @@ update msg ({ materials, carouselPage } as model) =
         Loc location ->
             { model | route = route location } => []
 
+        GoTo url ->
+            model => [ Navigation.newUrl url ]
+
         ListMaterials (Ok ms) ->
             { model | materials = ms } => []
 

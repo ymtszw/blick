@@ -314,7 +314,7 @@ colorClassByNumber num =
 detailModal : Material -> Html Msg
 detailModal material =
     div [ class "modal is-active" ]
-        [ div [ class "modal-background" ] []
+        [ div [ class "modal-background", onClick (GoTo "/") ] []
         , div [ class "hero is-light" ]
             [ div [ class "container" ]
                 [ div [ class "hero-body" ]
@@ -322,7 +322,7 @@ detailModal material =
                     ]
                 ]
             ]
-        , button [ class "modal-close is-large", attribute "aria-label" "close" ] []
+        , button [ class "modal-close is-large", attribute "aria-label" "close", onClick (GoTo "/") ] []
         ]
 
 
