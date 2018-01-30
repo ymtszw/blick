@@ -12,7 +12,9 @@ defmodule Blick.Controller.Material do
     root_key = root_key()
     case Repo.Material.retrieve_list(%{}, root_key) do
       {:ok, ms} ->
-        json(conn, 200, %{"materials" => ms})
+        conn
+        |> put_resp_header("cache-control", "private,max-age=3600")
+        |> json(200, %{"materials" => ms})
       {:error, %_error{status_code: code, body: body}} ->
         json(conn, code, body)
     end
