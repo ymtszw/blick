@@ -11,6 +11,9 @@ defmodule Blick.Controller.Root do
   def index(conn) do
     render(conn, 200, "root", [
       title: "Blick",
+      description: "ACCESSの勉強会資料ポータルサイト",
+      url: SolomonLib.Env.default_base_url(:blick),
+      thumbnail: Blick.Asset.url("img/blick_480.png"),
     ])
   end
 end
