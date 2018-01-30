@@ -76,12 +76,7 @@ filterInputResult matches input_ =
             text ""
 
         _ ->
-            case matches of
-                [] ->
-                    span [ class "icon is-small is-right" ] [ i [ class "fa fa-warning" ] [] ]
-
-                _ ->
-                    span [ class "icon is-small is-right" ] [ text <| toString <| List.length matches ]
+            span [ class "icon is-small is-right" ] [ text <| toString <| List.length matches ]
 
 
 carousel : Int -> List ( Id, Material ) -> Html Msg
