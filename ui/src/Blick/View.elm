@@ -1,12 +1,14 @@
 module Blick.View exposing (..)
 
+import Char
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Lazy as Z
+import String.Extra as SE
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url))
+import Blick.Type exposing (Model, Msg(..), Id(Id), Material, Url(Url), Email(Email))
 
 
 view : Model -> Html Msg
@@ -160,6 +162,7 @@ tileColumn ( id, material ) =
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
                     ]
+                , tags material
                 ]
             ]
         ]
@@ -222,3 +225,59 @@ thumbnail maybeUrl =
         Nothing ->
             figure [ class "image is-16by9" ]
                 []
+
+
+tags : Material -> Html Msg
+tags { author_email } =
+    div [ class "is-overlay tags-on-tile" ]
+        [ Z.lazy authorTag author_email ]
+
+
+authorTag : Maybe Email -> Html Msg
+authorTag author_email =
+    case author_email of
+        Just (Email email) ->
+            let
+                name =
+                    SE.replace "@access-company.com" "" email
+            in
+                span [ class <| "tag is-rounded is-pulled-right " ++ colorClassByName name ] [ text name ]
+
+        Nothing ->
+            text ""
+
+
+colorClassByName : String -> String
+colorClassByName name =
+    name
+        |> String.foldl (\char acc -> acc + Char.toCode char) 0
+        |> (\sum -> rem sum 8)
+        |> colorClassByNumber
+
+
+colorClassByNumber : Int -> String
+colorClassByNumber num =
+    case num of
+        0 ->
+            "is-dark"
+
+        1 ->
+            "is-light"
+
+        2 ->
+            "is-primary"
+
+        3 ->
+            "is-link"
+
+        4 ->
+            "is-info"
+
+        5 ->
+            "is-success"
+
+        6 ->
+            "is-warning"
+
+        _ ->
+            "is-danger"

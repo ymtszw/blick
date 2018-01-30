@@ -3,3 +3,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+.tags-on-tile {
+  padding: 2px;
+}
