@@ -82,6 +82,7 @@ findMatchingIds materials input =
     input
         |> String.toLower
         |> Regex.split Regex.All (Regex.regex "\\s+")
+        |> List.filter (not << String.isEmpty)
         |> findMatchingIdsImpl materials
 
 
