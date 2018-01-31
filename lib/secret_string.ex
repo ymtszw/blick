@@ -32,7 +32,7 @@ defmodule Blick.SecretString do
     value: Blick.PrintableString,
   ]
 
-  # Overloading new/1
+  # Overriding new/1
   def new(str) when is_binary(str) do
     str |> Blick.decrypt_base64() |> Croma.Result.map(&%__MODULE__{value: &1})
   end
