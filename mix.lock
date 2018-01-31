@@ -45,7 +45,7 @@
   "random_string": {:hex, :random_string, "0.3.0", "58f75b8efdee082118cfb48ae154e0b603b77ac9e1132635376ce725b7913d9d", [], [], "hexpm"},
   "recon": {:hex, :recon, "2.3.4", "b406c2fccdeaa0d94e23b5e30ae3d635a2d461e363a5c9c6316897037cf050d2", [], [], "hexpm"},
   "relx": {:hex, :relx, "3.23.1", "8af4433934d9bb664e8282d2e45ac5deaff44859ddaabbe50cd7d885581cd24d", [], [{:bbmustache, "1.0.4", [hex: :bbmustache, repo: "hexpm", optional: false]}, {:cf, "0.2.2", [hex: :cf, repo: "hexpm", optional: false]}, {:erlware_commons, "1.0.0", [hex: :erlware_commons, repo: "hexpm", optional: false]}, {:getopt, "0.8.2", [hex: :getopt, repo: "hexpm", optional: false]}, {:providers, "1.6.0", [hex: :providers, repo: "hexpm", optional: false]}], "hexpm"},
-  "solomon": {:git, "git@github.com:access-company/solomon.git", "a5f4dd8103eeee27a4a7e60315d9341c8c842023", []},
+  "solomon": {:git, "git@github.com:access-company/solomon.git", "195f6bfcb690f21b3b6dbcbe8d5b1298f4254427", []},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [], [], "hexpm"},
   "stream_data": {:hex, :stream_data, "0.4.0", "128c01bfd0fae0108d169eee1772aeed6958604f8782abc2d6e11da4e52468b0", [], [], "hexpm"},
   "syn": {:hex, :syn, "1.6.1", "728a9c521b3815831259a98fdec9c74875612a4d2854e324dd1ec5ad6df4146e", [], [], "hexpm"},
