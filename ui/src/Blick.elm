@@ -126,7 +126,7 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
 main : Program Flags Model Msg
 main =
     Navigation.programWithFlags Loc
-        { init = (\flags location -> init flags location |> Rocket.batchInit)
+        { init = \flags location -> init flags location |> Rocket.batchInit
         , update = update >> Rocket.batchUpdate
         , subscriptions = always Sub.none
         , view = view

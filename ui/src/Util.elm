@@ -1,4 +1,4 @@
-module Util exposing (..)
+module Util exposing (isJust, split)
 
 
 isJust : Maybe a -> Bool

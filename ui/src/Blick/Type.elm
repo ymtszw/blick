@@ -14,13 +14,10 @@ module Blick.Type
         )
 
 import Date exposing (Date)
-import Regex
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:), date)
-import Json.Encode as E exposing (Value)
 import Http as H
 import Navigation exposing (Location)
-import String.Extra exposing (underscored)
 
 
 -- FLAGS
@@ -105,11 +102,6 @@ urlDecoder =
     D.map Url D.string
 
 
-urlEncoder : Url -> Value
-urlEncoder (Url url) =
-    E.string url
-
-
 type Email
     = Email String
 
@@ -117,11 +109,6 @@ type Email
 emailDecoder : Decoder Email
 emailDecoder =
     D.map Email D.string
-
-
-emailEncoder : Email -> Value
-emailEncoder (Email email) =
-    E.string email
 
 
 type Type_
@@ -161,12 +148,3 @@ typeFromString str =
 
         _ ->
             Debug.crash "Unexpected type from server!!"
-
-
-typeEncoder : Type_ -> Value
-typeEncoder type_ =
-    type_
-        |> toString
-        |> underscored
-        |> Regex.replace (Regex.AtMost 1) (Regex.regex "_$") (always "")
-        |> E.string
