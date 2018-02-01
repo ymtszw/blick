@@ -103,9 +103,14 @@ findMatchingIds : List ( Id, Material ) -> String -> List Id
 findMatchingIds materials input =
     input
         |> String.toLower
-        |> Regex.split Regex.All (Regex.regex "\\s+")
+        |> Regex.split Regex.All whitespaces
         |> List.filter (not << String.isEmpty)
         |> findMatchingIdsImpl materials
+
+
+whitespaces : Regex.Regex
+whitespaces =
+    Regex.regex "\\s+"
 
 
 findMatchingIdsImpl : List ( Id, Material ) -> List String -> List Id
