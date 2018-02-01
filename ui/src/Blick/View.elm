@@ -6,11 +6,12 @@ import Util
 import Blick.Type exposing (Model, Msg(..), Route(..), Id(Id), Material)
 import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
+import Blick.View.Table as Table
 import Blick.View.Detail as Detail
 
 
 view : Model -> Html Msg
-view { materials, carouselPage, matches, filterInput, route } =
+view { materials, carouselPage, tablePage, matches, filterInput, route } =
     let
         ( withThumbs, withouts ) =
             materials
@@ -21,6 +22,7 @@ view { materials, carouselPage, matches, filterInput, route } =
             [ modalByRoute materials route
             , Hero.view matches filterInput
             , Carousel.view carouselPage withThumbs
+            , Table.view tablePage withouts
             ]
 
 
