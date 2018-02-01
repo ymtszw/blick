@@ -8,7 +8,7 @@ import Blick.Type exposing (Msg(..), Id(Id))
 
 view : List Id -> String -> Html Msg
 view matches input_ =
-    div [ class "hero is-primary" ]
+    div [ class "hero is-success" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
                 [ div [ class "columns" ]

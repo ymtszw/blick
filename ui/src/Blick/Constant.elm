@@ -11,11 +11,26 @@ tilePerRow =
     4
 
 
-rowPerPage : Int
-rowPerPage =
+rowPerCarouselPage : Int
+rowPerCarouselPage =
     3
 
 
 maxCarouselPage : Int -> Int
 maxCarouselPage numberOfMaterials =
-    numberOfMaterials // (tilePerRow * rowPerPage)
+    numberOfMaterials // (tilePerRow * rowPerCarouselPage)
+
+
+rowPerTable : Int
+rowPerTable =
+    6
+
+
+tablePerPage : Int
+tablePerPage =
+    2
+
+
+maxTablePage : Int -> Int
+maxTablePage numberOfMaterials =
+    numberOfMaterials // (rowPerTable * tablePerPage)

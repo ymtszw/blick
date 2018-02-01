@@ -37,6 +37,8 @@ type Msg
     | ListMaterials (Result H.Error (List ( Id, Material )))
     | CarouselNext
     | CarouselPrev
+    | TableNext
+    | TablePrev
     | Filter String
 
 
@@ -49,6 +51,7 @@ type alias Model =
     , matches : List Id
     , filterInput : String
     , carouselPage : Int
+    , tablePage : Int
     , route : Route
     }
 

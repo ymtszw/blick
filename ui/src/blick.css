@@ -14,3 +14,12 @@
   left: 0;
   right: 0;
 }
+
+.column > table {
+  table-layout: fixed;
+}
+
+td.is-paddingless > a {
+  display: block;
+  padding: .5em .75em;
+}

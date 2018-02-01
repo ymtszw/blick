@@ -19,6 +19,7 @@ init flags location =
     , matches = []
     , filterInput = ""
     , carouselPage = 0
+    , tablePage = 0
     , route = route location
     }
         => [ listMaterials ]
@@ -29,7 +30,7 @@ init flags location =
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, carouselPage } as model) =
+update msg ({ materials, carouselPage, tablePage } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -65,6 +66,26 @@ update msg ({ materials, carouselPage } as model) =
             else
                 model => []
 
+        TableNext ->
+            let
+                max =
+                    maxTablePage <| List.length materials
+            in
+                if tablePage > max then
+                    { model | tablePage = max } => []
+                else if tablePage < max then
+                    { model | tablePage = model.tablePage + 1 } => []
+                else
+                    model => []
+
+        TablePrev ->
+            if tablePage < 0 then
+                { model | tablePage = 0 } => []
+            else if tablePage > 0 then
+                { model | tablePage = model.tablePage - 1 } => []
+            else
+                model => []
+
         Filter "" ->
             { model | matches = [], filterInput = "" } => []
 
@@ -73,6 +94,7 @@ update msg ({ materials, carouselPage } as model) =
                 | matches = findMatchingIds materials input
                 , filterInput = input
                 , carouselPage = 0
+                , tablePage = 0
             }
                 => []
 

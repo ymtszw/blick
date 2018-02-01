@@ -17,7 +17,7 @@ view carouselPage materials =
             [ div [ class "container carousel is-fullhd" ]
                 [ materials
                     |> Util.split tilePerRow
-                    |> Util.split rowPerPage
+                    |> Util.split rowPerCarouselPage
                     |> List.indexedMap (carouselItem carouselPage)
                     |> fillByDummyPage
                     |> div [ class "carousel-container" ]
@@ -38,25 +38,17 @@ fillByDummyPage pages =
 
 
 carouselNav : Int -> Int -> Html Msg
-carouselNav carouselPage numberOfPages =
+carouselNav carouselPage numberOfMaterials =
     nav
         [ class "carousel-navigation pagination is-centered"
         , attribute "role" "navigation"
         , attribute "aria-label" "pagination"
         ]
-        [ button (disabled (carouselPage <= 0) [ class "pagination-previous", onClick CarouselPrev ])
+        [ button (withDisabled (carouselPage <= 0) [ class "pagination-previous", onClick CarouselPrev ])
             [ i [ class "fa fa-chevron-left" ] [] ]
-        , button (disabled (carouselPage >= maxCarouselPage numberOfPages) [ class "pagination-next", onClick CarouselNext ])
+        , button (withDisabled (carouselPage >= maxCarouselPage numberOfMaterials) [ class "pagination-next", onClick CarouselNext ])
             [ i [ class "fa fa-chevron-right" ] [] ]
         ]
-
-
-disabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)
-disabled disabled_ others =
-    if disabled_ then
-        attribute "disabled" "disabled" :: others
-    else
-        others
 
 
 carouselItem : Int -> Int -> List (List ( Id, Material )) -> Html Msg
@@ -99,17 +91,13 @@ tileColumn ( Id id_, material ) =
 
 fillByDummyRow : List (Html Msg) -> List (Html Msg)
 fillByDummyRow rows =
-    case rows of
-        [] ->
-            [ dummyRow, dummyRow, dummyRow ]
-
-        [ _ ] ->
-            rows ++ [ dummyRow, dummyRow ]
-
-        [ _, _ ] ->
-            rows ++ [ dummyRow ]
-
-        _ ->
+    let
+        rowLength =
+            List.length rows
+    in
+        if rowPerCarouselPage > rowLength then
+            rows ++ List.repeat (rowPerCarouselPage - rowLength) dummyRow
+        else
             rows
 
 
