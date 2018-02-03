@@ -7,7 +7,7 @@ import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
 import Blick.Type exposing (Id(Id), Material, Msg(..), Url(..))
-import Blick.View.Parts exposing (withDisabled)
+import Blick.View.Parts exposing (withDisabled, authorTag)
 
 
 view : Int -> List ( Id, Material ) -> Html Msg
@@ -71,9 +71,14 @@ tableColumn materials =
 
 
 rowOfTable : ( Id, Material ) -> Html Msg
-rowOfTable ( Id id_, { title } ) =
+rowOfTable ( Id id_, { title, author_email } ) =
     tr [ id id_ ]
-        [ td [ class "is-paddingless" ] [ a [ class "text-nowrap", href <| "/" ++ id_ ] [ text title ] ]
+        [ td [ class "is-paddingless" ]
+            [ a [ class "text-nowrap", href <| "/" ++ id_ ]
+                [ text title
+                , authorTag author_email
+                ]
+            ]
         ]
 
 
