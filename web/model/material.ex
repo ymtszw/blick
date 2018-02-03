@@ -90,4 +90,16 @@ defmodule Blick.Model.Material do
         {:html, google_drive_url}
     end
   end
+
+  @doc """
+  Extracts Google Drive File ID from a normalized Google file URL in a material.
+
+  If the given material is not a Google Drive File, it crashes.
+  """
+  defun google_file_id!(material :: t | Data.t) :: String.t do
+    %__MODULE__{data: %Data{} = data} -> google_file_id!(data)
+    %Data{url: "https://docs.google.com/document/d/" <> file_id} -> file_id
+    %Data{url: "https://docs.google.com/presentation/d/" <> file_id} -> file_id
+    %Data{url: "https://drive.google.com/file/d/" <> file_id} -> file_id
+  end
 end

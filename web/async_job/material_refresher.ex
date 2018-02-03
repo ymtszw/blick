@@ -62,7 +62,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   defunp refresh_google_material_thumbnails(google_materials :: v[[Material.t]], token :: Google.token_t) :: R.t([{Material.Id.t, Datastore.update_action_t}]) do
     batch_get_details(google_materials, token)
     |> R.bind(fn
-      get_detail_results when length(get_detail_results) == length(google_materials)->
+      get_detail_results when length(get_detail_results) == length(google_materials) ->
         google_materials
         |> Enum.zip(get_detail_results)
         |> Enum.map(&make_update_action/1)
@@ -73,11 +73,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
 
   defp batch_get_details(google_materials, token) do
     google_materials
-    |> Enum.map(fn
-      %Material{data: %Material.Data{url: "https://docs.google.com/document/d/" <> file_id}} -> file_id
-      %Material{data: %Material.Data{url: "https://docs.google.com/presentation/d/" <> file_id}} -> file_id
-      %Material{data: %Material.Data{url: "https://drive.google.com/file/d/" <> file_id}} -> file_id
-    end)
+    |> Enum.map(&Material.google_file_id!/1)
     |> Files.batch_get(token)
   end
 

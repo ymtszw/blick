@@ -126,11 +126,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
 
   defp batch_get_details(id_and_google_materials, token) do
     id_and_google_materials
-    |> Enum.map(fn
-      {_id, %Material.Data{url: "https://docs.google.com/document/d/" <> file_id}} -> file_id
-      {_id, %Material.Data{url: "https://docs.google.com/presentation/d/" <> file_id}} -> file_id
-      {_id, %Material.Data{url: "https://drive.google.com/file/d/" <> file_id}} -> file_id
-    end)
+    |> Enum.map(&(Material.google_file_id!(elem(&1, 1))))
     |> Files.batch_get(token)
   end
 
