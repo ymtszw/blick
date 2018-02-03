@@ -77,15 +77,16 @@ defmodule Blick.AsyncJob.MaterialRefresher do
     |> Files.batch_get(token)
   end
 
+  # Also used from Material controller
   @spec make_update_action({Material.t, Google.multipart_res_t}) :: nil | {Material.Id.t, Datastore.update_action_t}
-  defp make_update_action({%Material{_id: id}, {404, _resp_body}}) do
+  def make_update_action({%Material{_id: id}, {404, _resp_body}}) do
     {id, %{data: %{"$set" => %{excluded: true, exclude_reason: "Not found on Google Drive."}}}}
   end
-  defp make_update_action({material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
+  def make_update_action({material, {403, %{"error" => %{"errors" => [%{"domain" => "usageLimits"} | _]}}}}) do
     Blick.Logger.debug("Rate Limit on: #{inspect(material)}")
     nil # Skip on rate limit; if not inserted, it should be retried on next job attempt.
   end
-  defp make_update_action({%Material{_id: id}, {200, file}}) do
+  def make_update_action({%Material{_id: id}, {200, file}}) do
     thumbnail_url = Blick.AsyncJob.MaterialCollector.enlarge_thumbnail_size(file["thumbnailLink"])
     {id, %{data: %{"$set" => %{thumbnail_url: thumbnail_url}}}}
   end
