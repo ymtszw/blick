@@ -85,4 +85,10 @@ defmodule Blick.Repo.Material do
     |> Map.new(fn %Material{_id: id} = m -> {id, m} end)
     |> Map.merge(acc_dict)
   end
+
+  # Queries
+
+  defun only_included(list_action :: Datastore.list_action_t) :: Datastore.list_action_t do
+    Blick.MapUtil.deep_merge(list_action, %{query: %{"data.excluded" => false}})
+  end
 end

@@ -10,7 +10,8 @@ defmodule Blick.Controller.Material do
 
   defun list(%Conn{request: _req} = conn) :: Conn.t do
     root_key = root_key()
-    case Repo.Material.retrieve_list(%{}, root_key) do
+    query = Repo.Material.only_included(%{})
+    case Repo.Material.retrieve_list(query, root_key) do
       {:ok, ms} ->
         conn
         |> put_resp_header("cache-control", "private,max-age=3600")

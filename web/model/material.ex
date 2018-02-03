@@ -22,7 +22,7 @@ defmodule Blick.Model.Material do
     created_time: nilable(SolomonLib.Time),
     author_email: nilable(SolomonLib.Email),
     type: Type,
-    excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons
+    excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons; TODO use section
     exclude_reason: nilable(Croma.String),
   ]
 
