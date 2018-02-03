@@ -1,3 +1,5 @@
+escape ^Ss
+caption string "%3n %t [Prefix key: Ctrl-S][To kill all: Ctrl-S Ctrl-\]"
 term xterm-256color
 screen npm run start:ui
 split
