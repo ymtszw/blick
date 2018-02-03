@@ -104,16 +104,15 @@ defmodule Blick.Mocks do
     rescue
       UndefinedFunctionError -> {:error, {:not_behaviour, mod}}
     end
-    |> R.bind(fn callbacks ->
-      rep_functions = replacement.__info__(:functions)
-      Enum.reduce(callbacks, [], fn callback, acc ->
-        if callback in rep_functions, do: acc, else: [callback, acc]
-      end)
-      |> case do
-        [] -> {:ok, {mod, replacement, callbacks}}
-        not_implemented -> {:error, {:implementation_missing, not_implemented}}
-      end
-    end)
+    |> R.bind(&(check_callbacks_impl(&1, mod, replacement)))
+  end
+
+  defp check_callbacks_impl(callbacks, mod, replacement) do
+    implemented_functions = replacement.__info__(:functions)
+    case Enum.reject(callbacks, &(&1 in implemented_functions)) do
+      [] -> {:ok, {mod, replacement, callbacks}}
+      not_implemented -> {:error, {:implementation_missing, not_implemented}}
+    end
   end
 
   defp check_exports(mod, replacement) do
@@ -145,7 +144,7 @@ defmodule Blick.Mocks do
     if n == 0 do
       []
     else
-      Enum.map(0 .. n-1, fn i -> Macro.var(String.to_atom("arg#{i}"), module) end)
+      Enum.map(0..(n - 1), fn i -> Macro.var(String.to_atom("arg#{i}"), module) end)
     end
   end
 end
