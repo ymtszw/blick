@@ -10,7 +10,9 @@
     "postinstall": "elm-package install --yes",
     "package": "elm-package",
     "build": "webpack",
-    "start": "LOG_LEVEL=debug BLICK_CONFIG_JSON=\"$(cat gear_config)\" iex -S mix & webpack-dev-server",
+    "start": "screen -c localserver_screenrc",
+    "start:api": "LOG_LEVEL=debug BLICK_CONFIG_JSON=\"$(cat gear_config)\" iex -S mix",
+    "start:ui": "webpack-dev-server",
     "solomon_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack"
   },
   "repository": {

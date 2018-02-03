@@ -1,0 +1,5 @@
+term xterm-256color
+screen npm run start:ui
+split
+focus down
+screen npm run start:api
