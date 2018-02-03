@@ -38,7 +38,7 @@ colorClassByName : String -> String
 colorClassByName name =
     name
         |> String.foldl (\char acc -> acc + Char.toCode char) 0
-        |> (\sum -> rem sum 8)
+        |> (\sum -> rem sum 7)
         |> colorClassByNumber
 
 
@@ -49,21 +49,18 @@ colorClassByNumber num =
             "is-dark"
 
         1 ->
-            "is-light"
-
-        2 ->
             "is-primary"
 
-        3 ->
+        2 ->
             "is-link"
 
-        4 ->
+        3 ->
             "is-info"
 
-        5 ->
+        4 ->
             "is-success"
 
-        6 ->
+        5 ->
             "is-warning"
 
         _ ->
