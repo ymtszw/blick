@@ -2,9 +2,13 @@ use Croma
 
 defmodule Blick.Repo.Material do
   alias Croma.Result, as: R
+  alias SolomonLib.Time
   alias SolomonAcs.Dodai.Repo.Datastore
   import Blick.Dodai, only: [root_key: 0]
+  alias Blick.External.Google.Drive.Files
+  alias Blick.Repo
   alias Blick.Model.Material
+  alias Blick.AsyncJob.{MaterialRefresher, AsyncRepo}
   use Datastore, [
     datastore_models: [Material],
     read_permission: :anyone,
@@ -84,6 +88,64 @@ defmodule Blick.Repo.Material do
     new_materials
     |> Map.new(fn %Material{_id: id} = m -> {id, m} end)
     |> Map.merge(acc_dict)
+  end
+
+  @on_demand_refresh_threshold_minutes 20
+  @not_found Dodai.ResourceNotFound.new()
+
+  @doc """
+  Retrieves a Material, and if it is somewhat "old", refresh.
+
+  If the Material is excluded, returns ResourceNotFound.
+  """
+  defun retrieve_with_refresh(id :: v[Material.Id.t], key :: v[String.t], now :: v[Time.t]) :: R.t(Material.t) do
+    threshold = Time.shift_minutes(now, -@on_demand_refresh_threshold_minutes)
+    case retrieve(id, key) do
+      {:ok, %Material{data: %Material.Data{excluded: true}}} ->
+        {:error, @not_found}
+      {:ok, %Material{updated_at: updated_at} = material} when updated_at < threshold ->
+        {:ok, refresh_and_write_back(material, key)}
+      other_result ->
+        other_result
+    end
+  end
+
+  defp refresh_and_write_back(%Material{data: %Material.Data{type: type}} = old_material, key)
+  when type in [:google_doc, :google_file, :google_slide] do
+    case refresh_google_file_and_write_back(old_material, key) do
+      {:ok, new_material} -> new_material
+      {:error, _} -> old_material
+    end
+  end
+  defp refresh_and_write_back(other_material, _key) do
+    other_material
+  end
+
+  defp refresh_google_file_and_write_back(%Material{} = material, key) do
+    R.m do
+      token <- Repo.AdminToken.retrieve()
+      code_and_body <- get_file(Material.google_file_id!(material), token)
+      case MaterialRefresher.make_update_action({material, code_and_body}) do
+        nil ->
+          {:ok, material}
+        {id, %{data: %{"$set" => %{thumbnail_url: new_url}}} = ua} ->
+          # XXX; This is just an experimental pattern of write back.
+          # I think update request to Dodai is fast enough and does not require background task usually.
+          AsyncRepo.Material.update(ua, id, key)
+          {:ok, put_in(material.data.thumbnail_url, new_url)}
+      end
+    end
+  end
+
+  defp get_file(file_id, token) do
+    case Files.get(file_id, token) do
+      {:ok, file} ->
+        {:ok, {200, file}}
+      {:error, %{code: code, body: res_body}} when code in 400..499 ->
+        {:ok, {code, Poison.decode!(res_body)}}
+      {:error, _} = e ->
+        e
+    end
   end
 
   # Queries
