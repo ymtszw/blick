@@ -9,5 +9,6 @@ defmodule Blick.Router do
   get "/api/materials", Material, :list
   get "/api/materials/:id", Material, :get
 
-  get "/*path", Root, :index
+  get "/", Root, :index
+  get "/:id", Root, :show
 end
