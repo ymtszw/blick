@@ -16,7 +16,7 @@ import Blick.View exposing (view)
 
 
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
-init { materials } location =
+init materials location =
     let
         ms =
             materials

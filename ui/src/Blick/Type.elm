@@ -23,8 +23,7 @@ import Navigation exposing (Location)
 
 
 type alias Flags =
-    { materials : Value
-    }
+    Value
 
 
 
