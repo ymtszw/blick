@@ -1,5 +1,6 @@
 module Blick.Client exposing (listMaterials)
 
+import Dict
 import Json.Decode as D
 import Json.Decode.Extra exposing ((|:))
 import Http as H exposing (..)
@@ -11,9 +12,10 @@ listMaterials =
     let
         dec =
             D.field "materials" <|
-                D.list <|
-                    D.succeed (,)
-                        |: D.field "_id" idDecoder
-                        |: D.field "data" materialDecoder
+                D.map Dict.fromList <|
+                    D.list <|
+                        D.succeed (,)
+                            |: D.field "_id" D.string
+                            |: D.field "data" materialDecoder
     in
         H.send ListMaterials <| H.get "/api/materials" dec

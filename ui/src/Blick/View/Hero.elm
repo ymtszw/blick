@@ -3,10 +3,10 @@ module Blick.View.Hero exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Blick.Type exposing (Msg(..), Id(Id))
+import Blick.Type exposing (Msg(..))
 
 
-view : List Id -> String -> Html Msg
+view : List String -> String -> Html Msg
 view matches input_ =
     div [ class "hero is-success" ]
         [ div [ class "hero-body" ]
@@ -23,7 +23,7 @@ view matches input_ =
         ]
 
 
-filter : List Id -> String -> Html Msg
+filter : List String -> String -> Html Msg
 filter matches input_ =
     div [ class "field is-expanded" ]
         [ div [ class "control has-icons-left has-icons-right" ]
@@ -34,7 +34,7 @@ filter matches input_ =
         ]
 
 
-filterInputColor : List Id -> String -> String
+filterInputColor : List String -> String -> String
 filterInputColor matches input_ =
     if not (String.isEmpty input_) && List.isEmpty matches then
         " is-danger"
@@ -42,7 +42,7 @@ filterInputColor matches input_ =
         ""
 
 
-filterInputResult : List Id -> String -> Html Msg
+filterInputResult : List String -> String -> Html Msg
 filterInputResult matches input_ =
     case input_ of
         "" ->

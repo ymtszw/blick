@@ -1,7 +1,7 @@
 module Blick.Router exposing (route)
 
 import Navigation exposing (Location)
-import Blick.Type exposing (Route(..), Id(Id))
+import Blick.Type exposing (Route(..))
 
 
 route : Location -> Route
@@ -11,7 +11,7 @@ route { pathname } =
             Root
 
         [ id ] ->
-            Detail (Id id)
+            Detail id
 
         _ ->
             NotFound

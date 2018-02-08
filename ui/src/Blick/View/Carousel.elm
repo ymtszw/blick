@@ -1,27 +1,29 @@
 module Blick.View.Carousel exposing (view)
 
+import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Msg(..), Id(Id), Material, Url(Url))
+import Blick.Type exposing (Msg(..), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
-view : Int -> List ( Id, Material ) -> Html Msg
+view : Int -> Dict String Material -> Html Msg
 view carouselPage materials =
     div [ class "hero is-info" ]
         [ div [ class "hero-body" ]
             [ div [ class "container carousel is-fullhd" ]
                 [ materials
+                    |> Dict.toList
                     |> Util.split tilePerRow
                     |> Util.split rowPerCarouselPage
                     |> List.indexedMap (carouselItem carouselPage)
                     |> fillByDummyPage
                     |> div [ class "carousel-container" ]
-                , carouselNav carouselPage (List.length materials)
+                , carouselNav carouselPage (Dict.size materials)
                 ]
             ]
         ]
@@ -51,7 +53,7 @@ carouselNav carouselPage numberOfMaterials =
         ]
 
 
-carouselItem : Int -> Int -> List (List ( Id, Material )) -> Html Msg
+carouselItem : Int -> Int -> List (List ( String, Material )) -> Html Msg
 carouselItem materialPage pageIndex materialsByPage =
     let
         isActive =
@@ -66,14 +68,14 @@ carouselItem materialPage pageIndex materialsByPage =
             |> div [ class "carousel-item", isActive ]
 
 
-tileRow : List ( Id, Material ) -> Html Msg
+tileRow : List ( String, Material ) -> Html Msg
 tileRow materialsUpto4 =
     div [ class "columns" ] <|
         List.map (Z.lazy tileColumn) materialsUpto4
 
 
-tileColumn : ( Id, Material ) -> Html Msg
-tileColumn ( Id id_, material ) =
+tileColumn : ( String, Material ) -> Html Msg
+tileColumn ( id_, material ) =
     div [ class <| "column" ++ columnSizeClass, title material.title ]
         [ a [ href <| "/" ++ id_ ]
             [ article [ class "material card", id id_ ]

@@ -1,5 +1,6 @@
 module Blick exposing (main)
 
+import Dict exposing (Dict)
 import Regex
 import Navigation exposing (Location)
 import Rocket exposing ((=>))
@@ -14,8 +15,8 @@ import Blick.View exposing (view)
 
 
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
-init flags location =
-    { materials = []
+init _ location =
+    { materials = Dict.fromList []
     , matches = []
     , filterInput = ""
     , carouselPage = 0
@@ -49,7 +50,7 @@ update msg ({ materials, carouselPage, tablePage } as model) =
         CarouselNext ->
             let
                 max =
-                    maxCarouselPage <| List.length materials
+                    maxCarouselPage <| Dict.size materials
             in
                 if carouselPage > max then
                     { model | carouselPage = max } => []
@@ -69,7 +70,7 @@ update msg ({ materials, carouselPage, tablePage } as model) =
         TableNext ->
             let
                 max =
-                    maxTablePage <| List.length materials
+                    maxTablePage <| Dict.size materials
             in
                 if tablePage > max then
                     { model | tablePage = max } => []
@@ -99,7 +100,7 @@ update msg ({ materials, carouselPage, tablePage } as model) =
                 => []
 
 
-findMatchingIds : List ( Id, Material ) -> String -> List Id
+findMatchingIds : Dict String Material -> String -> List String
 findMatchingIds materials input =
     input
         |> String.toLower
@@ -113,12 +114,12 @@ whitespaces =
     Regex.regex "\\s+"
 
 
-findMatchingIdsImpl : List ( Id, Material ) -> List String -> List Id
+findMatchingIdsImpl : Dict String Material -> List String -> List String
 findMatchingIdsImpl materials words =
-    List.filterMap (maybeMatchingId words) materials
+    materials |> Dict.toList |> List.filterMap (maybeMatchingId words)
 
 
-maybeMatchingId : List String -> ( Id, Material ) -> Maybe Id
+maybeMatchingId : List String -> ( String, Material ) -> Maybe String
 maybeMatchingId words (( _, { excluded } ) as material) =
     if excluded then
         Nothing
@@ -126,7 +127,7 @@ maybeMatchingId words (( _, { excluded } ) as material) =
         List.foldl (maybeMatchingIdImpl material) Nothing words
 
 
-maybeMatchingIdImpl : ( Id, Material ) -> String -> Maybe Id -> Maybe Id
+maybeMatchingIdImpl : ( String, Material ) -> String -> Maybe String -> Maybe String
 maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
     case maybeId of
         Just _ ->

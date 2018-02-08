@@ -4,16 +4,15 @@ module Blick.Type
         , Model
         , Msg(..)
         , Route(..)
-        , Id(Id)
         , Material
         , Url(Url)
         , Email(Email)
         , Type_(..)
-        , idDecoder
         , materialDecoder
         )
 
 import Date exposing (Date)
+import Dict exposing (Dict)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:), date)
 import Http as H
@@ -34,7 +33,7 @@ type alias Flags =
 type Msg
     = Loc Location
     | GoTo String
-    | ListMaterials (Result H.Error (List ( Id, Material )))
+    | ListMaterials (Result H.Error (Dict String Material))
     | CarouselNext
     | CarouselPrev
     | TableNext
@@ -47,8 +46,8 @@ type Msg
 
 
 type alias Model =
-    { materials : List ( Id, Material )
-    , matches : List Id
+    { materials : Dict String Material
+    , matches : List String
     , filterInput : String
     , carouselPage : Int
     , tablePage : Int
@@ -58,17 +57,8 @@ type alias Model =
 
 type Route
     = Root
-    | Detail Id
+    | Detail String
     | NotFound
-
-
-type Id
-    = Id String
-
-
-idDecoder : Decoder Id
-idDecoder =
-    D.map Id D.string
 
 
 type alias Material =
@@ -146,8 +136,5 @@ typeFromString str =
         "qiita" ->
             Qiita
 
-        "html" ->
-            Html_
-
         _ ->
-            Debug.crash "Unexpected type from server!!"
+            Html_

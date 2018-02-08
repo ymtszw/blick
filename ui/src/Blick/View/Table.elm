@@ -1,22 +1,24 @@
 module Blick.View.Table exposing (view)
 
+import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Id(Id), Material, Msg(..), Url(..))
+import Blick.Type exposing (Material, Msg(..), Url(..))
 import Blick.View.Parts exposing (withDisabled, authorTag)
 
 
-view : Int -> List ( Id, Material ) -> Html Msg
+view : Int -> Dict String Material -> Html Msg
 view tablePage materials =
     div [ class "hero is-primary" ]
         [ div [ class "hero-body" ]
             [ div [ class "container carousel is-fullhd" ]
-                [ tableNav tablePage (List.length materials)
+                [ tableNav tablePage (Dict.size materials)
                 , materials
+                    |> Dict.toList
                     |> Util.split rowPerTable
                     |> Util.split tablePerPage
                     |> List.indexedMap (tablesOfPage tablePage)
@@ -41,7 +43,7 @@ tableNav tablePage numberOfMaterials =
         ]
 
 
-tablesOfPage : Int -> Int -> List (List ( Id, Material )) -> Html Msg
+tablesOfPage : Int -> Int -> List (List ( String, Material )) -> Html Msg
 tablesOfPage tablePage pageIndex materials =
     let
         isActive =
@@ -58,7 +60,7 @@ tablesOfPage tablePage pageIndex materials =
             ]
 
 
-tableColumn : List ( Id, Material ) -> Html Msg
+tableColumn : List ( String, Material ) -> Html Msg
 tableColumn materials =
     div [ class "column is-half" ]
         [ table [ class "table is-striped is-hoverable is-fullwidth" ]
@@ -70,8 +72,8 @@ tableColumn materials =
         ]
 
 
-rowOfTable : ( Id, Material ) -> Html Msg
-rowOfTable ( Id id_, { title, author_email } ) =
+rowOfTable : ( String, Material ) -> Html Msg
+rowOfTable ( id_, { title, author_email } ) =
     tr [ id id_ ]
         [ td [ class "is-paddingless" ]
             [ a [ class "text-nowrap", href <| "/" ++ id_ ]

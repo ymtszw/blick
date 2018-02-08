@@ -1,4 +1,13 @@
-module Blick.Constant exposing (..)
+module Blick.Constant
+    exposing
+        ( bulmaColumnScaleMax
+        , tilePerRow
+        , rowPerCarouselPage
+        , maxCarouselPage
+        , rowPerTable
+        , tablePerPage
+        , maxTablePage
+        )
 
 
 bulmaColumnScaleMax : Int
