@@ -12,8 +12,8 @@ modal material =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClick (GoTo Root) ] []
         , div [ class "hero is-light" ]
-            [ div [ class "container" ]
-                [ div [ class "hero-body" ]
+            [ div [ class "hero-body" ]
+                [ div [ class "container is-fullhd" ]
                     [ detailContents material
                     ]
                 ]
