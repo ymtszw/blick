@@ -3,14 +3,14 @@ module Blick.View.Detail exposing (modal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Blick.Type exposing (Msg(..), Material, Url(Url))
+import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
 modal : Material -> Html Msg
 modal material =
     div [ class "modal is-active" ]
-        [ div [ class "modal-background", onClick (GoTo "/") ] []
+        [ div [ class "modal-background", onClick (GoTo Root) ] []
         , div [ class "hero is-light" ]
             [ div [ class "container" ]
                 [ div [ class "hero-body" ]
@@ -18,7 +18,7 @@ modal material =
                     ]
                 ]
             ]
-        , button [ class "modal-close is-large", attribute "aria-label" "close", onClick (GoTo "/") ] []
+        , button [ class "modal-close is-large", attribute "aria-label" "close", onClick (GoTo Root) ] []
         ]
 
 

@@ -7,7 +7,7 @@ import Navigation exposing (Location)
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
-import Blick.Router exposing (route)
+import Blick.Router exposing (route, goto)
 import Blick.Client exposing (listMaterials, materialsDictDecoder)
 import Blick.View exposing (view)
 
@@ -22,18 +22,15 @@ init materials location =
             materials
                 |> D.decodeValue materialsDictDecoder
                 |> Result.withDefault Dict.empty
-
-        ( r, cmds ) =
-            route location
     in
         { materials = ms
         , matches = []
         , filterInput = ""
         , carouselPage = 0
         , tablePage = 0
-        , route = r
+        , route = route location
         }
-            => (listMaterials :: cmds)
+            => [ listMaterials ]
 
 
 
@@ -44,12 +41,14 @@ update : Msg -> Model -> ( Model, List (Cmd Msg) )
 update msg ({ materials, carouselPage, tablePage } as model) =
     case msg of
         Loc location ->
-            location
-                |> route
-                |> Tuple.mapFirst (\r -> { model | route = r })
+            { model | route = route location } => []
 
-        GoTo url ->
-            model => [ Navigation.newUrl url ]
+        GoTo r ->
+            let
+                ( path, cmds ) =
+                    goto r
+            in
+                model => (Navigation.newUrl path :: cmds)
 
         ClientRes (Ok (ListMaterials ms)) ->
             -- Caution: Members of FIRST dict has precedence at collision in Dict.union

@@ -33,7 +33,7 @@ type alias Flags =
 
 type Msg
     = Loc Location
-    | GoTo String
+    | GoTo Route
     | ClientRes (Result H.Error Success)
     | CarouselNext
     | CarouselPrev
