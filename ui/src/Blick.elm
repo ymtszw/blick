@@ -8,7 +8,7 @@ import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
 import Blick.Router exposing (route, goto)
-import Blick.Client exposing (listMaterials, materialsDictDecoder)
+import Blick.Client exposing (listMaterials)
 import Blick.View exposing (view)
 
 
@@ -20,7 +20,7 @@ init materials location =
     let
         ms =
             materials
-                |> D.decodeValue materialsDictDecoder
+                |> D.decodeValue (D.dict (D.field "data" materialDecoder))
                 |> Result.withDefault Dict.empty
     in
         { materials = ms

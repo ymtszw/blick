@@ -22,15 +22,16 @@ defmodule Blick.Controller.Root do
       description: "ACCESSの勉強会資料ポータルサイト",
       url: SolomonLib.Env.default_base_url(:blick),
       thumbnail: Blick.Asset.url("img/blick_480.png"),
-      flags: retrieve_list_20(root_key()),
+      flags: first_20_in_kvs(root_key()),
     ])
   end
 
-  defp retrieve_list_20(key) do
+  defp first_20_in_kvs(key) do
     %{limit: 20}
     |> Repo.Material.only_included()
     |> Repo.Material.retrieve_list(key)
     |> R.get([])
+    |> Map.new(fn m -> {m._id, m} end)
   end
 
   def show(conn) do

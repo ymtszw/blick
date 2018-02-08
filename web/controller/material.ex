@@ -15,7 +15,7 @@ defmodule Blick.Controller.Material do
       {:ok, ms} ->
         conn
         |> put_resp_header("cache-control", "private,max-age=1800")
-        |> json(200, %{"materials" => ms})
+        |> json(200, %{"materials" => Map.new(ms, fn m -> {m._id, m} end)}) # Pass in KVS
       {:error, %_error{status_code: code, body: body}} ->
         json(conn, code, body)
     end
