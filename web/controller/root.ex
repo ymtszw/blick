@@ -13,6 +13,10 @@ defmodule Blick.Controller.Root do
   end
 
   def index(conn) do
+    render_with_20_materials(conn)
+  end
+
+  defp render_with_20_materials(conn, _material \\ nil) do
     render(conn, 200, "root", [
       title: "Blick",
       description: "ACCESSの勉強会資料ポータルサイト",
@@ -32,11 +36,19 @@ defmodule Blick.Controller.Root do
   def show(conn) do
     id_in_path = conn.request.path_matches.id
     if Material.Id.valid?(id_in_path) do
-      # TODO
-      index(conn)
+      show_impl(conn, id_in_path)
     else
       # Handles favicon.ico, robot.txt, etc...
       put_status(conn, 404)
+    end
+  end
+
+  defp show_impl(conn, id) do
+    case Repo.Material.retrieve_with_refresh(id, root_key(), conn.context.start_time) do
+      {:ok, m} ->
+        render_with_20_materials(conn, m)
+      {:error, _} ->
+        fallback(conn)
     end
   end
 
