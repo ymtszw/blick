@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Msg(..), Material, Url(Url))
+import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
@@ -73,7 +73,7 @@ tileRow materialsUpto4 =
 tileColumn : ( String, Material ) -> Html Msg
 tileColumn ( id_, material ) =
     div [ class <| "column" ++ columnSizeClass, title material.title ]
-        [ a [ href <| "/" ++ id_ ]
+        [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail id_)) ]
             [ article [ class "material card", id id_ ]
                 [ div [ class "card-image" ]
                     [ tileThumbnail material.thumbnail_url
