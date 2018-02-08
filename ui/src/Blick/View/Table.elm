@@ -21,7 +21,7 @@ view tablePage materials =
                     |> Dict.toList
                     |> Util.split rowPerTable
                     |> Util.split tablePerPage
-                    |> List.indexedMap (tablesOfPage tablePage)
+                    |> List.indexedMap (Z.lazy3 tablesOfPage tablePage)
                     |> fillByDummyPage
                     |> div [ class "carousel-container" ]
                 ]
@@ -45,19 +45,15 @@ tableNav tablePage numberOfMaterials =
 
 tablesOfPage : Int -> Int -> List (List ( String, Material )) -> Html Msg
 tablesOfPage tablePage pageIndex materials =
-    let
-        isActive =
-            if pageIndex == tablePage then
-                style []
-            else
-                style [ ( "display", "none" ) ]
-    in
-        div [ class "carousel-item", isActive ]
+    if pageIndex == tablePage then
+        div [ class "carousel-item" ]
             [ materials
                 |> List.map tableColumn
                 |> fillByDummyTable
                 |> div [ class "columns" ]
             ]
+    else
+        div [ class "carousel-item", style [ ( "display", "none" ) ] ] []
 
 
 tableColumn : List ( String, Material ) -> Html Msg

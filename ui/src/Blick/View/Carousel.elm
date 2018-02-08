@@ -20,7 +20,7 @@ view carouselPage materials =
                     |> Dict.toList
                     |> Util.split tilePerRow
                     |> Util.split rowPerCarouselPage
-                    |> List.indexedMap (carouselItem carouselPage)
+                    |> List.indexedMap (Z.lazy3 carouselItem carouselPage)
                     |> fillByDummyPage
                     |> div [ class "carousel-container" ]
                 , carouselNav carouselPage (Dict.size materials)
@@ -55,17 +55,13 @@ carouselNav carouselPage numberOfMaterials =
 
 carouselItem : Int -> Int -> List (List ( String, Material )) -> Html Msg
 carouselItem materialPage pageIndex materialsByPage =
-    let
-        isActive =
-            if pageIndex == materialPage then
-                style []
-            else
-                style [ ( "display", "none" ) ]
-    in
+    if pageIndex == materialPage then
         materialsByPage
-            |> List.map tileRow
+            |> List.map (Z.lazy tileRow)
             |> fillByDummyRow
-            |> div [ class "carousel-item", isActive ]
+            |> div [ class "carousel-item" ]
+    else
+        div [ class "carousel-item", style [ ( "display", "none" ) ] ] []
 
 
 tileRow : List ( String, Material ) -> Html Msg
