@@ -16,13 +16,13 @@ defmodule Blick.Controller.Root do
     render_with_20_materials(conn)
   end
 
-  defp render_with_20_materials(conn, _material \\ nil) do
+  defp render_with_20_materials(conn, pair \\ %{}) do
     render(conn, 200, "root", [
       title: "Blick",
       description: "ACCESSの勉強会資料ポータルサイト",
       url: SolomonLib.Env.default_base_url(:blick),
       thumbnail: Blick.Asset.url("img/blick_480.png"),
-      flags: first_20_in_kvs(root_key()),
+      flags: first_20_in_kvs(root_key()) |> Map.merge(pair),
     ])
   end
 
@@ -46,8 +46,8 @@ defmodule Blick.Controller.Root do
 
   defp show_impl(conn, id) do
     case Repo.Material.retrieve_with_refresh(id, root_key(), conn.context.start_time) do
-      {:ok, m} ->
-        render_with_20_materials(conn, m)
+      {:ok, %Material{_id: id} = m} ->
+        render_with_20_materials(conn, %{id => m})
       {:error, _} ->
         fallback(conn)
     end
