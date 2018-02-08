@@ -29,4 +29,6 @@ defmodule Blick.Controller.Root do
       put_status(conn, 404)
     end
   end
+
+  def fallback(conn), do: redirect(conn, "/")
 end

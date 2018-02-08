@@ -11,4 +11,6 @@ defmodule Blick.Router do
 
   get "/", Root, :index
   get "/:id", Root, :show
+
+  get "/*path", Root, :fallback
 end
