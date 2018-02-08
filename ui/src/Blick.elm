@@ -22,15 +22,18 @@ init materials location =
             materials
                 |> D.decodeValue materialsDictDecoder
                 |> Result.withDefault Dict.empty
+
+        ( r, cmds ) =
+            route location
     in
         { materials = ms
         , matches = []
         , filterInput = ""
         , carouselPage = 0
         , tablePage = 0
-        , route = route location
+        , route = r
         }
-            => [ listMaterials ]
+            => (listMaterials :: cmds)
 
 
 
@@ -41,16 +44,21 @@ update : Msg -> Model -> ( Model, List (Cmd Msg) )
 update msg ({ materials, carouselPage, tablePage } as model) =
     case msg of
         Loc location ->
-            { model | route = route location } => []
+            location
+                |> route
+                |> Tuple.mapFirst (\r -> { model | route = r })
 
         GoTo url ->
             model => [ Navigation.newUrl url ]
 
-        ListMaterials (Ok ms) ->
+        ClientRes (Ok (ListMaterials ms)) ->
             -- Caution: Members of FIRST dict has precedence at collision in Dict.union
             { model | materials = Dict.union ms materials } => []
 
-        ListMaterials (Err e) ->
+        ClientRes (Ok (GetMaterial ( id, m ))) ->
+            { model | materials = Dict.insert id m materials } => []
+
+        ClientRes (Err e) ->
             Debug.log "Http Error" e
                 |> always model
                 => []

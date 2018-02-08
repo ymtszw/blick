@@ -1,20 +1,21 @@
 module Blick.Router exposing (route)
 
 import Navigation exposing (Location)
-import Blick.Type exposing (Route(..))
+import Blick.Type exposing (Route(..), Msg(..))
+import Blick.Client exposing (getMaterial)
 
 
-route : Location -> Route
+route : Location -> ( Route, List (Cmd Msg) )
 route { pathname } =
     case split pathname of
         [] ->
-            Root
+            ( Root, [ Cmd.none ] )
 
         [ id ] ->
-            Detail id
+            ( Detail id, [ getMaterial id ] )
 
         _ ->
-            NotFound
+            ( NotFound, [ Cmd.none ] )
 
 
 split : String -> List String

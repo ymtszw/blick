@@ -3,6 +3,7 @@ module Blick.Type
         ( Flags
         , Model
         , Msg(..)
+        , Success(..)
         , Route(..)
         , Material
         , Url(Url)
@@ -33,12 +34,17 @@ type alias Flags =
 type Msg
     = Loc Location
     | GoTo String
-    | ListMaterials (Result H.Error (Dict String Material))
+    | ClientRes (Result H.Error Success)
     | CarouselNext
     | CarouselPrev
     | TableNext
     | TablePrev
     | Filter String
+
+
+type Success
+    = ListMaterials (Dict String Material)
+    | GetMaterial ( String, Material )
 
 
 

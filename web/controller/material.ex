@@ -14,7 +14,7 @@ defmodule Blick.Controller.Material do
     case Repo.Material.retrieve_list(query, root_key()) do
       {:ok, ms} ->
         conn
-        |> put_resp_header("cache-control", "private,max-age=3600")
+        |> put_resp_header("cache-control", "private,max-age=1800")
         |> json(200, %{"materials" => ms})
       {:error, %_error{status_code: code, body: body}} ->
         json(conn, code, body)
