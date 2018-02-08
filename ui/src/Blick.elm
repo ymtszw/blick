@@ -2,12 +2,13 @@ module Blick exposing (main)
 
 import Dict exposing (Dict)
 import Regex
+import Json.Decode as D
 import Navigation exposing (Location)
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
 import Blick.Router exposing (route)
-import Blick.Client exposing (listMaterials)
+import Blick.Client exposing (listMaterials, materialsDictDecoder)
 import Blick.View exposing (view)
 
 
@@ -15,15 +16,21 @@ import Blick.View exposing (view)
 
 
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
-init _ location =
-    { materials = Dict.fromList []
-    , matches = []
-    , filterInput = ""
-    , carouselPage = 0
-    , tablePage = 0
-    , route = route location
-    }
-        => [ listMaterials ]
+init { materials } location =
+    let
+        ms =
+            materials
+                |> D.decodeValue materialsDictDecoder
+                |> Result.withDefault Dict.empty
+    in
+        { materials = ms
+        , matches = []
+        , filterInput = ""
+        , carouselPage = 0
+        , tablePage = 0
+        , route = route location
+        }
+            => [ listMaterials ]
 
 
 
@@ -40,7 +47,8 @@ update msg ({ materials, carouselPage, tablePage } as model) =
             model => [ Navigation.newUrl url ]
 
         ListMaterials (Ok ms) ->
-            { model | materials = ms } => []
+            -- Caution: Members of FIRST dict has precedence at collision in Dict.union
+            { model | materials = Dict.union ms materials } => []
 
         ListMaterials (Err e) ->
             Debug.log "Http Error" e

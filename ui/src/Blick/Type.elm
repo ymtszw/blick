@@ -13,7 +13,7 @@ module Blick.Type
 
 import Date exposing (Date)
 import Dict exposing (Dict)
-import Json.Decode as D exposing (Decoder)
+import Json.Decode as D exposing (Decoder, Value)
 import Json.Decode.Extra exposing ((|:), date)
 import Http as H
 import Navigation exposing (Location)
@@ -23,7 +23,8 @@ import Navigation exposing (Location)
 
 
 type alias Flags =
-    {}
+    { materials : Value
+    }
 
 
 
