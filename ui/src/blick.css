@@ -1,10 +1,15 @@
 .exception {
   z-index: 200;
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  left: 20px;
+  bottom: 65px;
+  right: 15px;
+  left: 15px;
   max-height: 60vh;
+  pointer-events: none;
+}
+
+.exception .message {
+  pointer-events: all;
 }
 
 .text-nowrap {

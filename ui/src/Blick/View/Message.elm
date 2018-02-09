@@ -11,7 +11,7 @@ import Blick.Type exposing (..)
 
 view : Dict Time Exception -> Html Msg
 view exceptions =
-    div [ class "container exception is-fullhd" ]
+    div [ class "exception" ]
         [ div [ class "columns" ]
             [ exceptions
                 |> Dict.toList
