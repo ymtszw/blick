@@ -11,9 +11,10 @@ Blick
 もしIssueがあれば下記のTrello boardの招待リンクを踏んでTrelloにカードを作るか、HipChat部屋に投稿してください。
 
 - Repository: https://bitbucket.org/aYuMatsuzawa/blick
-    - Mirror: http://gitbucket.tok.access-company.com:8080/Yu.Matsuzawa/blick
+    - [Mirror](http://gitbucket.tok.access-company.com:8080/Yu.Matsuzawa/blick)
 - Trello board: https://trello.com/b/WrovoYZN/blick
     - [Invite link](https://trello.com/invite/b/WrovoYZN/d40543bb2fcb7279069524ba40bb8f94/blick)
+    - [直でTrelloにタスクをする依頼メールアドレス](mailto:yumatsuzawa+qowrqt3mrbbw9aonnryj@boards.trello.com)
 - HipChat: https://access-jp.hipchat.com/chat/room/1787150
 
 ## Dev
