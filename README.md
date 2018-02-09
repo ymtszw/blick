@@ -3,7 +3,7 @@ Blick
 
 [![solomon gear](https://img.shields.io/badge/solomon--gear-blick-blue.svg?style=flat)](https://github.com/access-company/solomon)
 [![Made with Elm](https://img.shields.io/badge/Elm-0.18-brightgreen.svg?style=flat)](http://elm-lang.org)
-[<img src="https://bulma.io/images/made-with-bulma.png" alt="Made with Bulma" width="128" height="24">](https://bulma.io)
+[![Made with Bulma](made-with-bulma-s.png)](https://bulma.io)
 
 社内で行われる勉強会やらプレゼン大会やら何やらの資料へのアクセスハブとなることを目指すgear
 
