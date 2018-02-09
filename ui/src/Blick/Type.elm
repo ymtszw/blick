@@ -9,10 +9,13 @@ module Blick.Type
         , Url(Url)
         , Email(Email)
         , Type_(..)
+        , Exception
         , materialDecoder
+        , fromHttpError
         )
 
 import Date exposing (Date)
+import Time exposing (Time)
 import Dict exposing (Dict)
 import Json.Decode as D exposing (Decoder, Value)
 import Json.Decode.Extra exposing ((|:), date)
@@ -34,6 +37,8 @@ type alias Flags =
 type Msg
     = Loc Location
     | GoTo Route
+    | TimedErr H.Error Time
+    | CloseErr Time
     | ClientRes (Result H.Error Success)
     | CarouselNext
     | CarouselPrev
@@ -52,12 +57,13 @@ type Success
 
 
 type alias Model =
-    { materials : Dict String Material
-    , matches : List String
+    { materials : Dict String Material -- ID-Material Dict
+    , matches : List String -- List of IDs
     , filterInput : String
     , carouselPage : Int
     , tablePage : Int
     , route : Route
+    , exceptions : Dict Time Exception
     }
 
 
@@ -144,3 +150,50 @@ typeFromString str =
 
         _ ->
             Html_
+
+
+type alias Exception =
+    { message : String
+    , description : String
+    , details : List String
+    }
+
+
+fromHttpError : H.Error -> Exception
+fromHttpError err =
+    case err of
+        H.BadUrl badUrl ->
+            Exception "Malformed URL" badUrl []
+
+        H.Timeout ->
+            Exception "Server Timeout" "Check network connection" []
+
+        H.NetworkError ->
+            Exception "Network Error" "Check network connection" []
+
+        H.BadStatus { url, status, headers, body } ->
+            Exception (statusToString status) body (responseToList url headers body)
+
+        H.BadPayload errStr { url, status, headers, body } ->
+            Exception (statusToString status) errStr (responseToList url headers body)
+
+
+statusToString : { code : Int, message : String } -> String
+statusToString { code, message } =
+    toString code ++ " " ++ message
+
+
+responseToList : String -> Dict String String -> String -> List String
+responseToList url headers body =
+    [ "URL: " ++ url
+    , "Headers: \n" ++ headersToString headers
+    , "Body: " ++ body
+    ]
+
+
+headersToString : Dict String String -> String
+headersToString headers =
+    headers
+        |> Dict.toList
+        |> List.map (\( name, value ) -> "  " ++ name ++ " : " ++ value)
+        |> String.join "\n"

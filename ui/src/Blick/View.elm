@@ -9,10 +9,11 @@ import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
 import Blick.View.Table as Table
 import Blick.View.Detail as Detail
+import Blick.View.Message as Message
 
 
 view : Model -> Html Msg
-view { materials, carouselPage, tablePage, matches, filterInput, route } =
+view { materials, carouselPage, tablePage, matches, filterInput, route, exceptions } =
     let
         ( withThumbs, withouts ) =
             materials
@@ -22,6 +23,7 @@ view { materials, carouselPage, tablePage, matches, filterInput, route } =
         section [ class "main" ]
             [ modalByRoute materials route
             , Hero.view matches filterInput
+            , Message.view exceptions
             , Carousel.view carouselPage withThumbs
             , Table.view tablePage withouts
             ]

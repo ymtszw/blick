@@ -2,6 +2,8 @@ module Blick exposing (main)
 
 import Dict exposing (Dict)
 import Regex
+import Task
+import Time
 import Json.Decode as D
 import Navigation exposing (Location)
 import Rocket exposing ((=>))
@@ -29,6 +31,14 @@ init materials location =
         , carouselPage = 0
         , tablePage = 0
         , route = route location
+        , exceptions =
+            Dict.fromList
+                [ 1000000000.0 => Exception "Test Test Test Long Long" "Dummy" [ "hoge", "fuga", "errrrrrrrror" ]
+                , 10000000000.0 => Exception "Test" "Dummy" []
+                , 100000000000.0 => Exception "Test" "Dummy" []
+                , 1000000000000.0 => Exception "Test" "Dummy" []
+                , 10000000000000.0 => Exception "Test" "Dummy" []
+                ]
         }
             => [ listMaterials ]
 
@@ -38,7 +48,7 @@ init materials location =
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, carouselPage, tablePage } as model) =
+update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -50,6 +60,12 @@ update msg ({ materials, carouselPage, tablePage } as model) =
             in
                 model => (Navigation.newUrl path :: cmds)
 
+        TimedErr err time ->
+            { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
+
+        CloseErr time ->
+            { model | exceptions = Dict.remove time exceptions } => []
+
         ClientRes (Ok (ListMaterials ms)) ->
             -- Caution: Members of FIRST dict has precedence at collision in Dict.union
             { model | materials = Dict.union ms materials } => []
@@ -57,10 +73,8 @@ update msg ({ materials, carouselPage, tablePage } as model) =
         ClientRes (Ok (GetMaterial ( id, m ))) ->
             { model | materials = Dict.insert id m materials } => []
 
-        ClientRes (Err e) ->
-            Debug.log "Http Error" e
-                |> always model
-                => []
+        ClientRes (Err err) ->
+            model => [ Task.perform (TimedErr err) Time.now ]
 
         CarouselNext ->
             let
