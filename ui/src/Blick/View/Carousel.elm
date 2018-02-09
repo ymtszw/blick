@@ -55,13 +55,19 @@ carouselNav carouselPage numberOfMaterials =
 
 carouselItem : Int -> Int -> List (List ( String, Material )) -> Html Msg
 carouselItem materialPage pageIndex materialsByPage =
-    if pageIndex == materialPage then
-        materialsByPage
-            |> List.map (Z.lazy tileRow)
-            |> fillByDummyRow
-            |> div [ class "carousel-item" ]
-    else
-        div [ class "carousel-item", style [ ( "display", "none" ) ] ] []
+    let
+        contents =
+            if materialPage - 1 <= pageIndex && pageIndex <= materialPage + 1 then
+                materialsByPage
+                    |> List.map (Z.lazy tileRow)
+                    |> fillByDummyRow
+            else
+                []
+    in
+        if materialPage == pageIndex then
+            div [ class "carousel-item" ] contents
+        else
+            div [ class "carousel-item is-hidden" ] contents
 
 
 tileRow : List ( String, Material ) -> Html Msg
