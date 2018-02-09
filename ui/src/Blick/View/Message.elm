@@ -44,5 +44,5 @@ detailList details =
 
         _ ->
             details
-                |> List.map (\str -> li [] [ text str ])
-                |> ul [ class "is-size-7" ]
+                |> List.map (\str -> li [ class "pre" ] [ text str ])
+                |> ul [ class "is-size-7 details" ]

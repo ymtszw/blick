@@ -31,14 +31,7 @@ init materials location =
         , carouselPage = 0
         , tablePage = 0
         , route = route location
-        , exceptions =
-            Dict.fromList
-                [ 1000000000.0 => Exception "Test Test Test Long Long" "Dummy" [ "hoge", "fuga", "errrrrrrrror" ]
-                , 10000000000.0 => Exception "Test" "Dummy" []
-                , 100000000000.0 => Exception "Test" "Dummy" []
-                , 1000000000000.0 => Exception "Test" "Dummy" []
-                , 10000000000000.0 => Exception "Test" "Dummy" []
-                ]
+        , exceptions = Dict.empty
         }
             => [ listMaterials ]
 

@@ -195,5 +195,5 @@ headersToString : Dict String String -> String
 headersToString headers =
     headers
         |> Dict.toList
-        |> List.map (\( name, value ) -> "  " ++ name ++ " : " ++ value)
+        |> List.map (\( name, value ) -> name ++ " : " ++ value)
         |> String.join "\n"

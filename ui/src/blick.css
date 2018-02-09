@@ -18,6 +18,17 @@
   overflow: hidden;
 }
 
+ul.details {
+  overflow: auto;
+  margin-left: 0;
+  padding-left: 2em;
+}
+
+.pre {
+  white-space: pre-line;
+  font-family: "Courier New", Consolas, monospace;
+}
+
 .tags-on-tile {
   padding: 2px;
 }
