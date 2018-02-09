@@ -7,7 +7,14 @@ Blick
 
 社内で行われる勉強会やらプレゼン大会やら何やらの資料へのアクセスハブとなることを目指すgear
 
-- [Issues](http://gitbucket.tok.access-company.com:8080/Yu.Matsuzawa/blick/issues)
+ベースとなるレポジトリはクラウドのBitBucketプライベートレポジトリに変えたので、社内GitBucketはミラーとします。
+もしIssueがあれば下記のTrello boardの招待リンクを踏んでTrelloにカードを作るか、HipChat部屋に投稿してください。
+
+- Repository: https://bitbucket.org/aYuMatsuzawa/blick
+    - Mirror: http://gitbucket.tok.access-company.com:8080/Yu.Matsuzawa/blick
+- Trello board: https://trello.com/b/WrovoYZN/blick
+    - [Invite link](https://trello.com/invite/b/WrovoYZN/d40543bb2fcb7279069524ba40bb8f94/blick)
+- HipChat: https://access-jp.hipchat.com/chat/room/1787150
 
 ## Dev
 
