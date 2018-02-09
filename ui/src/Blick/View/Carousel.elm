@@ -58,16 +58,24 @@ carouselItem materialPage pageIndex materialsByPage =
     let
         contents =
             if materialPage - 1 <= pageIndex && pageIndex <= materialPage + 1 then
-                materialsByPage
-                    |> List.map (Z.lazy tileRow)
-                    |> fillByDummyRow
+                -- Calculate VDOM already, even if it isn't used for now, ultimately use it via Z.lazy
+                Z.lazy carouselItemContents materialsByPage
             else
-                []
+                -- Not used actually
+                text ""
     in
         if materialPage == pageIndex then
-            div [ class "carousel-item" ] contents
+            div [ class "carousel-item is-active" ] [ contents ]
         else
-            div [ class "carousel-item is-hidden" ] contents
+            div [ class "carousel-item" ] []
+
+
+carouselItemContents : List (List ( String, Material )) -> Html Msg
+carouselItemContents materialsByPage =
+    materialsByPage
+        |> List.map (Z.lazy tileRow)
+        |> fillByDummyRow
+        |> div []
 
 
 tileRow : List ( String, Material ) -> Html Msg
@@ -78,9 +86,9 @@ tileRow materialsUpto4 =
 
 tileColumn : ( String, Material ) -> Html Msg
 tileColumn ( id_, material ) =
-    div [ class <| "column" ++ columnSizeClass, title material.title ]
+    div [ class <| "material column" ++ columnSizeClass, title material.title ]
         [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail id_)) ]
-            [ article [ class "material card", id id_ ]
+            [ article [ class "card", id id_ ]
                 [ div [ class "card-image" ]
                     [ tileThumbnail material.thumbnail_url
                     ]

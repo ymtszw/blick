@@ -15,7 +15,7 @@ view : Int -> Dict String Material -> Html Msg
 view tablePage materials =
     div [ class "hero is-primary" ]
         [ div [ class "hero-body" ]
-            [ div [ class "container carousel is-fullhd" ]
+            [ div [ class "container tables is-fullhd" ]
                 [ tableNav tablePage (Dict.size materials)
                 , materials
                     |> Dict.toList
@@ -23,7 +23,7 @@ view tablePage materials =
                     |> Util.split tablePerPage
                     |> List.indexedMap (Z.lazy3 tablesOfPage tablePage)
                     |> fillByDummyPage
-                    |> div [ class "carousel-container" ]
+                    |> div [ class "tables-container" ]
                 ]
             ]
         ]
@@ -32,7 +32,7 @@ view tablePage materials =
 tableNav : Int -> Int -> Html Msg
 tableNav tablePage numberOfMaterials =
     nav
-        [ class "carousel-navigation pagination is-centered"
+        [ class "tables-navigation pagination is-centered"
         , attribute "role" "navigation"
         , attribute "aria-label" "pagination"
         ]
@@ -46,14 +46,14 @@ tableNav tablePage numberOfMaterials =
 tablesOfPage : Int -> Int -> List (List ( String, Material )) -> Html Msg
 tablesOfPage tablePage pageIndex materials =
     if pageIndex == tablePage then
-        div [ class "carousel-item" ]
+        div [ class "tables-item" ]
             [ materials
                 |> List.map tableColumn
                 |> fillByDummyTable
                 |> div [ class "columns" ]
             ]
     else
-        div [ class "carousel-item", style [ ( "display", "none" ) ] ] []
+        div [ class "tables-item", style [ ( "display", "none" ) ] ] []
 
 
 tableColumn : List ( String, Material ) -> Html Msg
