@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Blick wall with whole lotta slides on it",
   "main": "ui/src/blick.js",
-  "directories": {
-    "test": "test"
-  },
+  "directories": {},
   "scripts": {
     "postinstall": "elm-package install --yes",
     "package": "elm-package",
