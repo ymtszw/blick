@@ -13,9 +13,7 @@ defmodule Blick.Controller.Material do
     query = Repo.Material.only_included(%{})
     case Repo.Material.retrieve_list(query, root_key()) do
       {:ok, ms} ->
-        conn
-        |> put_resp_header("cache-control", "private,max-age=1800")
-        |> json(200, %{"materials" => Map.new(ms, fn m -> {m._id, m} end)}) # Pass in KVS
+        json(conn, 200, %{"materials" => Map.new(ms, fn m -> {m._id, m} end)}) # Pass in KVS
       {:error, %_error{status_code: code, body: body}} ->
         json(conn, code, body)
     end
