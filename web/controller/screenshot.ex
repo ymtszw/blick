@@ -3,14 +3,21 @@ use Croma
 defmodule Blick.Controller.Screenshot do
   alias Croma.Result, as: R
   use SolomonLib.Controller
+  import Blick.Dodai, only: [root_key: 0]
+  alias Blick.Repo
 
   plug __MODULE__, :authenticate_worker, []
 
   @doc """
-  Returns list of materials which needs screenshot to be attached.
+  Returns list of materials which needs first screenshot to be attached.
   """
-  def list(_conn) do
-    # TODO:
+  def list_new(conn) do
+    case Repo.Material.retrieve_list(Repo.Material.non_google_without_ss(), root_key()) do
+      {:ok, materials} ->
+        json(conn, 200, %{materials: materials})
+      {:error, %_error{status_code: code, body: body}} ->
+        json(conn, code, body)
+    end
   end
 
   def create(_conn) do
