@@ -3,6 +3,7 @@ SolomonLib.Test.GearConfigHelper.set_config(%{
   "root_key" => "rkey_test",
   "google_client_id" => "google_client_id_test",
   "google_client_secret" => "google_client_secret_test",
+  "worker_key" => "TestWorkerKey",
   "encryption_key" => "TestEncryptionKey",
 })
 Blick.Mocks.inject([
