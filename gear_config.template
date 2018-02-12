@@ -2,5 +2,6 @@
   "root_key": "",
   "google_client_id": "",
   "google_client_secret": "",
+  "worker_key": "",
   "encryption_key": ""
 }
