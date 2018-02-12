@@ -131,7 +131,7 @@ defmodule Blick.Repo.Material do
         {id, %{data: %{"$set" => %{thumbnail_url: new_url}}} = ua} ->
           # XXX; This is just an experimental pattern of write back.
           # I think update request to Dodai is fast enough and does not require background task usually.
-          AsyncRepo.update(Material, ua, id, key)
+          AsyncRepo.update("Material", ua, id, key)
           {:ok, put_in(material.data.thumbnail_url, new_url)}
       end
     end
