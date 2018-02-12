@@ -5,6 +5,7 @@ defmodule Blick.Controller.Screenshot do
   use SolomonLib.Controller
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Repo
+  alias Blick.Model.Screenshot
 
   plug __MODULE__, :authenticate_worker, []
 
@@ -20,8 +21,26 @@ defmodule Blick.Controller.Screenshot do
     end
   end
 
-  def create(_conn) do
-    # TODO:
+  @doc """
+  Initiates new screenshot upload. Takes Material's _id and screenshot byte size.
+  """
+  def request_upload_start(%Conn{request: req} = conn) do
+    case upsert(req.path_mathes.id, req.body["size"], root_key()) do
+      {:ok, %Screenshot{} = ss} ->
+        json(conn, 200, ss)
+      {:error, %_error{status_code: code, body: body}} ->
+        json(conn, code, body)
+    end
+  end
+
+  defp upsert(id, size, root_key) do
+    case Repo.Screenshot.update(%{}, id, root_key) do
+      {:ok, %Screenshot{}} = ok ->
+        ok
+      {:error, %Dodai.ResourceNotFound{}} ->
+        insert_action = %{_id: id, filename: id, content_type: "image/png", size: size}
+        Repo.Screenshot.insert(insert_action, id, root_key)
+    end
   end
 
   def notify_upload_finish(_conn) do

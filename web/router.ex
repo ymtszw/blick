@@ -10,6 +10,7 @@ defmodule Blick.Router do
   get "/api/materials/:id", Material, :get
 
   get "/api/screenshots/new", Screenshot, :list_new
+  post "/api/screenshots/request_upload_start", Screenshot, :request_upload_start
 
   get "/", Root, :index
   get "/:id", Root, :show
