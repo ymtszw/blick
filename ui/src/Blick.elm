@@ -72,8 +72,13 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             in
                 model => (Navigation.newUrl path :: cmds)
 
-        WindowSize s ->
-            { model | windowSize = s } => []
+        WindowSize newSize ->
+            if crossedMobileMax windowSize newSize then
+                { model | windowSize = newSize, carouselPage = 0, tablePage = 0 } => []
+            else if crossedSingleColumnMax windowSize newSize then
+                { model | windowSize = newSize, carouselPage = 0 } => []
+            else
+                { model | windowSize = newSize } => []
 
         TimedErr err time ->
             { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
@@ -189,6 +194,18 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
                             Nothing
                     )
                     author_email
+
+
+crossedMobileMax : Window.Size -> Window.Size -> Bool
+crossedMobileMax oldSize newSize =
+    (oldSize.width <= mobileMaxWidthPx && newSize.width > mobileMaxWidthPx)
+        || (oldSize.width > mobileMaxWidthPx && newSize.width <= mobileMaxWidthPx)
+
+
+crossedSingleColumnMax : Window.Size -> Window.Size -> Bool
+crossedSingleColumnMax oldSize newSize =
+    (oldSize.width <= singleColumnMaxWidthPx && newSize.width > singleColumnMaxWidthPx)
+        || (oldSize.width > singleColumnMaxWidthPx && newSize.width <= singleColumnMaxWidthPx)
 
 
 
