@@ -64,6 +64,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
     |> R.bind(fn
       get_detail_results when length(get_detail_results) == length(google_materials) ->
         google_materials
+        |> Enum.sort_by(&Material.google_file_id!/1)
         |> Enum.zip(get_detail_results)
         |> Enum.map(&make_update_action/1)
         |> Enum.reject(&is_nil/1)
@@ -74,7 +75,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   defp batch_get_details(google_materials, token) do
     google_materials
     |> Enum.map(&Material.google_file_id!/1)
-    |> Files.batch_get(token)
+    |> Files.batch_get(token) # Results will be sorted by file_id
   end
 
   # Also used from Material controller
