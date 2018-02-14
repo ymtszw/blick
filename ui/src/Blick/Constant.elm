@@ -1,6 +1,8 @@
 module Blick.Constant
     exposing
-        ( bulmaColumnScaleMax
+        ( singleColumnMaxWidthPx
+        , mobileMaxWidthPx
+        , bulmaColumnScaleMax
         , tilePerRow
         , rowPerCarouselPage
         , maxCarouselPage
@@ -10,14 +12,29 @@ module Blick.Constant
         )
 
 
+singleColumnMaxWidthPx : Int
+singleColumnMaxWidthPx =
+    480
+
+
+mobileMaxWidthPx : Int
+mobileMaxWidthPx =
+    768
+
+
 bulmaColumnScaleMax : Int
 bulmaColumnScaleMax =
     12
 
 
-tilePerRow : Int
-tilePerRow =
-    4
+tilePerRow : Int -> Int
+tilePerRow width =
+    if width <= singleColumnMaxWidthPx then
+        1
+    else if width <= mobileMaxWidthPx then
+        2
+    else
+        4
 
 
 rowPerCarouselPage : Int
@@ -25,9 +42,9 @@ rowPerCarouselPage =
     3
 
 
-maxCarouselPage : Int -> Int
-maxCarouselPage numberOfMaterials =
-    numberOfMaterials // (tilePerRow * rowPerCarouselPage)
+maxCarouselPage : Int -> Int -> Int
+maxCarouselPage width numberOfMaterials =
+    numberOfMaterials // (tilePerRow width * rowPerCarouselPage)
 
 
 rowPerTable : Int

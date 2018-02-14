@@ -13,7 +13,7 @@ import Blick.View.Message as Message
 
 
 view : Model -> Html Msg
-view { materials, carouselPage, tablePage, matches, filterInput, route, exceptions } =
+view { materials, carouselPage, tablePage, matches, filterInput, route, exceptions, windowSize } =
     let
         ( withThumbs, withouts ) =
             materials
@@ -24,7 +24,7 @@ view { materials, carouselPage, tablePage, matches, filterInput, route, exceptio
             [ modalByRoute materials route
             , Hero.view matches filterInput
             , Message.view exceptions
-            , Carousel.view carouselPage withThumbs
+            , Carousel.view windowSize carouselPage withThumbs
             , Table.view tablePage withouts
             ]
 
