@@ -22,7 +22,7 @@ import Blick.View exposing (view)
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
 init flags location =
     let
-        ( size, ms ) =
+        ( ws, ms ) =
             fromFlags flags
     in
         { materials = ms
@@ -32,7 +32,7 @@ init flags location =
         , tablePage = 0
         , route = route location
         , exceptions = Dict.empty
-        , windowSize = size
+        , windowSize = ws
         }
             => [ listMaterials ]
 
@@ -42,7 +42,7 @@ fromFlags flags =
     let
         dec =
             D.succeed (,)
-                |: D.field "size" (D.map2 Window.Size (D.field "width" D.int) (D.field "height" D.int))
+                |: D.field "windowSize" (D.map2 Window.Size (D.field "width" D.int) (D.field "height" D.int))
                 |: D.field "materials" (D.dict (D.field "data" materialDecoder))
     in
         flags
@@ -60,7 +60,7 @@ fallbackSize =
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
+update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
