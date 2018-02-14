@@ -21,6 +21,7 @@ import Json.Decode as D exposing (Decoder, Value)
 import Json.Decode.Extra exposing ((|:), date)
 import Http as H
 import Navigation exposing (Location)
+import Window
 
 
 -- FLAGS
@@ -37,6 +38,7 @@ type alias Flags =
 type Msg
     = Loc Location
     | GoTo Route
+    | WindowSize Window.Size
     | TimedErr H.Error Time
     | CloseErr Time
     | ClientRes (Result H.Error Success)
@@ -64,6 +66,7 @@ type alias Model =
     , tablePage : Int
     , route : Route
     , exceptions : Dict Time Exception
+    , windowSize : Window.Size
     }
 
 

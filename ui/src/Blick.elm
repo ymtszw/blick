@@ -5,7 +5,9 @@ import Regex
 import Task
 import Time
 import Json.Decode as D
+import Json.Decode.Extra exposing ((|:))
 import Navigation exposing (Location)
+import Window exposing (resizes)
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
@@ -18,12 +20,10 @@ import Blick.View exposing (view)
 
 
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
-init materials location =
+init flags location =
     let
-        ms =
-            materials
-                |> D.decodeValue (D.dict (D.field "data" materialDecoder))
-                |> Result.withDefault Dict.empty
+        ( size, ms ) =
+            fromFlags flags
     in
         { materials = ms
         , matches = []
@@ -32,8 +32,27 @@ init materials location =
         , tablePage = 0
         , route = route location
         , exceptions = Dict.empty
+        , windowSize = size
         }
             => [ listMaterials ]
+
+
+fromFlags : Flags -> ( Window.Size, Dict String Material )
+fromFlags flags =
+    let
+        dec =
+            D.succeed (,)
+                |: D.field "size" (D.map2 Window.Size (D.field "width" D.int) (D.field "height" D.int))
+                |: D.field "materials" (D.dict (D.field "data" materialDecoder))
+    in
+        flags
+            |> D.decodeValue dec
+            |> Result.withDefault ( fallbackSize, Dict.empty )
+
+
+fallbackSize : Window.Size
+fallbackSize =
+    Window.Size 800 600
 
 
 
@@ -52,6 +71,9 @@ update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
                     goto r
             in
                 model => (Navigation.newUrl path :: cmds)
+
+        WindowSize s ->
+            { model | windowSize = s } => []
 
         TimedErr err time ->
             { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
@@ -170,6 +192,15 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
 
 
 
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.batch [ resizes WindowSize ]
+
+
+
 -- MAIN
 
 
@@ -178,6 +209,6 @@ main =
     Navigation.programWithFlags Loc
         { init = \flags location -> init flags location |> Rocket.batchInit
         , update = update >> Rocket.batchUpdate
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         , view = view
         }
