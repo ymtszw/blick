@@ -28,7 +28,7 @@ view { width } carouselPage materials =
                         |> List.indexedMap (carouselItem cs carouselPage)
                         |> fillByDummyPage cs
                         |> div [ class "carousel-container" ]
-                    , carouselNav width carouselPage (Dict.size materials)
+                    , carouselNav (maxCarouselPage width (Dict.size materials)) carouselPage
                     ]
                 ]
             ]
@@ -49,8 +49,8 @@ fillByDummyPage width pages =
             fillByDummyRow width []
 
 
-carouselNav : Int -> Int -> Int -> Html Msg
-carouselNav width carouselPage numberOfMaterials =
+carouselNav : Int -> Int -> Html Msg
+carouselNav max carouselPage =
     nav
         [ class "carousel-navigation pagination is-centered"
         , attribute "role" "navigation"
@@ -58,7 +58,7 @@ carouselNav width carouselPage numberOfMaterials =
         ]
         [ button (withDisabled (carouselPage <= 0) [ class "pagination-previous", onClick CarouselPrev ])
             [ i [ class "fa fa-chevron-left" ] [] ]
-        , button (withDisabled (carouselPage >= maxCarouselPage width numberOfMaterials) [ class "pagination-next", onClick CarouselNext ])
+        , button (withDisabled (carouselPage >= max - 1) [ class "pagination-next", onClick CarouselNext ])
             [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 
@@ -125,7 +125,7 @@ fillByDummyRow columnScale rows =
 
 dummyRow : Int -> Html Msg
 dummyRow columnScale =
-    div [ class "columns is-invisible" ]
+    div [ class "columns is-mobile is-invisible" ]
         [ div [ class <| "column" ++ columnScaleClass columnScale ]
             [ article [ class "material card" ]
                 [ div [ class "card-image" ] [ tileThumbnail Nothing ]
