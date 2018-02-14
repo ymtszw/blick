@@ -25,7 +25,7 @@ view { materials, carouselPage, tablePage, matches, filterInput, route, exceptio
             , Hero.view matches filterInput
             , Message.view exceptions
             , Carousel.view windowSize carouselPage withThumbs
-            , Table.view tablePage withouts
+            , Table.view windowSize tablePage withouts
             ]
 
 

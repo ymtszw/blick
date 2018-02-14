@@ -114,7 +114,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
         TableNext ->
             let
                 max =
-                    maxTablePage <| Dict.size materials
+                    maxTablePage windowSize.width (Dict.size materials)
             in
                 if tablePage > max then
                     { model | tablePage = max } => []
