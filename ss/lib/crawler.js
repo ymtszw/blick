@@ -17,7 +17,10 @@ const debugImgcat = (buffer) => {
 const ss = async (browser, material) => {
   const url = material.data.url
   const buffer = await takeSS(browser, url)
-  const resized = await sharp(buffer).resize(640).toBuffer()
+  const raw = await sharp(buffer)
+  const info = await raw.metadata()
+  const cropStrategy = (info.height > info.width) ? sharp.gravity.north : sharp.gravity.centre
+  const resized = await raw.resize(640, 360).crop(cropStrategy).toBuffer()
   debugImgcat(resized)
 }
 
