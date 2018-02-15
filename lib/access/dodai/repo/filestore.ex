@@ -429,7 +429,7 @@ defmodule Blick.Dodai.Repo.Filestore do
   end
 
   @doc false
-  defun collection_name!(gear_name :: v[SolomonLib.GearName.t], model_module :: v[atom]) :: CollectionName.t do
+  defun collection_name!(_gear_name :: SolomonLib.GearName.t, model_module :: v[atom]) :: CollectionName.t do
     # top_module_str = SolomonCore.GearModule.top(gear_name) |> Macro.to_string()
     top_module_str = "Blick"
     case Module.split(model_module) do
