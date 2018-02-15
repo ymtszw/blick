@@ -12,6 +12,7 @@ defmodule Blick.Model.Material do
       :google_folder,
       :qiita,
       :html,
+      :intra,
     ]
   end
 
@@ -22,6 +23,7 @@ defmodule Blick.Model.Material do
     created_time: nilable(SolomonLib.Time),
     author_email: nilable(SolomonLib.Email),
     type: Type,
+    public: {Croma.Boolean, default: false},   # Indicates the material is publicly viewable, in terms of authorization and contents; TODO use section
     excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons; TODO use section
     exclude_reason: nilable(Croma.String),
   ]
@@ -61,6 +63,8 @@ defmodule Blick.Model.Material do
       {:qiita, qiita_url}
     "http://qiita.com" <> http_qiita_path ->
       {:qiita, "https://qiita.com" <> http_qiita_path}
+    "http://gitbucket.tok.access-company.com" <> _ = gitbucket_url ->
+      {:intra, gitbucket_url}
     otherwise ->
       {:html, otherwise}
   end

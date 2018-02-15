@@ -114,6 +114,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
     |> R.bind(fn
       get_detail_results when length(get_detail_results) == length(id_and_google_materials) ->
         id_and_google_materials
+        |> Enum.sort_by(&(Material.google_file_id!(elem(&1, 1))))
         |> Enum.zip(get_detail_results)
         |> Enum.map(&renormalize_and_add_details_impl/1)
         |> Enum.reject(&is_nil/1)
@@ -127,7 +128,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
   defp batch_get_details(id_and_google_materials, token) do
     id_and_google_materials
     |> Enum.map(&(Material.google_file_id!(elem(&1, 1))))
-    |> Files.batch_get(token)
+    |> Files.batch_get(token) # Result will be sorted by file_id
   end
 
   @spec renormalize_and_add_details_impl({{Material.Id.t, Material.Data.t}, Google.multipart_res_t}) :: nil | {Material.Id.t, Material.Data.t}

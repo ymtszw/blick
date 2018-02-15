@@ -48,11 +48,15 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   end
 
   defp refresh_impl(materials, token, _force?) do
-    {google_materials, _other_materials0} =
+    {google_materials, other_materials} =
       Enum.split_with(materials, fn %Material{data: %Material.Data{type: type}} ->
         type in [:google_doc, :google_slide, :google_file]
       end)
-    google_materials |> filter_excluded() |> refresh_google_material_thumbnails(token)
+    R.m do
+      google_updates <- google_materials |> filter_excluded() |> refresh_google_material_thumbnails(token)
+      other_updates <- other_materials |> filter_excluded() |> refresh_other_materials()
+      pure google_updates ++ other_updates
+    end
   end
 
   defp filter_excluded(materials) do
@@ -64,6 +68,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
     |> R.bind(fn
       get_detail_results when length(get_detail_results) == length(google_materials) ->
         google_materials
+        |> Enum.sort_by(&Material.google_file_id!/1)
         |> Enum.zip(get_detail_results)
         |> Enum.map(&make_update_action/1)
         |> Enum.reject(&is_nil/1)
@@ -74,7 +79,25 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   defp batch_get_details(google_materials, token) do
     google_materials
     |> Enum.map(&Material.google_file_id!/1)
-    |> Files.batch_get(token)
+    |> Files.batch_get(token) # Results will be sorted by file_id
+  end
+
+  defunp refresh_other_materials(other_materials :: v[[Material.t]]) :: R.t([{Material.Id.t, Datastore.update_action_t}]) do
+    other_materials
+    |> Enum.map(&renormalize_other_material/1)
+    |> Enum.reject(&is_nil/1)
+    |> R.pure()
+  end
+
+  defp renormalize_other_material(%Material{_id: id, data: %Material.Data{type: type0, url: url0}}) do
+    case Material.normalize_url_by_types(url0) do
+      {^type0, ^url0} ->
+        nil # No change
+      {type1, url1} ->
+        set_type = if type1 == type0, do: %{}, else: %{type: type1}
+        set_url = if url1 == url0, do: %{}, else: %{type: url1}
+        {id, %{data: %{"$set" => Map.merge(set_type, set_url)}}}
+    end
   end
 
   # Also used from Material controller

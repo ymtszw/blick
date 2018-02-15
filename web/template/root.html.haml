@@ -1,1 +1,3 @@
-%script(type="text/javascript") blick(#{raw Poison.encode!(flags)})
+%script(type="text/javascript")
+  var ws = {width: window.innerWidth, height: window.innerHeight}
+  blick({windowSize: ws, materials: #{raw Poison.encode!(flags)}})

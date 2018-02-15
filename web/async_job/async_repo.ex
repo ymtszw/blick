@@ -1,14 +1,25 @@
-defmodule Blick.AsyncJob.AsyncRepo.Material do
+defmodule Blick.AsyncJob.AsyncRepo do
   use SolomonLib.AsyncJob
   alias Blick.Repo
 
   @impl true
-  def run(%{repo: Repo.Material, update_action: update_action, _id: id, key: key}, _metadata, _context) do
-    {:ok, _} = Repo.Material.update(update_action, id, key)
+  def run(%{mod: mod, fun: fun, args: args}, _metadata, _context) do
+    {:ok, _} = apply(mod, fun, args)
   end
 
-  def update(update_action, id, key) do
-    payload = %{repo: Repo.Material, update_action: update_action, _id: id, key: key}
+  # Convenient APIs
+
+  def update(repo, update_action, id, key) do
+    register_once(%{mod: Module.safe_concat(Repo, repo), fun: :update, args: [update_action, id, key]})
+  end
+
+  def notify_upload_finish(file_repo, id, key) do
+    register_once(%{mod: Module.safe_concat(Repo, file_repo), fun: :notify_upload_finish, args: [id, key]})
+  end
+
+  # Internals
+
+  defp register_once(payload) do
     register(payload, {:gear, :blick}, id: payload_to_id(payload))
   end
 

@@ -5,7 +5,9 @@ import Regex
 import Task
 import Time
 import Json.Decode as D
+import Json.Decode.Extra exposing ((|:))
 import Navigation exposing (Location)
+import Window exposing (resizes)
 import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
@@ -18,12 +20,10 @@ import Blick.View exposing (view)
 
 
 init : Flags -> Location -> ( Model, List (Cmd Msg) )
-init materials location =
+init flags location =
     let
-        ms =
-            materials
-                |> D.decodeValue (D.dict (D.field "data" materialDecoder))
-                |> Result.withDefault Dict.empty
+        ( ws, ms ) =
+            fromFlags flags
     in
         { materials = ms
         , matches = []
@@ -32,8 +32,27 @@ init materials location =
         , tablePage = 0
         , route = route location
         , exceptions = Dict.empty
+        , windowSize = ws
         }
             => [ listMaterials ]
+
+
+fromFlags : Flags -> ( Window.Size, Dict String Material )
+fromFlags flags =
+    let
+        dec =
+            D.succeed (,)
+                |: D.field "windowSize" (D.map2 Window.Size (D.field "width" D.int) (D.field "height" D.int))
+                |: D.field "materials" (D.dict (D.field "data" materialDecoder))
+    in
+        flags
+            |> D.decodeValue dec
+            |> Result.withDefault ( fallbackSize, Dict.empty )
+
+
+fallbackSize : Window.Size
+fallbackSize =
+    Window.Size 800 600
 
 
 
@@ -41,7 +60,7 @@ init materials location =
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
+update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -52,6 +71,14 @@ update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
                     goto r
             in
                 model => (Navigation.newUrl path :: cmds)
+
+        WindowSize newSize ->
+            if crossedMobileMax windowSize newSize then
+                { model | windowSize = newSize, carouselPage = 0, tablePage = 0 } => []
+            else if crossedSingleColumnMax windowSize newSize then
+                { model | windowSize = newSize, carouselPage = 0 } => []
+            else
+                { model | windowSize = newSize } => []
 
         TimedErr err time ->
             { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
@@ -72,7 +99,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
         CarouselNext ->
             let
                 max =
-                    maxCarouselPage <| Dict.size materials
+                    maxCarouselPage windowSize.width (Dict.size materials)
             in
                 if carouselPage > max then
                     { model | carouselPage = max } => []
@@ -92,7 +119,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions } as model) =
         TableNext ->
             let
                 max =
-                    maxTablePage <| Dict.size materials
+                    maxTablePage windowSize.width (Dict.size materials)
             in
                 if tablePage > max then
                     { model | tablePage = max } => []
@@ -169,6 +196,27 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
                     author_email
 
 
+crossedMobileMax : Window.Size -> Window.Size -> Bool
+crossedMobileMax oldSize newSize =
+    (oldSize.width <= mobileMaxWidthPx && newSize.width > mobileMaxWidthPx)
+        || (oldSize.width > mobileMaxWidthPx && newSize.width <= mobileMaxWidthPx)
+
+
+crossedSingleColumnMax : Window.Size -> Window.Size -> Bool
+crossedSingleColumnMax oldSize newSize =
+    (oldSize.width <= singleColumnMaxWidthPx && newSize.width > singleColumnMaxWidthPx)
+        || (oldSize.width > singleColumnMaxWidthPx && newSize.width <= singleColumnMaxWidthPx)
+
+
+
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.batch [ resizes WindowSize ]
+
+
 
 -- MAIN
 
@@ -178,6 +226,6 @@ main =
     Navigation.programWithFlags Loc
         { init = \flags location -> init flags location |> Rocket.batchInit
         , update = update >> Rocket.batchUpdate
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         , view = view
         }

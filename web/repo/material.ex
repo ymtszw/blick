@@ -131,7 +131,7 @@ defmodule Blick.Repo.Material do
         {id, %{data: %{"$set" => %{thumbnail_url: new_url}}} = ua} ->
           # XXX; This is just an experimental pattern of write back.
           # I think update request to Dodai is fast enough and does not require background task usually.
-          AsyncRepo.Material.update(ua, id, key)
+          AsyncRepo.update("Material", ua, id, key)
           {:ok, put_in(material.data.thumbnail_url, new_url)}
       end
     end
@@ -152,5 +152,24 @@ defmodule Blick.Repo.Material do
 
   defun only_included(list_action :: Datastore.list_action_t) :: Datastore.list_action_t do
     Blick.MapUtil.deep_merge(list_action, %{query: %{"data.excluded" => false}})
+  end
+
+  defun non_google_without_ss() :: Datastore.list_action_t do
+    %{
+      query: %{
+        "data.excluded" => false,
+        "data.type" => %{"$in" => ["qiita", "html"]},
+        "data.thumbnail_url" => nil,
+      },
+    }
+  end
+
+  defun non_google() :: Datastore.list_action_t do
+    %{
+      query: %{
+        "data.excluded" => false,
+        "data.type" => %{"$in" => ["qiita", "html"]},
+      },
+    }
   end
 end
