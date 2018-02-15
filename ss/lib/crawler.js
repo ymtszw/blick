@@ -7,28 +7,32 @@
 
 const sharp = require('sharp')
 const { takeSS, withBrowser } = require('./pptr')
-const { list_new } = require('./api_client')
+const { list, request_upload_start, upload, notify_upload_finish } = require('./api_client')
 
-const debugImgcat = (buffer) => {
-  const cp = require('child_process')
-  console.log(cp.execSync('imgcat', {input: buffer}).toString('binary'))
+const ss = async (browser, { _id, data }) => {
+  const buffer = await takeSS(browser, data.url)
+  const resized = await resize(buffer)
+  // console.log(require('child_process').execSync('imgcat', {input: buffer}).toString('binary'))
+  const size = resized.length
+  const { upload_url } = await request_upload_start(_id, size)
+  await upload(_id, upload_url, resized)
+  return await notify_upload_finish(_id)
 }
 
-const ss = async (browser, material) => {
-  const url = material.data.url
-  const buffer = await takeSS(browser, url)
+const resize = async (buffer) => {
   const raw = await sharp(buffer)
   const info = await raw.metadata()
   const cropStrategy = (info.height > info.width) ? sharp.gravity.north : sharp.gravity.centre
-  const resized = await raw.resize(640, 360).crop(cropStrategy).toBuffer()
-  debugImgcat(resized)
+  return await raw.resize(640, 360).crop(cropStrategy).toBuffer()
 }
 
 const main = async () => {
-  const materials = await list_new()
+  const materials = await list()
 
   await withBrowser(async (browser) => {
-    return Promise.all(materials.map(async (material) => await ss(browser, material)))
+    return Promise.all(materials
+      // .filter((material) => material.data.type === 'qiita')
+      .map(async (material) => await ss(browser, material)))
   })
 }
 
