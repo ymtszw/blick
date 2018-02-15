@@ -5,7 +5,7 @@ defmodule Blick.Controller.Screenshot do
   use SolomonLib.Controller
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Repo
-  alias Blick.AsyncJob.AsyncRepo
+  alias Blick.AsyncJob.ScreenshotSetter
   alias Blick.Model.Screenshot
 
   plug __MODULE__, :authenticate_worker, []
@@ -39,13 +39,14 @@ defmodule Blick.Controller.Screenshot do
       {:ok, %Screenshot{}} = ok ->
         ok
       {:error, %Dodai.ResourceNotFound{}} ->
-        insert_action = %{_id: id, filename: id, content_type: "image/png", size: size}
+        # Use same _id for Material data entity and Screenshot file entity
+        insert_action = %{_id: id, filename: id, content_type: "image/png", size: size, public: true}
         Repo.Screenshot.insert(insert_action, id, root_key)
     end
   end
 
   def notify_upload_finish(%Conn{request: req} = conn) do
-    AsyncRepo.notify_upload_finish("Screenshot", req.path_mathes.id, root_key())
+    ScreenshotSetter.exec(req.path_mathes.id, root_key())
     put_status(conn, 204)
   end
 
