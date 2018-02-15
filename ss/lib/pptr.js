@@ -12,6 +12,7 @@ const takeSS = async (browser, url) => {
   await page.setViewport({width: 1200, height: 675}) // 16:9
   await page.setExtraHTTPHeaders({'accept-language': 'ja'})
   await page.goto(url, {waitUntil: 'networkidle2'})
+  await page.waitFor(5000) // Wait for possible initial animations/effects to settle
   const buffer = await page.screenshot()
   await page.close()
   return buffer

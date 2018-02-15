@@ -5,16 +5,16 @@
 */
 
 const mainCLI = require('./lib/cli')
+const mainCrawler = require('./lib/crawler')
 
 const asCLI = () => process.argv.length >= 3
 
 const main = async () => {
-  process.on('unhandledRejection', console.dir)
   if (asCLI()) {
     await mainCLI()
   } else {
     console.log('Starting crawler.')
-    // TODO: As crawler
+    await mainCrawler()
   }
 }
 

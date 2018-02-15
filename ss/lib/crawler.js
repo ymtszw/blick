@@ -1,0 +1,32 @@
+/* @module crawler
+*
+* Take Screenshots of target Materials fetched from gear API.
+* Then uploads them to cloud file storage.
+*
+*/
+
+const sharp = require('sharp')
+const { takeSS, withBrowser } = require('./pptr')
+const { list_new } = require('./api_client')
+
+const debugImgcat = (buffer) => {
+  const cp = require('child_process')
+  console.log(cp.execSync('imgcat', {input: buffer}).toString('binary'))
+}
+
+const ss = async (browser, material) => {
+  const url = material.data.url
+  const buffer = await takeSS(browser, url)
+  const resized = await sharp(buffer).resize(640).toBuffer()
+  debugImgcat(resized)
+}
+
+const main = async () => {
+  const materials = await list_new()
+
+  await withBrowser(async (browser) => {
+    return Promise.all(materials.map(async (material) => await ss(browser, material)))
+  })
+}
+
+module.exports = main
