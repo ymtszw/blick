@@ -1,6 +1,6 @@
 /* @module cli
 *
-* Take ScreenShot in PNG format from CLI.
+* Take Screenshot in PNG format from CLI.
 * Prints result if `imgcat` available (save to a file if specified).
 * If `imgcat` is not available, always saves a result to file.
 *
@@ -17,7 +17,7 @@ const imgcatAvaibale = () => which.sync('imgcat', {nothrow: true})
 const save = (buffer, filename0) => {
   const filename = filename0 || 'sample.png'
   fs.writeFileSync(filename, buffer)
-  console.log(`ScreenShot saved to ${filename}`)
+  console.log(`Screenshot saved to ${filename}`)
 }
 
 const previewAndSave = (buffer, filename) => {
