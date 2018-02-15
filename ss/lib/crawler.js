@@ -32,8 +32,17 @@ const main = async () => {
   await withBrowser(async (browser) => {
     return Promise.all(materials
       // .filter((material) => material.data.type === 'qiita')
-      .map(async (material) => await ss(browser, material)))
+      .map(async (material) => await ss(browser, material).catch(handleSSError(material))))
   })
+}
+
+const handleSSError = (material) => async (err) => {
+  if (err.message === 'net::ERR_NAME_NOT_RESOLVED') {
+    console.error(`Unreachable: ${material.data.url}`)
+    // TODO: exclude material._id
+  } else {
+    console.error(err)
+  }
 }
 
 module.exports = main
