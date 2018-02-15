@@ -5,7 +5,8 @@ defmodule Blick.AsyncJob.ScreenshotSetter do
 
   @impl true
   def run(%{_id: id, key: key}, _metadata, _context) do
-    {:ok, %Screenshot{public_url: thumbnail_url}} = Repo.Screenshot.notify_upload_finish(id, key)
+    # Crash with MatchError on failure, and let solomon to retry
+    {:ok, %Screenshot{public_url: "http" <> _ = thumbnail_url}} = Repo.Screenshot.notify_upload_finish(id, key)
     {:ok, _} = Repo.Material.update(%{data: %{"$set" => %{thumbnail_url: thumbnail_url}}}, id, key)
   end
 

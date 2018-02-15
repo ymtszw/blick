@@ -163,4 +163,13 @@ defmodule Blick.Repo.Material do
       },
     }
   end
+
+  defun non_google() :: Datastore.list_action_t do
+    %{
+      query: %{
+        "data.excluded" => false,
+        "data.type" => %{"$in" => ["qiita", "html"]},
+      },
+    }
+  end
 end
