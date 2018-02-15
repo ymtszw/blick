@@ -5,6 +5,7 @@ defmodule Blick.Controller.Screenshot do
   use SolomonLib.Controller
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Repo
+  alias Blick.AsyncJob.AsyncRepo
   alias Blick.Model.Screenshot
 
   plug __MODULE__, :authenticate_worker, []
@@ -43,8 +44,9 @@ defmodule Blick.Controller.Screenshot do
     end
   end
 
-  def notify_upload_finish(_conn) do
-    # TODO:
+  def notify_upload_finish(%Conn{request: req} = conn) do
+    AsyncRepo.notify_upload_finish("Screenshot", req.path_mathes.id, root_key())
+    put_status(conn, 204)
   end
 
   # Plug
