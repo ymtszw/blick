@@ -12,6 +12,7 @@ defmodule Blick.Model.Material do
       :google_folder,
       :qiita,
       :html,
+      :intra,
     ]
   end
 
@@ -62,6 +63,8 @@ defmodule Blick.Model.Material do
       {:qiita, qiita_url}
     "http://qiita.com" <> http_qiita_path ->
       {:qiita, "https://qiita.com" <> http_qiita_path}
+    "http://gitbucket.tok.access-company.com" <> _ = gitbucket_url ->
+      {:intra, gitbucket_url}
     otherwise ->
       {:html, otherwise}
   end
