@@ -12,7 +12,7 @@ const { list, request_upload_start, upload, notify_upload_finish, exclude_materi
 const ss = async (browser, { _id, data }) => {
   const buffer = await takeSS(browser, data.url)
   const resized = await resize(buffer)
-  // console.log(require('child_process').execSync('imgcat', {input: buffer}).toString('binary'))
+  // console.log(require('child_process').execSync('imgcat', {input: resized}).toString('binary'))
   const size = resized.length
   const { upload_url } = await request_upload_start(_id, size)
   await upload(_id, upload_url, resized)

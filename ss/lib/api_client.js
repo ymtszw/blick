@@ -60,7 +60,7 @@ const put = (urlOrPath, reqBody, headers) => {
     method: 'PUT',
     headers: headers,
   })
-  const payload = (typeof(reqBody) === 'object') ? JSON.stringify(reqBody) : reqBody
+  const payload = (typeof(reqBody) === 'string' || reqBody instanceof Buffer) ? reqBody : JSON.stringify(reqBody)
   return new Promise((resolve, reject) => {
     const req = mod(opts).request(opts, (incoming) => readBody(incoming, resolve)).on('error', reject)
     // Using req.write() makes the request chunked, which AWS S3 cannot handle
