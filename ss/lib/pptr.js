@@ -52,7 +52,7 @@ const handleGitHubPage = async (page) => {
 }
 
 const withBrowser = async (fun) => {
-  const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox']})
+  const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']})
   process.on('error', () => browser.close())
   console.log('Browser up.')
   await fun(browser)
