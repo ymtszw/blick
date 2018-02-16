@@ -16,7 +16,7 @@ defmodule Blick.Model.Material do
     ]
   end
 
-  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: [
+  @data_fields [
     title: Croma.String,
     url: Url,
     thumbnail_url: nilable(Url),
@@ -27,6 +27,9 @@ defmodule Blick.Model.Material do
     excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons; TODO use section
     exclude_reason: nilable(Croma.String),
   ]
+  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: @data_fields
+
+  def data_fields(), do: @data_fields
 
   @doc """
   Generates Unique ID of Material.

@@ -22,4 +22,12 @@ defmodule Blick.Controller.MaterialTest do
     %{status: 200, body: body1} = Req.get("/api/materials", %{"authorization" => ak})
     assert Poison.decode!(body1) == %{"materials" => %{}}
   end
+
+  test "PUT /api/materials/:id/[field] should reject requests without value", %{api_key: ak} do
+    dummy_id = "AAAAAAAAAAAAAAAAAAAAAAAAAA"
+    for {field, _} <- Blick.Model.Material.data_fields() do
+      assert %{status: 400} = Req.put_json("/api/materials/#{dummy_id}/#{field}", %{}, %{"authorization" => ak})
+      assert %{status: 400} = Req.put_json("/api/materials/#{dummy_id}/#{field}", %{"non_value" => "dummy"}, %{"authorization" => ak})
+    end
+  end
 end

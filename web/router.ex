@@ -8,6 +8,9 @@ defmodule Blick.Router do
 
   get "/api/materials", Material, :list
   get "/api/materials/:id", Material, :get
+  for {field, _} <- Blick.Model.Material.data_fields() do
+    put "/api/materials/:id/#{field}", Material, :"update_#{field}"
+  end
 
   get "/api/screenshots", Screenshot, :list
   post "/api/screenshots/:id/request_upload_start", Screenshot, :request_upload_start
