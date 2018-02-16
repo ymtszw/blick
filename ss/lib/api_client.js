@@ -1,6 +1,6 @@
 /* @module api_client
 *
-* HTTP Client for blick Screenshot API.
+* HTTP Client for blick gear API.
 *
 */
 
@@ -13,6 +13,8 @@ const api_key = process.env.API_KEY
 const refresh = (process.env.REFRESH === 'true') ? true : false
 
 const mod = ({ protocol }) => (protocol === 'https:') ? https : http
+
+// HTTP clients
 
 const get = (path) => {
   const opts = Object.assign(url.parse(`${host}${path}`), {
@@ -48,10 +50,25 @@ const post = (path, reqBody) => {
   const payload = (typeof(reqBody) !== 'string') ? JSON.stringify(reqBody) : reqBody
   return new Promise((resolve, reject) => {
     const req = mod(opts).request(opts, (incoming) => readBody(incoming, resolve)).on('error', reject)
-    req.write(payload)
-    req.end()
+    req.end(payload)
   })
 }
+
+const put = (urlOrPath, reqBody, headers) => {
+  const fullUrl = (urlOrPath.startsWith('http')) ? urlOrPath : `${host}${urlOrPath}`
+  const opts = Object.assign(url.parse(fullUrl), {
+    method: 'PUT',
+    headers: headers,
+  })
+  const payload = (typeof(reqBody) === 'object') ? JSON.stringify(reqBody) : reqBody
+  return new Promise((resolve, reject) => {
+    const req = mod(opts).request(opts, (incoming) => readBody(incoming, resolve)).on('error', reject)
+    // Using req.write() makes the request chunked, which AWS S3 cannot handle
+    req.end(payload)
+  })
+}
+
+// Gear API clients & uploader
 
 const list = async () => {
   const res = await get(`/api/screenshots?refresh=${refresh}`)
@@ -72,20 +89,16 @@ const request_upload_start = async (id, size) => {
 }
 
 const upload = async (id, uploadUrl, buffer) => {
-  const opts = Object.assign(url.parse(uploadUrl), {
-    method: 'PUT',
-    headers: {
-      'content-type': 'image/png',
-      'content-disposition': `attachment; filename=${id}`,
-      'cache-control': 'public, max-age=3600',
-    },
+  console.log(`Uploading image for ${id}, ${buffer.length} bytes.`)
+  const res = await put(uploadUrl, buffer, {
+    'content-type': 'image/png',
+    'content-disposition': `attachment; filename=${id}`,
+    'cache-control': 'public, max-age=3600',
   })
-  return new Promise((resolve, reject) => {
-    console.log(`Uploading image for ${id}, ${buffer.length} bytes.`)
-    const req = mod(opts).request(opts, (incoming) => readBody(incoming, resolve)).on('error', reject)
-    // Using req.write() makes the request chunked, which AWS S3 cannot handle
-    req.end(buffer)
-  })
+  if (res.status !== 200) {
+    console.error(res)
+    throw new Error(`Failed to upload image for ${id}.`)
+  }
 }
 
 const notify_upload_finish = async (id) => {
@@ -96,4 +109,15 @@ const notify_upload_finish = async (id) => {
   }
 }
 
-module.exports = { list, request_upload_start, upload, notify_upload_finish }
+const exclude_material = async (id) => {
+  const res = await put(`/api/materials/${id}/excluded`, {value: true}, {
+    'content-type': 'application/json',
+    'authorization': api_key,
+  })
+  if (res.status !== 200) {
+    console.error(res)
+    throw new Error(`Failed on update ${id}.`)
+  }
+}
+
+module.exports = { list, request_upload_start, upload, notify_upload_finish, exclude_material }
