@@ -9,6 +9,8 @@ const sharp = require('sharp')
 const { takeSS, withBrowser } = require('./pptr')
 const { list, request_upload_start, upload, notify_upload_finish, exclude_material } = require('./api_client')
 
+const maxPromises = parseInt(process.env.MAX_PROMISES) || 3
+
 const ss = async (browser, { _id, data }) => {
   const buffer = await takeSS(browser, data.url)
   const resized = await resize(buffer)
@@ -28,7 +30,7 @@ const resize = async (buffer) => {
 
 const main = async () => {
   const materials = await list()
-  const chunkedMaterials = chunk(materials, 3, [])
+  const chunkedMaterials = chunk(materials, maxPromises, [])
   await withBrowser(async (browser) => {
     return await chunkedMaterials.reduce(chunkReducer(browser), Promise.resolve('init'))
   })
