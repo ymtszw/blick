@@ -68,6 +68,13 @@ const put = (urlOrPath, reqBody, headers) => {
   })
 }
 
+const putJson = (path, reqBody) => {
+  put(path, reqBody, {
+    'content-type': 'application/json',
+    'authorization': api_key,
+  })
+}
+
 // Gear API clients & uploader
 
 const list = async () => {
@@ -110,12 +117,10 @@ const notify_upload_finish = async (id) => {
 }
 
 const exclude_material = async (id) => {
-  const res = await put(`/api/materials/${id}/excluded`, {value: true}, {
-    'content-type': 'application/json',
-    'authorization': api_key,
-  })
-  if (res.status !== 200) {
-    console.error(res)
+  const res0 = await putJson(`/api/materials/${id}/excluded`, {value: true})
+  const res1 = await putJson(`/api/materials/${id}/exclude_reason`, {value: 'URL unreachable.'})
+  if (res0.status !== 200 || res1.status !== 200) {
+    console.error(res0, res1)
     throw new Error(`Failed on update ${id}.`)
   }
 }
