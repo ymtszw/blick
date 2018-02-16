@@ -43,9 +43,12 @@ heroku config:set --app=blick-ss-init WORKER_ENV=cloud API_KEY=<encrypted_worker
 サブディレクトリをデプロイするために、`git-subtree`を使う。プロジェクトrootで、
 
 ```
-git subtree push --prefix=ss heroku-blick-ss-init master
+git subtree push --prefix=ss git@heroku.com:blick-ss-init.git master
 (npm run deploy:init)
 ```
+
+`git-remote`を追加しておいてもいいが、このコマンドを直接打つことはまずないので`npm-scripts`に埋め込んでしまう。
+BitBucket PipelinesにHerokuへのデプロイをやらせるためにも、この方式は楽。
 
 `REFRESH=true`付きのジョブについてはapp名を`blick-ss-refresh`と読み替える。
 また、`config:set`の際は`REFRESH=true`をつける。
