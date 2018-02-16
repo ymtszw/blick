@@ -6,8 +6,7 @@ defmodule Blick.Controller.Material do
   alias Blick.Repo
   alias Blick.Model.Material
 
-  plug Blick.Plug.Auth, :filter_by_sender_identity, []
-  plug Blick.Plug.Auth, :ensure_admin_authorization, []
+  plug Blick.Plug.Auth, :authenticate_by_sender, []
 
   defun list(%Conn{request: _req} = conn) :: Conn.t do
     query = Repo.Material.only_included(%{})

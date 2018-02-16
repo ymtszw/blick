@@ -1,14 +1,13 @@
 use Croma
 
 defmodule Blick.Controller.Screenshot do
-  alias Croma.Result, as: R
   use SolomonLib.Controller
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.Repo
   alias Blick.AsyncJob.ScreenshotSetter
   alias Blick.Model.Screenshot
 
-  plug __MODULE__, :authenticate_worker, []
+  plug Blick.Plug.Auth, :authenticate_by_sender, []
 
   @doc """
   Returns list of materials which needs first screenshot to be attached.
@@ -54,24 +53,5 @@ defmodule Blick.Controller.Screenshot do
   def notify_upload_finish(%Conn{request: req} = conn) do
     ScreenshotSetter.exec(req.path_matches.id, root_key())
     put_status(conn, 204)
-  end
-
-  # Plug
-
-  def authenticate_worker(%Conn{request: req} = conn, _opts) do
-    req.headers
-    |> Map.get("authorization", "")
-    |> Blick.decrypt_base64()
-    |> R.map(fn key -> key == Blick.get_env("worker_key") end)
-    |> case do
-      {:ok, true} -> conn
-      _otherwise -> json(conn, 401, %{error: "Unauthorized"})
-    end
-  end
-
-  # Helper
-
-  def generate_api_key(worker_key, encryption_key) do
-    worker_key |> SolomonLib.Crypto.Aes.ctr128_encrypt(encryption_key) |> Base.encode64()
   end
 end

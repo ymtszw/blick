@@ -5,7 +5,7 @@ defmodule Blick.Controller.Root do
   alias Blick.Repo
   alias Blick.Model.Material
 
-  plug Blick.Plug.Auth, :filter_by_sender_identity, [], except: [:public_login]
+  plug Blick.Plug.Auth, :authenticate_by_sender, [], except: [:public_login]
   plug Blick.Plug.Auth, :ensure_admin_authorization, [], except: [:public_login]
 
   def public_login(conn) do
