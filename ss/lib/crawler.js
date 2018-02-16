@@ -7,7 +7,7 @@
 
 const sharp = require('sharp')
 const { takeSS, withBrowser } = require('./pptr')
-const { list, request_upload_start, upload, notify_upload_finish } = require('./api_client')
+const { list, request_upload_start, upload, notify_upload_finish, exclude_material } = require('./api_client')
 
 const ss = async (browser, { _id, data }) => {
   const buffer = await takeSS(browser, data.url)
@@ -39,7 +39,7 @@ const main = async () => {
 const handleSSError = (material) => async (err) => {
   if (err.message === 'net::ERR_NAME_NOT_RESOLVED') {
     console.error(`Unreachable: ${material.data.url}`)
-    // TODO: exclude material._id
+    await exclude_material(material._id).catch((err) => console.error(err))
   } else {
     console.error(err)
   }

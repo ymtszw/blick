@@ -14,7 +14,7 @@ const main = async () => {
     await mainCLI()
   } else {
     console.log('Starting crawler.')
-    await mainCrawler().catch(handleError)
+    await mainCrawler()
   }
 }
 
@@ -22,4 +22,4 @@ const handleError = async (err) => {
   console.error(err)
 }
 
-main()
+main().catch(handleError)
