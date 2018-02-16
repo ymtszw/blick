@@ -28,12 +28,30 @@ const resize = async (buffer) => {
 
 const main = async () => {
   const materials = await list()
-
+  const chunkedMaterials = chunk(materials, 3, [])
   await withBrowser(async (browser) => {
-    return Promise.all(materials
-      // .filter((material) => material.data.type === 'qiita')
-      .map(async (material) => await ss(browser, material).catch(handleSSError(material))))
+    return await chunkedMaterials.reduce(chunkReducer(browser), Promise.resolve('init'))
   })
+}
+
+const chunk = (array, n, acc) => {
+  acc.push(array.slice(0, n))
+  const tl = array.slice(n)
+  if (tl.length === 0) {
+    return acc
+  } else {
+    return chunk(tl, n, acc)
+  }
+}
+
+const chunkReducer = (browser) => async (promise, chunk, index) => {
+  await promise
+  console.log(`Processing chunk #${index}`)
+  return Promise.all(chunk.map(ssImpl(browser)))
+}
+
+const ssImpl = (browser) => async (material) => {
+  return await ss(browser, material).catch(handleSSError(material))
 }
 
 const handleSSError = (material) => async (err) => {
