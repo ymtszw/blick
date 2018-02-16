@@ -59,6 +59,7 @@ const handleSSError = (material) => async (err) => {
     console.error(`Unreachable: ${material.data.url}`)
     await exclude_material(material._id).catch((err) => console.error(err))
   } else {
+    console.error(`Crashed on: ${material.data.url}`)
     console.error(err)
   }
 }
