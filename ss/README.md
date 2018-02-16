@@ -19,12 +19,12 @@ APIのController moduleにヘルパー関数(`Blick.Plug.Auth.generate_api_key/2
 
 ## デプロイ
 
-Herokuでは[Heroku Scheduler][hs]を使って、2通りのジョブを動かす。
+Herokuでは[Heroku Scheduler]を使って、2通りのジョブを動かす。
 
-[hs]: https://devcenter.heroku.com/articles/scheduler
+[Heroku Scheduler]: https://devcenter.heroku.com/articles/scheduler
 
-- まだサムネイルが付与されていないMaterialに付与するジョブ。短周期で動かす。
-- すでに付与されているサムネイルを更新するジョブ。`REFRESH=true`オプションを付けて長周期で動かす。
+- まだサムネイルが付与されていないMaterialに付与するジョブ。短周期で動かす。(10分毎)
+- すでに付与されているサムネイルを更新するジョブ。`REFRESH=true`オプションを付けて長周期で動かす。（1日毎）
 
 [heroku-cli]をインストールしておく必要があるが、Node.jsを`asdf`で管理している場合は多少面倒で、
 `brew`を使ってglobalにインストールしようとすると`node`をdependencyとして持ってこようとするため環境が壊れる。
@@ -37,18 +37,26 @@ Herokuでは[Heroku Scheduler][hs]を使って、2通りのジョブを動かす
 heroku apps:add blick-ss-init
 heroku buildpacks:add --app=blick-ss-init https://github.com/CoffeeAndCode/puppeteer-heroku-buildpack
 heroku addons:add --app=blick-ss-init scheduler:standard
-heroku config:set --app=blick-ss-init WORKER_ENV=cloud API_KEY=<encrypted_worker_key>
+heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encrypted_worker_key>
 ```
 
 サブディレクトリをデプロイするために、`git-subtree`を使う。プロジェクトrootで、
 
 ```
-git subtree push --prefix=ss git@heroku.com:blick-ss-init.git master
+git push --force git@heroku.com:blick-ss-init.git $(git subtree split --prefix=ss --branch heroku):master
 (npm run deploy:init)
 ```
 
 `git-remote`を追加しておいてもいいが、このコマンドを直接打つことはまずないので`npm-scripts`に埋め込んでしまう。
 BitBucket PipelinesにHerokuへのデプロイをやらせるためにも、この方式は楽。
+また、単に`subtree push`だと`--force`オプションがないため、手元から何度かデプロイを試したあと、
+BitBucketやJenkinsに自動デプロイさせようとするとリジェクトされる。
+(`subtree`までレポジトリ間で共有するのは正直面倒なので`force push`で楽したい)
 
 `REFRESH=true`付きのジョブについてはapp名を`blick-ss-refresh`と読み替える。
 また、`config:set`の際は`REFRESH=true`をつける。
+
+ジョブ設定は[Heroku Scheduler]のUIからしかできないので、そこから設定する。
+
+`Promise`の並列度を`MAX_PROMISES`で制御できるようにしてあるが、heroku上ではfree dynoのメモリ制限だと
+`MAX_PROMISES=1`でしか安定稼働しない。2並列でもぎりぎり動くが、時々`Page crashed!`エラーが発生する模様。
