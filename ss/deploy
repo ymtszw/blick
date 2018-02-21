@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+git fetch origin deployed_to_heroku
 if git diff --quiet HEAD origin/deployed_to_heroku -- 'ss/'; then
   git push origin deployed_to_heroku
   subtree="$(git subtree split --prefix=ss --branch heroku)"
