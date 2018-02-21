@@ -1,10 +1,6 @@
-image: node:6
-
+image: ubuntu
 pipelines:
   default:
     - step:
-        caches:
-          - node
         script:
-          - npm run deploy:ss-init
-          - npm run deploy:ss-refresh
+          - ./ss/deploy
