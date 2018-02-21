@@ -1,6 +1,7 @@
 # Use atlassian/default-image
 pipelines:
-  master:
-    - step:
-        script:
-          - ./ss/deploy
+  branches:
+    master:
+      - step:
+          script:
+            - ./ss/deploy
