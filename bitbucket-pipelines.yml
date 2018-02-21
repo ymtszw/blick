@@ -1,4 +1,4 @@
-image: ubuntu
+# Use atlassian/default-image
 pipelines:
   default:
     - step:
