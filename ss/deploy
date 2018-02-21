@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-git fetch origin deployed_to_heroku
+git fetch origin deployed_to_heroku:origin/deployed_to_heroku
 if git diff --quiet HEAD origin/deployed_to_heroku -- 'ss/'; then
   subtree="$(git subtree split --prefix=ss --branch heroku)"
   git push --force git@heroku.com:blick-ss-init.git "${subtree}:master"
