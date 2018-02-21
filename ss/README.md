@@ -44,10 +44,10 @@ heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encry
 
 ```
 git push --force git@heroku.com:blick-ss-init.git $(git subtree split --prefix=ss --branch heroku):master
-(npm run deploy:init)
+(./deploy)
 ```
 
-`git-remote`を追加しておいてもいいが、このコマンドを直接打つことはまずないので`npm-scripts`に埋め込んでしまう。
+`git-remote`を追加しておいてもいいが、このコマンドを直接打つことはまずないので`./deploy`スクリプトに埋め込んでしまう。
 BitBucket PipelinesにHerokuへのデプロイをやらせるためにも、この方式は楽。
 また、単に`subtree push`だと`--force`オプションがないため、手元から何度かデプロイを試したあと、
 BitBucketやJenkinsに自動デプロイさせようとするとリジェクトされる。
