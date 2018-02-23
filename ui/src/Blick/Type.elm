@@ -5,6 +5,7 @@ module Blick.Type
         , Msg(..)
         , Success(..)
         , Field
+        , ClickPos
         , Route(..)
         , Material
         , Url(Url)
@@ -48,7 +49,7 @@ type Msg
     | TableNext
     | TablePrev
     | Filter String
-    | StartEdit String Field -- ID, Field
+    | StartEdit String Field ClickPos -- ID, Field, Coordinate of the click
       -- | SubmitEdit String Field -- ID, Field
     | CancelEdit
 
@@ -64,13 +65,17 @@ type alias Field =
     }
 
 
+type alias ClickPos =
+    ( Int, Int )
+
+
 
 -- MODEL
 
 
 type alias Model =
     { materials : Dict String Material -- ID-Material Dict
-    , editing : Maybe ( String, Field )
+    , editing : Maybe ( String, Field, ClickPos )
     , matches : List String -- List of IDs
     , filterInput : String
     , carouselPage : Int

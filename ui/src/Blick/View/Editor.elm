@@ -9,6 +9,6 @@ import Blick.View.Parts exposing (onClickNoPropagate)
 modal : String -> Field -> Html Msg
 modal _ _ =
     div [ class "modal is-active" ]
-        [ div [ class "modal-background", onClickNoPropagate CancelEdit ] []
-        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate CancelEdit ] []
+        [ div [ class "modal-background", onClickNoPropagate (\_ -> CancelEdit) ] []
+        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate (\_ -> CancelEdit) ] []
         ]

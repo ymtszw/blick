@@ -149,8 +149,8 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             }
                 => []
 
-        StartEdit id_ field ->
-            { model | editing = Just ( id_, field ) } => []
+        StartEdit id_ field pos ->
+            { model | editing = Just ( id_, field, pos ) } => []
 
         CancelEdit ->
             { model | editing = Nothing } => []

@@ -1,12 +1,12 @@
 module Blick.View.Parts exposing (link, onClickNoPropagate, withDisabled, authorTag)
 
 import Char
-import Json.Decode
+import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
-import Blick.Type exposing (Msg(..), Field, Url(Url), Email(Email))
+import Blick.Type exposing (Msg(..), Field, ClickPos, Url(Url), Email(Email))
 
 
 link : Url -> Html.Attribute msg
@@ -14,12 +14,19 @@ link (Url url) =
     href url
 
 
-onClickNoPropagate : msg -> Html.Attribute msg
+onClickNoPropagate : (ClickPos -> msg) -> Html.Attribute msg
 onClickNoPropagate msg =
     Html.Events.onWithOptions
         "click"
         (Html.Events.Options True True)
-        (Json.Decode.succeed msg)
+        (D.map msg domOriginDecoder)
+
+
+domOriginDecoder : Decoder ClickPos
+domOriginDecoder =
+    D.map2 (,)
+        (D.field "clientX" D.int)
+        (D.field "clientY" D.int)
 
 
 withDisabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)

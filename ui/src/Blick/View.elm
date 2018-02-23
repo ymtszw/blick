@@ -4,7 +4,7 @@ import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Util
-import Blick.Type exposing (Model, Msg(..), Field, Route(..), Material)
+import Blick.Type exposing (Model, Msg(..), Field, ClickPos, Route(..), Material)
 import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
 import Blick.View.Table as Table
@@ -40,7 +40,7 @@ applyFilter matches materials =
             Dict.filter (\id_ _ -> List.member id_ matches) materials
 
 
-modals : Dict String Material -> Maybe ( String, Field ) -> Route -> Html Msg
+modals : Dict String Material -> Maybe ( String, Field, ClickPos ) -> Route -> Html Msg
 modals materials editing route =
     withEditor editing <|
         case route of
@@ -56,11 +56,11 @@ modals materials editing route =
                 []
 
 
-withEditor : Maybe ( String, Field ) -> List (Html Msg) -> Html Msg
+withEditor : Maybe ( String, Field, ClickPos ) -> List (Html Msg) -> Html Msg
 withEditor editing others =
     div [ id "modals" ] <|
         case editing of
-            Just ( id_, field ) ->
+            Just ( id_, field, _ ) ->
                 others ++ [ Editor.modal id_ field ]
 
             Nothing ->
