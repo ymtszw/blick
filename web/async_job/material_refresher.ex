@@ -14,7 +14,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
 
   @impl true
   def run(_payload, _metadata, _context) do
-    refresh(force: false)
+    refresh()
   end
 
   @gear_pool {:gear, :blick}
@@ -38,16 +38,16 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   If `force: true`, refreshes all existing thumbnails, not just Google Drive Files.
   Defaults to `false`.
   """
-  defun refresh(options :: [refresh_option_t] \\ []) :: R.t([Material.t]) do
+  defun refresh() :: R.t([Material.t]) do
     R.m do
       materials <- Repo.Material.dict_all()
       token <- Repo.AdminToken.retrieve()
-      id_and_update_actions <- materials |> Map.values() |> refresh_impl(token, Keyword.get(options, :force, false))
+      id_and_update_actions <- materials |> Map.values() |> refresh_impl(token)
       Repo.Material.update_all(id_and_update_actions)
     end
   end
 
-  defp refresh_impl(materials, token, _force?) do
+  defp refresh_impl(materials, token) do
     {google_materials, other_materials} =
       Enum.split_with(materials, fn %Material{data: %Material.Data{type: type}} ->
         type in [:google_doc, :google_slide, :google_file]
