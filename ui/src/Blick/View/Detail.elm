@@ -44,7 +44,7 @@ detailThumbnail maybeThumbnailUrl =
             figure [ class "image is-16by9" ]
                 [ img [ src thumbnailUrl ] []
                 , div [ class "colmuns is-overlay" ]
-                    [ div [ class "column" ] [ i [ class "fa fa-external-link fa-5x" ] [] ]
+                    [ div [ class "column" ] [ i [ class "fa fa-external-link-alt fa-5x" ] [] ]
                     ]
                 ]
 
