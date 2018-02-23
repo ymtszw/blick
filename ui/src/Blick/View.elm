@@ -4,16 +4,17 @@ import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Util
-import Blick.Type exposing (Model, Msg(..), Route(..), Material)
+import Blick.Type exposing (Model, Msg(..), Field, Route(..), Material)
 import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
 import Blick.View.Table as Table
 import Blick.View.Detail as Detail
 import Blick.View.Message as Message
+import Blick.View.Editor as Editor
 
 
 view : Model -> Html Msg
-view { materials, carouselPage, tablePage, matches, filterInput, route, exceptions, windowSize } =
+view { materials, editing, carouselPage, tablePage, matches, filterInput, route, exceptions, windowSize } =
     let
         ( withThumbs, withouts ) =
             materials
@@ -21,7 +22,7 @@ view { materials, carouselPage, tablePage, matches, filterInput, route, exceptio
                 |> Dict.partition (\_ { thumbnail_url } -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
-            [ modalByRoute materials route
+            [ modals materials editing route
             , Hero.view matches filterInput
             , Message.view exceptions
             , Carousel.view windowSize carouselPage withThumbs
@@ -39,16 +40,28 @@ applyFilter matches materials =
             Dict.filter (\id_ _ -> List.member id_ matches) materials
 
 
-modalByRoute : Dict String Material -> Route -> Html Msg
-modalByRoute materials route =
-    case route of
-        Detail id_ ->
-            case Dict.get id_ materials of
-                Just material ->
-                    Detail.modal id_ material
+modals : Dict String Material -> Maybe ( String, Field ) -> Route -> Html Msg
+modals materials editing route =
+    withEditor editing <|
+        case route of
+            Detail id_ ->
+                case Dict.get id_ materials of
+                    Just material ->
+                        [ Detail.modal id_ material ]
 
-                Nothing ->
-                    text ""
+                    Nothing ->
+                        []
 
-        _ ->
-            text ""
+            _ ->
+                []
+
+
+withEditor : Maybe ( String, Field ) -> List (Html Msg) -> Html Msg
+withEditor editing others =
+    div [ id "modals" ] <|
+        case editing of
+            Just ( id_, field ) ->
+                others ++ [ Editor.modal id_ field ]
+
+            Nothing ->
+                others
