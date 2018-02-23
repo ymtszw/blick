@@ -38,10 +38,16 @@ authorTag author_email =
                 name =
                     SE.replace "@access-company.com" "" email
             in
-                span [ class <| "tag is-rounded is-pulled-right " ++ colorClassByName name ] [ text name ]
+                div [ class "tags has-addons is-pulled-right" ]
+                    [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
+                    , span [ class "tag tag-button is-rounded" ] [ span [ class "fa fa-pencil-alt" ] [] ]
+                    ]
 
         Nothing ->
-            text ""
+            span [ class "tag tag-button is-rounded is-pulled-right add-author" ]
+                [ span [ class "fa fa-plus" ] []
+                , text "Add author"
+                ]
 
 
 colorClassByName : String -> String

@@ -57,3 +57,12 @@ td.is-paddingless > a {
 .carousel-item.is-active {
   opacity: 1;
 }
+
+.tag.add-author {
+  border: 1px dashed #cccccc;
+  color: #cccccc;
+}
+
+.tag-button:hover {
+  background-color: #e8e8e8;
+}
