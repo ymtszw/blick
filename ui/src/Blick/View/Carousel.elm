@@ -105,7 +105,7 @@ tileColumn columnScale ( id_, material ) =
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
                     ]
-                , tags material
+                , tags id_ material
                 ]
             ]
         ]
@@ -156,7 +156,7 @@ tileThumbnail maybeUrl =
                 []
 
 
-tags : Material -> Html Msg
-tags { author_email } =
+tags : String -> Material -> Html Msg
+tags id_ { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ Z.lazy authorTag author_email ]
+        [ Z.lazy2 authorTag id_ author_email ]

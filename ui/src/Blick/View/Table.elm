@@ -79,7 +79,7 @@ rowOfTable ( id_, { title, author_email } ) =
         [ td [ class "is-paddingless" ]
             [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail id_)) ]
                 [ text title
-                , authorTag author_email
+                , Z.lazy2 authorTag id_ author_email
                 ]
             ]
         ]

@@ -3,18 +3,19 @@ module Blick.View.Detail exposing (modal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.Lazy as Z
 import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
-modal : Material -> Html Msg
-modal material =
+modal : String -> Material -> Html Msg
+modal id_ material =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClick (GoTo Root) ] []
         , div [ class "hero is-light" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container is-fullhd" ]
-                    [ detailContents material
+                    [ detailContents id_ material
                     ]
                 ]
             ]
@@ -22,8 +23,8 @@ modal material =
         ]
 
 
-detailContents : Material -> Html Msg
-detailContents { title, url, thumbnail_url, author_email } =
+detailContents : String -> Material -> Html Msg
+detailContents id_ { title, url, thumbnail_url, author_email } =
     div [ class "columns" ]
         [ div [ class "column is-two-thirds" ]
             [ a [ link url, target "_blank" ]
@@ -32,7 +33,7 @@ detailContents { title, url, thumbnail_url, author_email } =
             ]
         , div [ class "column" ]
             [ h1 [ class "title" ] [ text title ]
-            , div [ class "tags" ] [ authorTag author_email ]
+            , div [ class "tags" ] [ Z.lazy2 authorTag id_ author_email ]
             ]
         ]
 

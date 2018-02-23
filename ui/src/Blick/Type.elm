@@ -4,6 +4,7 @@ module Blick.Type
         , Model
         , Msg(..)
         , Success(..)
+        , Field
         , Route(..)
         , Material
         , Url(Url)
@@ -47,11 +48,20 @@ type Msg
     | TableNext
     | TablePrev
     | Filter String
+    | StartEdit String Field -- ID, Field
+      -- | SubmitEdit String Field -- ID, Field
+    | CancelEdit
 
 
 type Success
     = ListMaterials (Dict String Material)
     | GetMaterial ( String, Material )
+
+
+type alias Field =
+    { name : String
+    , value : String
+    }
 
 
 
@@ -60,6 +70,7 @@ type Success
 
 type alias Model =
     { materials : Dict String Material -- ID-Material Dict
+    , editing : Maybe ( String, Field )
     , matches : List String -- List of IDs
     , filterInput : String
     , carouselPage : Int
@@ -83,6 +94,7 @@ type alias Material =
     , created_time : Maybe Date
     , author_email : Maybe Email
     , type_ : Type_
+    , public : Bool
     , excluded : Bool
     , exclude_reason : Maybe String
     }
@@ -97,6 +109,7 @@ materialDecoder =
         |: D.field "created_time" (D.maybe date)
         |: D.field "author_email" (D.maybe emailDecoder)
         |: D.field "type" typeDecoder
+        |: D.field "public" D.bool
         |: D.field "excluded" D.bool
         |: D.field "exclude_reason" (D.maybe D.string)
 

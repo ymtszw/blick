@@ -36,16 +36,16 @@ applyFilter matches materials =
             materials
 
         _ ->
-            Dict.filter (\id _ -> List.member id matches) materials
+            Dict.filter (\id_ _ -> List.member id_ matches) materials
 
 
 modalByRoute : Dict String Material -> Route -> Html Msg
 modalByRoute materials route =
     case route of
-        Detail id ->
-            case Dict.get id materials of
+        Detail id_ ->
+            case Dict.get id_ materials of
                 Just material ->
-                    Detail.modal material
+                    Detail.modal id_ material
 
                 Nothing ->
                     text ""

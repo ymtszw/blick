@@ -26,6 +26,7 @@ init flags location =
             fromFlags flags
     in
         { materials = ms
+        , editing = Nothing
         , matches = []
         , filterInput = ""
         , carouselPage = 0
@@ -147,6 +148,12 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
                 , tablePage = 0
             }
                 => []
+
+        StartEdit id_ field ->
+            { model | editing = Just ( id_, field ) } => []
+
+        CancelEdit ->
+            { model | editing = Nothing } => []
 
 
 findMatchingIds : Dict String Material -> String -> List String

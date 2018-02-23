@@ -64,5 +64,6 @@ td.is-paddingless > a {
 }
 
 .tag-button:hover {
+  cursor: pointer;
   background-color: #e8e8e8;
 }

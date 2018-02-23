@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
-import Blick.Type exposing (Msg(..), Url(Url), Email(Email))
+import Blick.Type exposing (Msg(..), Field, Url(Url), Email(Email))
 
 
 link : Url -> Html.Attribute msg
@@ -30,8 +30,8 @@ withDisabled disabled_ others =
         others
 
 
-authorTag : Maybe Email -> Html Msg
-authorTag author_email =
+authorTag : String -> Maybe Email -> Html Msg
+authorTag id_ author_email =
     case author_email of
         Just (Email email) ->
             let
@@ -40,11 +40,18 @@ authorTag author_email =
             in
                 div [ class "tags has-addons is-pulled-right" ]
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
-                    , span [ class "tag tag-button is-rounded" ] [ span [ class "fa fa-pencil-alt" ] [] ]
+                    , span
+                        [ class "tag tag-button is-rounded"
+                        , onClickNoPropagate (StartEdit id_ (Field "author_email" email))
+                        ]
+                        [ span [ class "fa fa-pencil-alt" ] [] ]
                     ]
 
         Nothing ->
-            span [ class "tag tag-button is-rounded is-pulled-right add-author" ]
+            span
+                [ class "tag tag-button is-rounded is-pulled-right add-author"
+                , onClickNoPropagate (StartEdit id_ (Field "author_email" ""))
+                ]
                 [ span [ class "fa fa-plus" ] []
                 , text "Add author"
                 ]
