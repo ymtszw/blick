@@ -3,6 +3,7 @@ module Blick.View exposing (view)
 import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Window
 import Util
 import Blick.Type exposing (Model, Msg(..), Field, ClickPos, Route(..), Material)
 import Blick.View.Hero as Hero
@@ -22,7 +23,7 @@ view { materials, editing, carouselPage, tablePage, matches, filterInput, route,
                 |> Dict.partition (\_ { thumbnail_url } -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
-            [ modals materials editing route
+            [ modals materials windowSize editing route
             , Hero.view matches filterInput
             , Message.view exceptions
             , Carousel.view windowSize carouselPage withThumbs
@@ -40,9 +41,9 @@ applyFilter matches materials =
             Dict.filter (\id_ _ -> List.member id_ matches) materials
 
 
-modals : Dict String Material -> Maybe ( String, Field, ClickPos ) -> Route -> Html Msg
-modals materials editing route =
-    withEditor editing <|
+modals : Dict String Material -> Window.Size -> Maybe ( String, Field, ClickPos ) -> Route -> Html Msg
+modals materials windowSize editing route =
+    withEditor windowSize editing <|
         case route of
             Detail id_ ->
                 case Dict.get id_ materials of
@@ -56,12 +57,12 @@ modals materials editing route =
                 []
 
 
-withEditor : Maybe ( String, Field, ClickPos ) -> List (Html Msg) -> Html Msg
-withEditor editing others =
+withEditor : Window.Size -> Maybe ( String, Field, ClickPos ) -> List (Html Msg) -> Html Msg
+withEditor windowSize editing others =
     div [ id "modals" ] <|
         case editing of
-            Just ( id_, field, _ ) ->
-                others ++ [ Editor.modal id_ field ]
+            Just editState ->
+                others ++ [ Editor.modal windowSize editState ]
 
             Nothing ->
                 others
