@@ -27,7 +27,7 @@ view { width } tablePage materials =
                         |> Util.split rowPerTable
                         |> Util.split tpp
                         |> List.indexedMap (tablesOfPage tpp tablePage)
-                        |> fillByDummyPage width
+                        |> fillByDummyPage tpp
                         |> div [ class "tables-container" ]
                     ]
                 ]
@@ -86,10 +86,10 @@ rowOfTable ( id_, { title, author_email } ) =
 
 
 fillByDummyPage : Int -> List (Html Msg) -> List (Html Msg)
-fillByDummyPage width pages =
+fillByDummyPage tpp pages =
     case pages of
         [] ->
-            [ tablesOfPage width 0 0 [] ]
+            [ tablesOfPage tpp 0 0 [] ]
 
         _ ->
             pages
