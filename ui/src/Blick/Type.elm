@@ -60,8 +60,8 @@ type Success
 
 
 type alias Field =
-    { name : String
-    , value : String
+    { name_ : String
+    , value_ : String
     }
 
 
