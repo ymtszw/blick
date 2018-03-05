@@ -1,4 +1,12 @@
-module Blick.View.Parts exposing (link, onClickNoPropagate, withDisabled, authorTag)
+module Blick.View.Parts
+    exposing
+        ( link
+        , onClickNoPropagate
+        , onSubmitNoPropagate
+        , withDisabled
+        , authorTag
+        , orgLocalNameOrEmail
+        )
 
 import Char
 import Json.Decode as D exposing (Decoder)
@@ -29,6 +37,14 @@ domOriginDecoder =
         (D.field "clientY" D.int)
 
 
+onSubmitNoPropagate : Decoder msg -> Html.Attribute msg
+onSubmitNoPropagate dec =
+    Html.Events.onWithOptions
+        "submit"
+        (Html.Events.Options True True)
+        dec
+
+
 withDisabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)
 withDisabled disabled_ others =
     if disabled_ then
@@ -43,7 +59,7 @@ authorTag id_ author_email =
         Just (Email email) ->
             let
                 name =
-                    SE.replace "@access-company.com" "" email
+                    orgLocalNameOrEmail email
             in
                 div [ class "tags has-addons is-pulled-right" ]
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
@@ -62,6 +78,11 @@ authorTag id_ author_email =
                 [ span [ class "fa fa-plus" ] []
                 , text "Add author"
                 ]
+
+
+orgLocalNameOrEmail : String -> String
+orgLocalNameOrEmail email =
+    SE.replace "@access-company.com" "" email
 
 
 colorClassByName : String -> String
