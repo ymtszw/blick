@@ -12,6 +12,7 @@ module Blick.Type
         , Email(Email)
         , Type_(..)
         , Exception
+        , inputId
         , materialDecoder
         , fromHttpError
         )
@@ -40,6 +41,7 @@ type alias Flags =
 type Msg
     = Loc Location
     | GoTo Route
+    | NoOp
     | WindowSize Window.Size
     | TimedErr H.Error Time
     | CloseErr Time
@@ -63,6 +65,11 @@ type alias Field =
     { name_ : String
     , value_ : String
     }
+
+
+inputId : String -> Field -> String
+inputId id_ { name_ } =
+    id_ ++ "-" ++ name_
 
 
 type alias ClickPos =

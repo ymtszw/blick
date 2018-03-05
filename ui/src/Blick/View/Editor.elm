@@ -4,7 +4,7 @@ import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Window
-import Blick.Type exposing (Msg(..), Field, ClickPos)
+import Blick.Type exposing (Msg(..), Field, ClickPos, inputId)
 import Blick.View.Parts exposing (..)
 
 
@@ -20,7 +20,7 @@ modal _ ( id_, field, _ ) =
 materialFieldInput : String -> Field -> Html Msg
 materialFieldInput id_ field =
     Html.form [ onSubmitNoPropagate (formInputDecoder id_ field.name_) ]
-        [ inputByField field
+        [ inputByField id_ field
         , div [ class "field" ]
             [ div [ class "control" ]
                 [ button
@@ -52,38 +52,55 @@ formInputDecoder id_ name_ =
                     |> D.map (\email -> SubmitEdit id_ (Field "author_email" email))
 
             _ ->
-                D.map (\value_ -> SubmitEdit id_ (Field name_ value_)) baseDec
+                D.map (\input -> SubmitEdit id_ (Field name_ input)) baseDec
 
 
-inputByField : Field -> Html Msg
-inputByField { name_, value_ } =
-    if name_ == "author_email" && String.endsWith "@access-company.com" value_ then
-        div [ class "field has-addons" ]
-            [ span [ class "control" ]
-                [ input
-                    [ class "input is-small is-rounded has-text-right"
-                    , type_ "text"
-                    , name name_
-                    , placeholder "author.name"
-                    , value (orgLocalNameOrEmail value_)
-                    ]
-                    []
+inputByField : String -> Field -> Html Msg
+inputByField id_ field =
+    case field.name_ of
+        "author_email" ->
+            if field.value_ == "" || String.endsWith "@access-company.com" field.value_ then
+                orgEmailInput id_ field
+            else
+                rawTextInput id_ field
+
+        _ ->
+            rawTextInput id_ field
+
+
+orgEmailInput : String -> Field -> Html Msg
+orgEmailInput id_ field =
+    div [ class "field has-addons" ]
+        [ span [ class "control" ]
+            [ input
+                [ class "input is-small is-rounded has-text-right"
+                , type_ "text"
+                , id (inputId id_ field)
+                , name field.name_
+                , placeholder "author.name"
+                , value (orgLocalNameOrEmail field.value_)
                 ]
-            , span [ class "control" ]
-                [ span [ class "button is-small is-static is-rounded has-text-left" ]
-                    [ text "@access-company.com" ]
-                ]
+                []
             ]
-    else
-        div [ class "field" ]
-            [ div [ class "control" ]
-                [ input
-                    [ class "input is-small is-rounded"
-                    , type_ "text"
-                    , name name_
-                    , placeholder name_
-                    , value value_
-                    ]
-                    []
-                ]
+        , span [ class "control" ]
+            [ span [ class "button is-small is-static is-rounded has-text-left" ]
+                [ text "@access-company.com" ]
             ]
+        ]
+
+
+rawTextInput : String -> Field -> Html Msg
+rawTextInput id_ field =
+    div [ class "field" ]
+        [ div [ class "control" ]
+            [ input
+                [ class "input is-small is-rounded"
+                , type_ "text"
+                , id (inputId id_ field)
+                , name field.name_
+                , placeholder field.name_
+                , value field.value_
+                ]
+                []
+            ]
+        ]

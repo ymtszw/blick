@@ -6,6 +6,7 @@ import Task
 import Time
 import Json.Decode as D
 import Json.Decode.Extra exposing ((|:))
+import Dom
 import Navigation exposing (Location)
 import Window exposing (resizes)
 import Rocket exposing ((=>))
@@ -72,6 +73,9 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
                     goto r
             in
                 model => (Navigation.newUrl path :: cmds)
+
+        NoOp ->
+            model => []
 
         WindowSize newSize ->
             if crossedMobileMax windowSize newSize then
@@ -150,7 +154,8 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
                 => []
 
         StartEdit id_ field pos ->
-            { model | editing = Just ( id_, field, pos ) } => []
+            { model | editing = Just ( id_, field, pos ) }
+                => [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
 
         SubmitEdit id_ field ->
             model => []
