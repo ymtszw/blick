@@ -50,7 +50,7 @@ type Msg
     | TablePrev
     | Filter String
     | StartEdit String Field ClickPos -- ID, Field, Coordinate of the click
-      -- | SubmitEdit String Field -- ID, Field
+    | SubmitEdit String Field -- ID, Field
     | CancelEdit
 
 
