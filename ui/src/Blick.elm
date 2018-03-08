@@ -1,4 +1,4 @@
-module Blick exposing (main)
+port module Blick exposing (main)
 
 import Dict exposing (Dict)
 import Regex
@@ -223,13 +223,22 @@ crossedSingleColumnMax oldSize newSize =
         || (oldSize.width > singleColumnMaxWidthPx && newSize.width <= singleColumnMaxWidthPx)
 
 
+port queryDOMOrigin : ( String, Field, String ) -> Cmd msg
+
+
 
 -- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch [ resizes WindowSize ]
+    Sub.batch
+        [ resizes WindowSize
+        , listenDOMOrigin StartEdit
+        ]
+
+
+port listenDOMOrigin : (( String, Field, ClickPos ) -> msg) -> Sub msg
 
 
 

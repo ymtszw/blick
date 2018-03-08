@@ -2,5 +2,10 @@ require('./blick.css')
 
 export const blick = (flags) => {
   const Elm = require('./Blick.elm')
-  Elm.Blick.fullscreen(flags)
+  const app = Elm.Blick.fullscreen(flags)
+
+  app.ports.queryDOMOrigin.subscribe(([id_, field, selector]) => {
+    const { left, top } = document.querySelector(selector).getBoundingClientRect()
+    app.ports.listenDOMOrigin.send([id_, field, [left, top]])
+  })
 }
