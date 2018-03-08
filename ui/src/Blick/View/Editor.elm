@@ -9,17 +9,24 @@ import Blick.View.Parts exposing (..)
 
 
 modal : Window.Size -> ( String, Field, ClickPos ) -> Html Msg
-modal _ ( id_, field, _ ) =
+modal _ ( id_, field, pos ) =
     div [ class "modal is-active" ]
-        [ div [ class "modal-background", onClickNoPropagate (\_ -> CancelEdit) ] []
-        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate (\_ -> CancelEdit) ] []
-        , materialFieldInput id_ field
+        [ div [ class "modal-background", onClickNoPropagate CancelEdit ] []
+        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate CancelEdit ] []
+        , materialFieldInput id_ field pos
         ]
 
 
-materialFieldInput : String -> Field -> Html Msg
-materialFieldInput id_ field =
-    Html.form [ onSubmitNoPropagate (formInputDecoder id_ field.name_) ]
+materialFieldInput : String -> Field -> ClickPos -> Html Msg
+materialFieldInput id_ field ( left, top ) =
+    Html.form
+        [ onWithoutPropagate "submit" (formInputDecoder id_ field.name_)
+        , style
+            [ ( "position", "absolute" )
+            , ( "left", toString left ++ "px" )
+            , ( "top", toString top ++ "px" )
+            ]
+        ]
         [ inputByField id_ field
         , div [ class "field" ]
             [ div [ class "control" ]

@@ -27,6 +27,7 @@ init flags location =
             fromFlags flags
     in
         { materials = ms
+        , toEdit = Nothing
         , editing = Nothing
         , matches = []
         , filterInput = ""
@@ -153,8 +154,12 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             }
                 => []
 
-        StartEdit id_ field pos ->
-            { model | editing = Just ( id_, field, pos ) }
+        InitiateEdit id_ field (S selector) ->
+            { model | toEdit = Just ( id_, field ) }
+                => [ queryDOMOrigin ( id_, field, selector ) ]
+
+        StartEdit ( id_, field, pos ) ->
+            { model | toEdit = Nothing, editing = Just ( id_, field, pos ) }
                 => [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
 
         SubmitEdit id_ field ->

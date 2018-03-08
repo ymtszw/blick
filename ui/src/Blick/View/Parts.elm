@@ -14,7 +14,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
-import Blick.Type exposing (Msg(..), Field, ClickPos, Url(Url), Email(Email))
+import Blick.Type exposing (Msg(..), Field, Selector(S), Url(Url), Email(Email))
 
 
 link : Url -> Html.Attribute msg
@@ -58,19 +58,29 @@ authorTag id_ author_email =
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
                     , span
                         [ class "tag tag-button is-rounded"
-                        , onClickNoPropagate (StartEdit id_ (Field "author_email" email))
+                        , onWithoutPropagate "click" (authorTagClickDecoder id_ email)
                         ]
                         [ span [ class "fa fa-pencil-alt" ] [] ]
                     ]
 
         Nothing ->
-            span
-                [ class "tag tag-button is-rounded is-pulled-right add-author"
-                , onClickNoPropagate (StartEdit id_ (Field "author_email" ""))
+            div [ class "tags is-pulled-right" ]
+                [ span
+                    [ class "tag tag-button is-rounded add-author"
+                    , onWithoutPropagate "click" (authorTagClickDecoder id_ "")
+                    ]
+                    [ span [ class "fa fa-plus" ] []
+                    , text "Add author"
+                    ]
                 ]
-                [ span [ class "fa fa-plus" ] []
-                , text "Add author"
-                ]
+
+
+authorTagClickDecoder : String -> String -> Decoder Msg
+authorTagClickDecoder id_ email =
+    D.succeed <|
+        InitiateEdit id_
+            (Field "author_email" email)
+            (S ("[id='" ++ id_ ++ "'] div.tags"))
 
 
 orgLocalNameOrEmail : String -> String

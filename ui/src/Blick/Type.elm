@@ -6,6 +6,7 @@ module Blick.Type
         , Success(..)
         , Field
         , ClickPos
+        , Selector(S)
         , Route(..)
         , Material
         , Url(Url)
@@ -51,8 +52,9 @@ type Msg
     | TableNext
     | TablePrev
     | Filter String
-    | StartEdit String Field ClickPos -- ID, Field, Coordinate of the click
-    | SubmitEdit String Field -- ID, Field
+    | InitiateEdit String Field Selector
+    | StartEdit ( String, Field, ClickPos )
+    | SubmitEdit String Field
     | CancelEdit
 
 
@@ -72,8 +74,12 @@ inputId id_ { name_ } =
     id_ ++ "-" ++ name_
 
 
+type Selector
+    = S String
+
+
 type alias ClickPos =
-    ( Int, Int )
+    ( Float, Float )
 
 
 
@@ -82,6 +88,7 @@ type alias ClickPos =
 
 type alias Model =
     { materials : Dict String Material -- ID-Material Dict
+    , toEdit : Maybe ( String, Field )
     , editing : Maybe ( String, Field, ClickPos )
     , matches : List String -- List of IDs
     , filterInput : String
