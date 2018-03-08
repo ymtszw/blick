@@ -26,6 +26,16 @@ module.exports = {
           warn: true,
           debug: !IS_CLOUD,
         }
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            ['env', { targets: { browsers: ['since 2015'] } }]
+          ]
+        }
       }
     ]
   },

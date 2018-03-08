@@ -20,6 +20,9 @@
   "author": "aYuMatsuzawa",
   "private": true,
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.9",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.4.0",
