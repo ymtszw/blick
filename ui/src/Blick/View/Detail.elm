@@ -10,7 +10,7 @@ import Blick.View.Parts exposing (..)
 modal : String -> Material -> Html Msg
 modal id_ material =
     div [ class "modal is-active" ]
-        [ div [ class "modal-background", onClickNoPropagate (\_ -> GoTo Root) ] []
+        [ div [ class "modal-background", onClickNoPropagate (GoTo Root) ] []
         , div [ class "hero is-light" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container is-fullhd" ]
@@ -18,7 +18,7 @@ modal id_ material =
                     ]
                 ]
             ]
-        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate (\_ -> GoTo Root) ] []
+        , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate (GoTo Root) ] []
         ]
 
 

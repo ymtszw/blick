@@ -77,7 +77,7 @@ rowOfTable : ( String, Material ) -> Html Msg
 rowOfTable ( id_, { title, author_email } ) =
     tr [ id id_ ]
         [ td [ class "is-paddingless" ]
-            [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (\_ -> GoTo (Detail id_)) ]
+            [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail id_)) ]
                 [ text title
                 , Z.lazy2 authorTag id_ author_email
                 ]

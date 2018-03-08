@@ -2,7 +2,7 @@ module Blick.View.Parts
     exposing
         ( link
         , onClickNoPropagate
-        , onSubmitNoPropagate
+        , onWithoutPropagate
         , withDisabled
         , authorTag
         , orgLocalNameOrEmail
@@ -22,25 +22,18 @@ link (Url url) =
     href url
 
 
-onClickNoPropagate : (ClickPos -> msg) -> Html.Attribute msg
+onClickNoPropagate : msg -> Html.Attribute msg
 onClickNoPropagate msg =
     Html.Events.onWithOptions
         "click"
         (Html.Events.Options True True)
-        (D.map msg domOriginDecoder)
+        (D.succeed msg)
 
 
-domOriginDecoder : Decoder ClickPos
-domOriginDecoder =
-    D.map2 (,)
-        (D.field "clientX" D.int)
-        (D.field "clientY" D.int)
-
-
-onSubmitNoPropagate : Decoder msg -> Html.Attribute msg
-onSubmitNoPropagate dec =
+onWithoutPropagate : String -> Decoder msg -> Html.Attribute msg
+onWithoutPropagate event dec =
     Html.Events.onWithOptions
-        "submit"
+        event
         (Html.Events.Options True True)
         dec
 

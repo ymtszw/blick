@@ -97,7 +97,7 @@ tileRow columnScale materialsPerRow =
 tileColumn : Int -> ( String, Material ) -> Html Msg
 tileColumn columnScale ( id_, material ) =
     div [ class <| "material column" ++ columnScaleClass columnScale, title material.title ]
-        [ a [ href <| "/" ++ id_, onClickNoPropagate (\_ -> GoTo (Detail id_)) ]
+        [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail id_)) ]
             [ article [ class "card", id id_ ]
                 [ div [ class "card-image" ]
                     [ tileThumbnail material.thumbnail_url
