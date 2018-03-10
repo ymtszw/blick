@@ -7,7 +7,7 @@ defmodule Blick.Controller.Admin do
   alias GearLib.Oauth2
   alias Blick.Repo
 
-  plug Blick.Plug.Auth, :filter_by_sender_identity, []
+  plug Blick.Plug.Auth, :authenticate_by_sender, []
 
   def authorize(conn) do
     render_with_params(conn, Blick.Plug.Auth.admin())
