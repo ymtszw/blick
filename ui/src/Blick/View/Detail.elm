@@ -3,18 +3,20 @@ module Blick.View.Detail exposing (modal)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
+import Window
 import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url))
+import Blick.Constant exposing (singleColumnMaxWidthPx)
 import Blick.View.Parts exposing (..)
 
 
-modal : String -> Material -> Html Msg
-modal id_ material =
+modal : Window.Size -> String -> Material -> Html Msg
+modal { width } id_ material =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClickNoPropagate (GoTo Root) ] []
         , div [ class "hero is-light" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container is-fullhd" ]
-                    [ detailContents id_ material
+                    [ detailContents width id_ material
                     ]
                 ]
             ]
@@ -22,9 +24,9 @@ modal id_ material =
         ]
 
 
-detailContents : String -> Material -> Html Msg
-detailContents id_ { title, url, thumbnail_url, author_email } =
-    div [ class "columns" ]
+detailContents : Int -> String -> Material -> Html Msg
+detailContents width id_ { title, url, thumbnail_url, author_email } =
+    div [ class <| "columns" ++ detailColumnsClass width ]
         [ div [ class "column is-two-thirds" ]
             [ a [ link url, target "_blank" ]
                 [ detailThumbnail thumbnail_url
@@ -35,6 +37,14 @@ detailContents id_ { title, url, thumbnail_url, author_email } =
             , div [ class "tags" ] [ Z.lazy2 authorTag id_ author_email ]
             ]
         ]
+
+
+detailColumnsClass : Int -> String
+detailColumnsClass width =
+    if width <= singleColumnMaxWidthPx then
+        ""
+    else
+        " is-mobile"
 
 
 detailThumbnail : Maybe Url -> Html Msg

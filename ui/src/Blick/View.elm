@@ -48,7 +48,7 @@ modals materials windowSize editing route =
             Detail id_ ->
                 case Dict.get id_ materials of
                     Just material ->
-                        [ Detail.modal id_ material ]
+                        [ Detail.modal windowSize id_ material ]
 
                     Nothing ->
                         []

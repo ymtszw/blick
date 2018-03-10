@@ -67,3 +67,12 @@ td.is-paddingless > a {
   cursor: pointer;
   background-color: #e8e8e8;
 }
+
+.modal-close {
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 100;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
