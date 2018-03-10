@@ -63,6 +63,9 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ resizes WindowSize
+
+        -- Ideally, we want to subscribe `listenDOMOrigin` only when `queryDOMOrigin` is performed,
+        -- though (inconveniently,) port response from JS coming faster than this function is evaluated again.
         , Ports.listenDOMOrigin StartEdit
         ]
 
