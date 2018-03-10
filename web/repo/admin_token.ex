@@ -103,7 +103,7 @@ defmodule Blick.Repo.AdminToken do
   else
     # Google only allows "http://localhost" for local development.
     # webpack-dev-server's (http-proxy-middleware's) proxy function will redirect to gear
-    defp redirect_url(), do: "http://localhost:8081" <> Blick.Router.callback_path()
+    defp redirect_url(), do: "http://localhost:8079" <> Blick.Router.callback_path()
   end
 
   defp refresh_token_and_update(%AdminToken{data: %AdminToken.Data{expires_at: ea, refresh_token: rt}}, now) do

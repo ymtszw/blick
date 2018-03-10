@@ -44,7 +44,7 @@ defmodule Blick.Controller.Admin do
 
   def authorize_callback(conn) do
     case conn.request.headers["x-forwarded-host"] do
-      "localhost:8081" <> _ ->
+      "localhost:8079" <> _ ->
         # Via webpack-dev-server proxy; rerouting to gear host
         redirect(conn, "http://blick.localhost:8080" <> Blick.Router.callback_path() <> "?" <> URI.encode_query(conn.request.query_params))
       _ ->
