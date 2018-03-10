@@ -93,10 +93,10 @@ inputByField id_ field =
             if field.value_ == "" || String.endsWith "@access-company.com" field.value_ then
                 orgEmailInput id_ field
             else
-                rawTextInput id_ field
+                rawTextInput True id_ field
 
         _ ->
-            rawTextInput id_ field
+            rawTextInput True id_ field
 
 
 orgEmailInput : String -> Field -> Html Msg
@@ -109,6 +109,7 @@ orgEmailInput id_ field =
                 , id (inputId id_ field)
                 , name field.name_
                 , placeholder "author.name"
+                , required True
                 , value (orgLocalNameOrEmail field.value_)
                 ]
                 []
@@ -120,8 +121,8 @@ orgEmailInput id_ field =
         ]
 
 
-rawTextInput : String -> Field -> Html Msg
-rawTextInput id_ field =
+rawTextInput : Bool -> String -> Field -> Html Msg
+rawTextInput isRequired id_ field =
     div [ class "field" ]
         [ div [ class "control" ]
             [ input
@@ -130,6 +131,7 @@ rawTextInput id_ field =
                 , id (inputId id_ field)
                 , name field.name_
                 , placeholder field.name_
+                , required isRequired
                 , value field.value_
                 ]
                 []

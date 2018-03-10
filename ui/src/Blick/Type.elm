@@ -62,6 +62,7 @@ type Msg
 type Success
     = ListMaterials (Dict String Material)
     | GetMaterial ( String, Material )
+    | UpdateMaterialField ( String, Material )
 
 
 type alias Field =

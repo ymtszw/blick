@@ -11,6 +11,7 @@ import Rocket exposing ((=>))
 import Blick.Type exposing (..)
 import Blick.Router exposing (route, goto)
 import Blick.Constant exposing (..)
+import Blick.Client exposing (updateMaterialField)
 import Blick.Ports as Ports
 
 
@@ -49,6 +50,9 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             { model | materials = Dict.union ms materials } => []
 
         ClientRes (Ok (GetMaterial ( id, m ))) ->
+            { model | materials = Dict.insert id m materials } => []
+
+        ClientRes (Ok (UpdateMaterialField ( id, m ))) ->
             { model | materials = Dict.insert id m materials } => []
 
         ClientRes (Err err) ->
@@ -115,7 +119,8 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
                 => [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
 
         SubmitEdit id_ field ->
-            model => []
+            { model | editing = Nothing }
+                => [ updateMaterialField id_ field, Ports.unlockScroll () ]
 
         CancelEdit ->
             { model | editing = Nothing } => [ Ports.unlockScroll () ]
