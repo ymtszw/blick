@@ -29,7 +29,7 @@ detailContents width id_ { title, url, thumbnail_url, author_email } =
     div [ class <| "columns" ++ detailColumnsClass width ]
         [ div [ class "column is-two-thirds" ]
             [ a [ link url, target "_blank" ]
-                [ detailThumbnail thumbnail_url
+                [ Z.lazy detailThumbnail thumbnail_url
                 ]
             ]
         , div [ class "column" ]

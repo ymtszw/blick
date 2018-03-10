@@ -80,9 +80,7 @@ formInputDecoder id_ name_ =
     in
         case name_ of
             "author_email" ->
-                baseDec
-                    |> D.map sanitizeEmail
-                    |> D.map (\email -> SubmitEdit id_ (Field "author_email" email))
+                D.map (\input -> SubmitEdit id_ (Field name_ (sanitizeEmail input))) baseDec
 
             _ ->
                 D.map (\input -> SubmitEdit id_ (Field name_ input)) baseDec
