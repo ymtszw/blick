@@ -12,11 +12,13 @@ defmodule Blick.Controller.Root do
   end
 
   def index(conn) do
-    render_with_20_materials(conn)
+    render_with_20_materials(conn, false)
   end
 
-  defp render_with_20_materials(%Conn{assigns: %{key: key}} = conn, pair \\ %{}) do
+  defp render_with_20_materials(%Conn{assigns: %{key: key}} = conn, clipped?, pair \\ %{}) do
+    document_class = if clipped?, do: "is-clipped", else: ""
     render(conn, 200, "root", [
+      document_class: document_class,
       title: "Blick",
       description: "ACCESSの勉強会資料ポータルサイト",
       url: SolomonLib.Env.default_base_url(:blick),
@@ -46,7 +48,7 @@ defmodule Blick.Controller.Root do
   defp show_impl(%Conn{assigns: %{key: key}} = conn, id) do
     case Repo.Material.retrieve_with_refresh(id, key, conn.context.start_time) do
       {:ok, %Material{_id: id} = m} ->
-        render_with_20_materials(conn, %{id => m})
+        render_with_20_materials(conn, true, %{id => m})
       {:error, _} ->
         fallback(conn)
     end

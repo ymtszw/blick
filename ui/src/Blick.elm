@@ -1,4 +1,4 @@
-port module Blick exposing (main)
+module Blick exposing (main)
 
 import Dict exposing (Dict)
 import Regex
@@ -13,6 +13,7 @@ import Rocket exposing ((=>))
 import Blick.Constant exposing (..)
 import Blick.Type exposing (..)
 import Blick.Router exposing (route, goto)
+import Blick.Ports as Ports
 import Blick.Client exposing (listMaterials)
 import Blick.View exposing (view)
 
@@ -156,7 +157,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
 
         InitiateEdit id_ field (S selector) ->
             { model | toEdit = Just ( id_, field ) }
-                => [ queryDOMOrigin ( id_, field, selector ) ]
+                => [ Ports.queryDOMOrigin ( id_, field, selector ) ]
 
         StartEdit ( id_, field, pos ) ->
             { model | toEdit = Nothing, editing = Just ( id_, field, pos ) }
@@ -166,7 +167,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             model => []
 
         CancelEdit ->
-            { model | editing = Nothing } => []
+            { model | editing = Nothing } => [ Ports.unlockScroll () ]
 
 
 findMatchingIds : Dict String Material -> String -> List String
@@ -228,9 +229,6 @@ crossedSingleColumnMax oldSize newSize =
         || (oldSize.width > singleColumnMaxWidthPx && newSize.width <= singleColumnMaxWidthPx)
 
 
-port queryDOMOrigin : ( String, Field, String ) -> Cmd msg
-
-
 
 -- SUBSCRIPTIONS
 
@@ -239,11 +237,8 @@ subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.batch
         [ resizes WindowSize
-        , listenDOMOrigin StartEdit
+        , Ports.listenDOMOrigin StartEdit
         ]
-
-
-port listenDOMOrigin : (( String, Field, DOMRect ) -> msg) -> Sub msg
 
 
 

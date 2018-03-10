@@ -2,6 +2,7 @@ module Blick.Router exposing (route, goto)
 
 import Navigation exposing (Location)
 import Blick.Type exposing (Route(..), Msg(..))
+import Blick.Ports exposing (lockScroll, unlockScroll)
 import Blick.Client exposing (getMaterial)
 
 
@@ -29,10 +30,10 @@ goto : Route -> ( String, List (Cmd Msg) )
 goto route =
     case route of
         Root ->
-            ( "/", [ Cmd.none ] )
+            ( "/", [ unlockScroll () ] )
 
         Detail id ->
-            ( "/" ++ id, [ getMaterial id ] )
+            ( "/" ++ id, [ getMaterial id, lockScroll () ] )
 
         NotFound ->
             -- Should not happen
