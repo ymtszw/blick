@@ -8,7 +8,7 @@ import Html.Lazy as Z
 import Window
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Material, Msg(..), Route(..), Url(..))
+import Blick.Type exposing (Material, Msg(..), Route(..), Selector(S), Url(..))
 import Blick.View.Parts exposing (..)
 
 
@@ -79,7 +79,7 @@ rowOfTable ( id_, { title, author_email } ) =
         [ td [ class "is-paddingless" ]
             [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail id_)) ]
                 [ text title
-                , Z.lazy2 authorTag id_ author_email
+                , authorTag (S ("tr[id='" ++ id_ ++ "']")) id_ author_email
                 ]
             ]
         ]

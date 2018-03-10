@@ -4,40 +4,66 @@ import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Window
-import Blick.Type exposing (Msg(..), Field, ClickPos, inputId)
+import Blick.Type exposing (Msg(..), Field, DOMRect, inputId)
 import Blick.View.Parts exposing (..)
 
 
-modal : Window.Size -> ( String, Field, ClickPos ) -> Html Msg
-modal _ ( id_, field, pos ) =
+modal : Window.Size -> ( String, Field, DOMRect ) -> Html Msg
+modal windowSize ( id_, field, pos ) =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClickNoPropagate CancelEdit ] []
         , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate CancelEdit ] []
-        , materialFieldInput id_ field pos
+        , materialFieldInput windowSize id_ field pos
         ]
 
 
-materialFieldInput : String -> Field -> ClickPos -> Html Msg
-materialFieldInput id_ field ( left, top ) =
-    Html.form
-        [ onWithoutPropagate "submit" (formInputDecoder id_ field.name_)
-        , style
-            [ ( "position", "absolute" )
-            , ( "left", toString left ++ "px" )
-            , ( "top", toString top ++ "px" )
+materialFieldInput : Window.Size -> String -> Field -> DOMRect -> Html Msg
+materialFieldInput windowSize id_ field { left, top, width } =
+    let
+        ( formTop, buttonComesFirst ) =
+            formTopAndSwitch windowSize.height top
+    in
+        Html.form
+            [ onWithoutPropagate "submit" (formInputDecoder id_ field.name_)
+            , floatingFormStyle (toFloat windowSize.width - left - width) formTop width
             ]
+            (formContents buttonComesFirst id_ field)
+
+
+floatingFormStyle : Float -> Float -> Float -> Html.Attribute msg
+floatingFormStyle right top width =
+    style
+        [ ( "position", "absolute" )
+        , ( "right", toString right ++ "px" )
+        , ( "top", toString top ++ "px" )
+        , ( "min-width", toString width ++ "px" )
         ]
-        [ inputByField id_ field
-        , div [ class "field" ]
-            [ div [ class "control" ]
-                [ button
-                    [ class "button is-link is-small is-rounded"
-                    , type_ "submit"
-                    ]
-                    [ text "Submit" ]
-                ]
-            ]
-        ]
+
+
+formTopAndSwitch : Int -> Float -> ( Float, Bool )
+formTopAndSwitch height clickedDomTop =
+    if clickedDomTop + formHeightWithMargin >= toFloat height then
+        ( clickedDomTop - buttonHeightAndGap, True )
+    else
+        ( clickedDomTop, False )
+
+
+formContents : Bool -> String -> Field -> List (Html Msg)
+formContents buttonComesFirst id_ field =
+    if buttonComesFirst then
+        [ submitButton, inputByField id_ field ]
+    else
+        [ inputByField id_ field, submitButton ]
+
+
+buttonHeightAndGap : Float
+buttonHeightAndGap =
+    39.0
+
+
+formHeightWithMargin : Float
+formHeightWithMargin =
+    75.0
 
 
 formInputDecoder : String -> String -> Decoder Msg
@@ -109,5 +135,18 @@ rawTextInput id_ field =
                 , value field.value_
                 ]
                 []
+            ]
+        ]
+
+
+submitButton : Html Msg
+submitButton =
+    div [ class "field" ]
+        [ div [ class "control" ]
+            [ button
+                [ class "button is-link is-small is-rounded"
+                , type_ "submit"
+                ]
+                [ text "Submit" ]
             ]
         ]

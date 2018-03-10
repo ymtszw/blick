@@ -243,7 +243,7 @@ subscriptions _ =
         ]
 
 
-port listenDOMOrigin : (( String, Field, ClickPos ) -> msg) -> Sub msg
+port listenDOMOrigin : (( String, Field, DOMRect ) -> msg) -> Sub msg
 
 
 

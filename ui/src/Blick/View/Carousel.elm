@@ -8,7 +8,7 @@ import Html.Lazy as Z
 import Window
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url))
+import Blick.Type exposing (Msg(..), Route(..), Selector(S), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
@@ -159,4 +159,4 @@ tileThumbnail maybeUrl =
 tags : String -> Material -> Html Msg
 tags id_ { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ Z.lazy2 authorTag id_ author_email ]
+        [ authorTag (S (".card[id='" ++ id_ ++ "']")) id_ author_email ]

@@ -5,7 +5,7 @@ module Blick.Type
         , Msg(..)
         , Success(..)
         , Field
-        , ClickPos
+        , DOMRect
         , Selector(S)
         , Route(..)
         , Material
@@ -13,6 +13,7 @@ module Blick.Type
         , Email(Email)
         , Type_(..)
         , Exception
+        , descendantOf
         , inputId
         , materialDecoder
         , fromHttpError
@@ -53,7 +54,7 @@ type Msg
     | TablePrev
     | Filter String
     | InitiateEdit String Field Selector
-    | StartEdit ( String, Field, ClickPos )
+    | StartEdit ( String, Field, DOMRect )
     | SubmitEdit String Field
     | CancelEdit
 
@@ -78,8 +79,17 @@ type Selector
     = S String
 
 
-type alias ClickPos =
-    ( Float, Float )
+descendantOf : Selector -> Selector -> Selector
+descendantOf (S ancestor) (S target) =
+    S (ancestor ++ " " ++ target)
+
+
+type alias DOMRect =
+    { left : Float
+    , top : Float
+    , width : Float
+    , height : Float
+    }
 
 
 
@@ -89,7 +99,7 @@ type alias ClickPos =
 type alias Model =
     { materials : Dict String Material -- ID-Material Dict
     , toEdit : Maybe ( String, Field )
-    , editing : Maybe ( String, Field, ClickPos )
+    , editing : Maybe ( String, Field, DOMRect )
     , matches : List String -- List of IDs
     , filterInput : String
     , carouselPage : Int

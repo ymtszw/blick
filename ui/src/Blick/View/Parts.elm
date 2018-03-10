@@ -14,7 +14,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
-import Blick.Type exposing (Msg(..), Field, Selector(S), Url(Url), Email(Email))
+import Blick.Type exposing (Msg(..), Field, Selector(S), Url(Url), Email(Email), descendantOf)
 
 
 link : Url -> Html.Attribute msg
@@ -46,28 +46,34 @@ withDisabled disabled_ others =
         others
 
 
-authorTag : String -> Maybe Email -> Html Msg
-authorTag id_ author_email =
+authorTag : Selector -> String -> Maybe Email -> Html Msg
+authorTag anc id_ author_email =
     case author_email of
         Just (Email email) ->
             let
                 name =
                     orgLocalNameOrEmail email
             in
-                div [ class "tags has-addons is-pulled-right" ]
+                div
+                    [ class "tags has-addons is-pulled-right"
+                    , id <| "author-" ++ id_
+                    ]
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
                     , span
                         [ class "tag tag-button is-rounded"
-                        , onWithoutPropagate "click" (authorTagClickDecoder id_ email)
+                        , onWithoutPropagate "click" (authorTagClickDecoder anc id_ email)
                         ]
                         [ span [ class "fa fa-pencil-alt" ] [] ]
                     ]
 
         Nothing ->
-            div [ class "tags is-pulled-right" ]
+            div
+                [ class "tags is-pulled-right"
+                , id <| "author-" ++ id_
+                ]
                 [ span
                     [ class "tag tag-button is-rounded add-author"
-                    , onWithoutPropagate "click" (authorTagClickDecoder id_ "")
+                    , onWithoutPropagate "click" (authorTagClickDecoder anc id_ "")
                     ]
                     [ span [ class "fa fa-plus" ] []
                     , text "Add author"
@@ -75,12 +81,12 @@ authorTag id_ author_email =
                 ]
 
 
-authorTagClickDecoder : String -> String -> Decoder Msg
-authorTagClickDecoder id_ email =
+authorTagClickDecoder : Selector -> String -> String -> Decoder Msg
+authorTagClickDecoder uniqueAncestor id_ email =
     D.succeed <|
         InitiateEdit id_
             (Field "author_email" email)
-            (S ("[id='" ++ id_ ++ "'] div.tags"))
+            (descendantOf uniqueAncestor (S (".tags[id='author-" ++ id_ ++ "']")))
 
 
 orgLocalNameOrEmail : String -> String
