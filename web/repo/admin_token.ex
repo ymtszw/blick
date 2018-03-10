@@ -13,7 +13,7 @@ defmodule Blick.Repo.AdminToken do
   alias GearLib.Oauth2
   alias GearLib.Oauth2.Provider.Google
   alias Blick.SecretString, as: SS
-  import Blick.Dodai, only: [root_key: 0]
+  alias Blick.Dodai
   alias Blick.Model.AdminToken
   alias Blick.External.Google.OpenidConnect
   use SolomonAcs.Dodai.Repo.Datastore, [
@@ -32,7 +32,7 @@ defmodule Blick.Repo.AdminToken do
         expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
         owner: email,
       })
-    upsert(%{data: %{"$set" => data}, data_on_insert: data}, AdminToken.id(), root_key())
+    upsert(%{data: %{"$set" => data}, data_on_insert: data}, AdminToken.id(), Dodai.root_key())
   end
 
   def retrieve_token_and_save(code) do
@@ -68,11 +68,11 @@ defmodule Blick.Repo.AdminToken do
         refresh_token: %SS{value: rt},
         expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
       }
-    update(%{data: %{"$set" => data}}, AdminToken.id(), root_key())
+    update(%{data: %{"$set" => data}}, AdminToken.id(), Dodai.root_key())
   end
 
   def retrieve() do
-    case retrieve(AdminToken.id(), root_key()) do
+    case retrieve(AdminToken.id(), Dodai.root_key()) do
       {:ok, %AdminToken{} = at} ->
         now = Time.now()
         if AdminToken.expired?(at, now) do
@@ -87,7 +87,9 @@ defmodule Blick.Repo.AdminToken do
 
   Croma.Result.define_bang_version_of([retrieve: 0])
 
-  def revoke(group_id \\ Blick.Dodai.default_group_id()), do: delete(AdminToken.id(), nil, root_key(), group_id)
+  def revoke(), do: revoke(:local)
+  def revoke(:local), do: delete(AdminToken.id(), nil, Dodai.root_key(), Dodai.local_group_id())
+  def revoke(:dev), do: delete(AdminToken.id(), nil, Dodai.root_key(), Dodai.dev_group_id())
 
   # Admin OAuth2 client
 
