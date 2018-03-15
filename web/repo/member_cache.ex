@@ -26,38 +26,41 @@ defmodule Blick.Repo.MemberCache do
     datastore_models: [MemberCache],
   ]
 
-  defun retrieve() :: R.t(MemberCache.t) do
+  defun retrieve_with_refresh(key :: v[String.t]) :: R.t(MemberCache.t) do
     Blick.with_logging_elapsed("Retrieved MemberCache:", fn ->
-      root_key = Blick.Dodai.root_key()
-      case retrieve(MemberCache.id(), root_key) do
+      case retrieve(MemberCache.id(), key) do
         {:ok, mc} ->
-          refresh_if_expiring(mc, root_key)
+          refresh_if_expiring(mc, key)
         {:error, %Dodai.ResourceNotFound{}} ->
-          ensure_global_cache(root_key)
+          ensure_global_cache(key)
       end
     end)
   end
 
   @expires_in_minute 24 * 60
+  def expires_in_minute(), do: @expires_in_minute
+
   @leeway_minute_mean 60
   @leeway_minute_variance 10
 
-  defp refresh_if_expiring(%MemberCache{updated_at: ua} = mc, root_key) do
+  defp refresh_if_expiring(%MemberCache{updated_at: ua} = mc, key) do
     leeway_minutes = round(:rand.normal(@leeway_minute_mean, @leeway_minute_variance))
     if Time.now() < Time.shift_minutes(ua, @expires_in_minute - leeway_minutes) do
       {:ok, mc}
     else
-      ensure_global_cache(root_key)
+      ensure_global_cache(key)
     end
   end
 
   defp ensure_global_cache(key) do
-    R.m do
-      token <- AdminToken.retrieve()
-      users <- Users.list(token)
-      data = %{list: sanitize(users)}
-      upsert(%{data: %{"$set" => data}, data_on_insert: data}, MemberCache.id(), key)
-    end
+    Blick.with_logging_elapsed("Refreshed MemberCache from Directory API:", fn ->
+      R.m do
+        token <- AdminToken.retrieve()
+        users <- Users.list(token)
+        data = %{list: sanitize(users)}
+        upsert(%{data: %{"$set" => data}, data_on_insert: data}, MemberCache.id(), key)
+      end
+    end)
   end
 
   defp sanitize(users) do

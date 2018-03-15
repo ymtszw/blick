@@ -16,6 +16,8 @@ defmodule Blick.Router do
   post "/api/screenshots/:id/request_upload_start", Screenshot, :request_upload_start
   post "/api/screenshots/:id/notify_upload_finish", Screenshot, :notify_upload_finish
 
+  get "/api/members", Member, :list
+
   get "/", Root, :index
   get "/:id", Root, :show
 
