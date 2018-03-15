@@ -28,6 +28,7 @@ init flags location =
         , editing = Nothing
         , matches = []
         , filterInput = ""
+        , members = []
         , carouselPage = 0
         , tablePage = 0
         , route = route location

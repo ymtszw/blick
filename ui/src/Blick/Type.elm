@@ -63,6 +63,7 @@ type Success
     = ListMaterials (Dict String Material)
     | GetMaterial ( String, Material )
     | UpdateMaterialField ( String, Material )
+    | ListMembers (List Email)
 
 
 type alias Field =
@@ -103,6 +104,7 @@ type alias Model =
     , editing : Maybe ( String, Field, DOMRect )
     , matches : List String -- List of IDs
     , filterInput : String
+    , members : List Email
     , carouselPage : Int
     , tablePage : Int
     , route : Route

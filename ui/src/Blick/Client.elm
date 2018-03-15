@@ -1,10 +1,10 @@
-module Blick.Client exposing (listMaterials, getMaterial, updateMaterialField)
+module Blick.Client exposing (listMaterials, getMaterial, updateMaterialField, listMembers)
 
 import Json.Encode as E exposing (Value)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:))
 import Http as H exposing (Request)
-import Blick.Type exposing (..)
+import Blick.Type exposing (Msg(ClientRes), Success(..), Material, Field, Email(Email), materialDecoder)
 
 
 listMaterials : Cmd Msg
@@ -53,3 +53,14 @@ put url dec value =
         , timeout = Nothing
         , withCredentials = False
         }
+
+
+listMembers : Cmd Msg
+listMembers =
+    let
+        dec =
+            D.map ListMembers <|
+                D.field "members" <|
+                    D.list (D.map Email D.string)
+    in
+        H.send ClientRes <| H.get "/api/members" dec

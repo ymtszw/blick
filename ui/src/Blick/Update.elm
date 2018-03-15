@@ -11,7 +11,7 @@ import Rocket exposing ((=>))
 import Blick.Type exposing (..)
 import Blick.Router exposing (route, goto)
 import Blick.Constant exposing (..)
-import Blick.Client exposing (updateMaterialField)
+import Blick.Client exposing (updateMaterialField, listMembers)
 import Blick.Ports as Ports
 
 
@@ -54,6 +54,9 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
 
         ClientRes (Ok (UpdateMaterialField ( id, m ))) ->
             { model | materials = Dict.insert id m materials } => []
+
+        ClientRes (Ok (ListMembers members)) ->
+            { model | members = members } => []
 
         ClientRes (Err err) ->
             model => [ Task.perform (TimedErr err) Time.now ]
@@ -116,7 +119,10 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
 
         StartEdit ( id_, field, pos ) ->
             { model | toEdit = Nothing, editing = Just ( id_, field, pos ) }
-                => [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
+                => if field.name_ == "author_email" then
+                    [ listMembers, Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
+                   else
+                    [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
 
         SubmitEdit id_ field ->
             { model | editing = Nothing }
