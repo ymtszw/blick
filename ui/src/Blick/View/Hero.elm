@@ -27,11 +27,22 @@ filter : List String -> String -> Html Msg
 filter matches input_ =
     div [ class "field is-expanded" ]
         [ div [ class "control has-icons-left has-icons-right" ]
-            [ input [ type_ "text", placeholder "OR filter", class <| "input is-flat" ++ filterInputColor matches input_, onInput Filter ] []
+            [ filterInput matches input_
             , span [ class "icon is-small is-left" ] [ i [ class "fa fa-filter" ] [] ]
             , filterInputResult matches input_
             ]
         ]
+
+
+filterInput : List String -> String -> Html Msg
+filterInput matches input_ =
+    input
+        [ type_ "text"
+        , placeholder "OR filter"
+        , onInput Filter
+        , class <| "input is-flat" ++ filterInputColor matches input_
+        ]
+        []
 
 
 filterInputColor : List String -> String -> String
