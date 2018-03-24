@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Window
 import String.Extra as SE
-import Blick.Type exposing (Model, Msg(..), EditState, Field, DOMRect, Email(Email), inputId)
+import Blick.Type exposing (Model, Msg(..), EditState, Field, Email(Email), inputId)
 import Blick.Constant exposing (atOrgDomain, maxSuggestions)
 import Blick.View.Parts exposing (..)
 import Blick.View.Suggestion as Suggestion

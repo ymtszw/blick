@@ -4,7 +4,7 @@ import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Util
-import Blick.Type exposing (Model, Msg(..), Field, DOMRect, Route(..), Material, Email)
+import Blick.Type exposing (Model, Msg(..), Route(..), Material)
 import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
 import Blick.View.Table as Table

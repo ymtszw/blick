@@ -1,13 +1,13 @@
 module Blick.View.Table exposing (view)
 
-import Dict exposing (Dict)
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Model, Material, Msg(..), Route(..), Url(..), selector)
+import Blick.Type exposing (Model, Material, Msg(..), Route(..), selector)
 import Blick.View.Parts exposing (..)
 
 
