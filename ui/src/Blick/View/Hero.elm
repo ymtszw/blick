@@ -3,11 +3,11 @@ module Blick.View.Hero exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Blick.Type exposing (Msg(..))
+import Blick.Type exposing (Msg(..), Model)
 
 
-view : List String -> String -> Html Msg
-view matches input_ =
+view : Model -> Html Msg
+view { filterInput, matches } =
     div [ class "hero is-success" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
@@ -16,7 +16,7 @@ view matches input_ =
                         [ h1 [ class "title" ] [ text "Blick" ]
                         ]
                     , div [ class "column" ]
-                        [ filter matches input_ ]
+                        [ filter matches filterInput ]
                     ]
                 ]
             ]

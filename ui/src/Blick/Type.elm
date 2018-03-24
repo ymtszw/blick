@@ -8,6 +8,7 @@ module Blick.Type
         , DOMRect
         , Selector(S)
         , Route(..)
+        , EditState
         , Material
         , Url(Url)
         , Email(Email)
@@ -54,7 +55,7 @@ type Msg
     | TablePrev
     | Filter String
     | InitiateEdit String Field Selector
-    | StartEdit ( String, Field, DOMRect )
+    | StartEdit EditState
     | SubmitEdit String Field
     | CancelEdit
 
@@ -101,7 +102,7 @@ type alias DOMRect =
 type alias Model =
     { materials : Dict String Material -- ID-Material Dict
     , toEdit : Maybe ( String, Field )
-    , editing : Maybe ( String, Field, DOMRect )
+    , editing : Maybe EditState
     , matches : List String -- List of IDs
     , filterInput : String
     , members : List Email
@@ -117,6 +118,13 @@ type Route
     = Root
     | Detail String
     | NotFound
+
+
+type alias EditState =
+    ( String -- editor element's id
+    , Field -- editing field
+    , DOMRect -- editor element's DOMRect
+    )
 
 
 type alias Material =

@@ -5,30 +5,29 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
-import Window
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Msg(..), Route(..), Selector(S), Material, Url(Url))
+import Blick.Type exposing (Model, Msg(..), Route(..), Selector(S), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
-view : Window.Size -> Int -> Dict String Material -> Html Msg
-view { width } carouselPage materials =
+view : Model -> Html Msg
+view { materials, windowSize, carouselPage } =
     let
         cs =
-            columnScale width
+            columnScale windowSize.width
     in
         div [ class "hero is-info" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container carousel is-fullhd" ]
                     [ materials
                         |> Dict.toList
-                        |> Util.split (tilePerRow width)
+                        |> Util.split (tilePerRow windowSize.width)
                         |> Util.split rowPerCarouselPage
                         |> List.indexedMap (carouselItem cs carouselPage)
                         |> fillByDummyPage cs
                         |> div [ class "carousel-container" ]
-                    , carouselNav (maxCarouselPage width (Dict.size materials)) carouselPage
+                    , carouselNav (maxCarouselPage windowSize.width (Dict.size materials)) carouselPage
                     ]
                 ]
             ]

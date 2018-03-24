@@ -5,23 +5,22 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
-import Window
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Material, Msg(..), Route(..), Selector(S), Url(..))
+import Blick.Type exposing (Model, Material, Msg(..), Route(..), Selector(S), Url(..))
 import Blick.View.Parts exposing (..)
 
 
-view : Window.Size -> Int -> Dict String Material -> Html Msg
-view { width } tablePage materials =
+view : Model -> Html Msg
+view { materials, windowSize, tablePage } =
     let
         tpp =
-            tablePerPage width
+            tablePerPage windowSize.width
     in
         div [ class "hero is-primary" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container tables is-fullhd" ]
-                    [ tableNav (maxTablePage width (Dict.size materials)) tablePage
+                    [ tableNav (maxTablePage windowSize.width (Dict.size materials)) tablePage
                     , materials
                         |> Dict.toList
                         |> Util.split rowPerTable
