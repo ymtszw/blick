@@ -11,6 +11,7 @@ module Blick.Constant
         , maxTablePage
         , orgDomain
         , atOrgDomain
+        , maxSuggestions
         )
 
 
@@ -85,3 +86,8 @@ orgDomain =
 atOrgDomain : String
 atOrgDomain =
     "@" ++ orgDomain
+
+
+maxSuggestions : Int
+maxSuggestions =
+    10

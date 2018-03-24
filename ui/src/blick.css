@@ -83,4 +83,10 @@ td.is-paddingless > a {
 
 .dropdown .dropdown-menu {
   width: 100%;
+  min-width: 5rem;
+}
+
+.dropdown-content {
+  padding-top: 0;
+  padding-bottom: 0;
 }

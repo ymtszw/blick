@@ -4,21 +4,24 @@ import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Window
-import Blick.Type exposing (Msg(..), Field, DOMRect, inputId)
+import String.Extra as SE
+import Blick.Type exposing (Model, Msg(..), EditState, Field, DOMRect, Email(Email), inputId)
+import Blick.Constant exposing (atOrgDomain, maxSuggestions)
 import Blick.View.Parts exposing (..)
+import Blick.View.Suggestion as Suggestion
 
 
-modal : Window.Size -> ( String, Field, DOMRect ) -> Html Msg
-modal windowSize ( id_, field, pos ) =
+modal : Model -> EditState -> Html Msg
+modal { members, windowSize } editState =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClickNoPropagate CancelEdit ] []
         , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate CancelEdit ] []
-        , materialFieldInput windowSize id_ field pos
+        , materialFieldInput members windowSize editState
         ]
 
 
-materialFieldInput : Window.Size -> String -> Field -> DOMRect -> Html Msg
-materialFieldInput windowSize id_ field { left, top, width } =
+materialFieldInput : List Email -> Window.Size -> EditState -> Html Msg
+materialFieldInput members windowSize ( id_, field, { left, top, width } ) =
     let
         ( formTop, buttonComesFirst ) =
             formTopAndSwitch windowSize.height top
@@ -27,7 +30,7 @@ materialFieldInput windowSize id_ field { left, top, width } =
             [ onWithoutPropagate "submit" (formInputDecoder id_ field.name_)
             , floatingFormStyle (toFloat windowSize.width - left - width) formTop width
             ]
-            (formContents buttonComesFirst id_ field)
+            (formContents buttonComesFirst members id_ field)
 
 
 floatingFormStyle : Float -> Float -> Float -> Html.Attribute msg
@@ -48,12 +51,12 @@ formTopAndSwitch height clickedDomTop =
         ( clickedDomTop, False )
 
 
-formContents : Bool -> String -> Field -> List (Html Msg)
-formContents buttonComesFirst id_ field =
+formContents : Bool -> List Email -> String -> Field -> List (Html Msg)
+formContents buttonComesFirst members id_ field =
     if buttonComesFirst then
-        [ submitButton, inputByField id_ field ]
+        [ submitButton, inputByField members id_ field ]
     else
-        [ inputByField id_ field, submitButton ]
+        [ inputByField members id_ field, submitButton ]
 
 
 buttonHeightAndGap : Float
@@ -76,7 +79,7 @@ formInputDecoder id_ name_ =
             if String.contains "@" input then
                 input
             else
-                input ++ "@access-company.com"
+                input ++ atOrgDomain
     in
         case name_ of
             "author_email" ->
@@ -86,12 +89,12 @@ formInputDecoder id_ name_ =
                 D.map (\input -> SubmitEdit id_ (Field name_ input)) baseDec
 
 
-inputByField : String -> Field -> Html Msg
-inputByField id_ field =
+inputByField : List Email -> String -> Field -> Html Msg
+inputByField members id_ field =
     case field.name_ of
         "author_email" ->
-            if field.value_ == "" || String.endsWith "@access-company.com" field.value_ then
-                orgEmailInput id_ field
+            if field.value_ == "" || String.endsWith atOrgDomain field.value_ then
+                orgEmailInput (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) members) id_ field
             else
                 rawTextInput True id_ field
 
@@ -99,24 +102,25 @@ inputByField id_ field =
             rawTextInput True id_ field
 
 
-orgEmailInput : String -> Field -> Html Msg
-orgEmailInput id_ field =
+orgEmailInput : List String -> String -> Field -> Html Msg
+orgEmailInput memberNames id_ field =
     div [ class "field has-addons" ]
-        [ span [ class "control" ]
-            [ input
-                [ class "input is-small is-rounded has-text-right"
-                , type_ "text"
-                , id (inputId id_ field)
-                , name field.name_
-                , placeholder "author.name"
-                , required True
-                , value (orgLocalNameOrEmail field.value_)
-                ]
-                []
+        [ span [ class "control has-text-right" ]
+            [ Suggestion.dropdown True (List.take maxSuggestions memberNames) <|
+                input
+                    [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
+                    , type_ "text"
+                    , id (inputId id_ field)
+                    , name field.name_
+                    , placeholder "author.name"
+                    , required True
+                    , value (orgLocalNameOrEmail field.value_)
+                    ]
+                    []
             ]
         , span [ class "control" ]
             [ span [ class "button is-small is-static is-rounded has-text-left" ]
-                [ text "@access-company.com" ]
+                [ text atOrgDomain ]
             ]
         ]
 
