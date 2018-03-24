@@ -6,7 +6,7 @@ module Blick.Type
         , Success(..)
         , Field
         , DOMRect
-        , Selector(S)
+        , Selector
         , Route(..)
         , EditState
         , Material
@@ -14,6 +14,8 @@ module Blick.Type
         , Email(Email)
         , Type_(..)
         , Exception
+        , selector
+        , selectorStr
         , descendantOf
         , inputId
         , materialDecoder
@@ -78,8 +80,28 @@ inputId id_ { name_ } =
     id_ ++ "-" ++ name_
 
 
-type Selector
+{-| Tagged String [Phantom Type]
+-}
+type TaggedString tag
     = S String
+
+
+type SelectorTag
+    = SelectorTag
+
+
+type alias Selector =
+    TaggedString SelectorTag
+
+
+selector : String -> Selector
+selector str =
+    S str
+
+
+selectorStr : Selector -> String
+selectorStr (S str) =
+    str
 
 
 descendantOf : Selector -> Selector -> Selector

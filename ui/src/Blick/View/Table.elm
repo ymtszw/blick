@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Model, Material, Msg(..), Route(..), Selector(S), Url(..))
+import Blick.Type exposing (Model, Material, Msg(..), Route(..), Url(..), selector)
 import Blick.View.Parts exposing (..)
 
 
@@ -78,7 +78,7 @@ rowOfTable ( id_, { title, author_email } ) =
         [ td [ class "is-paddingless" ]
             [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail id_)) ]
                 [ text title
-                , authorTag (S ("tr[id='" ++ id_ ++ "']")) id_ author_email
+                , authorTag (selector ("tr[id='" ++ id_ ++ "']")) id_ author_email
                 ]
             ]
         ]

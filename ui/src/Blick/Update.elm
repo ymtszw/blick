@@ -113,9 +113,9 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             }
                 => []
 
-        InitiateEdit id_ field (S selector) ->
+        InitiateEdit id_ field s ->
             { model | toEdit = Just ( id_, field ) }
-                => [ Ports.queryDOMOrigin ( id_, field, selector ) ]
+                => [ Ports.queryDOMOrigin ( id_, field, selectorStr s ) ]
 
         StartEdit ( id_, field, pos ) ->
             { model | toEdit = Nothing, editing = Just ( id_, field, pos ) }

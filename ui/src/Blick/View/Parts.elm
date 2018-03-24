@@ -15,7 +15,7 @@ import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
 import Blick.Constant exposing (atOrgDomain)
-import Blick.Type exposing (Msg(..), Field, Selector(S), Url(Url), Email(Email), descendantOf)
+import Blick.Type exposing (Msg(..), Field, Selector, Url(Url), Email(Email), selector, descendantOf)
 
 
 link : Url -> Html.Attribute msg
@@ -87,7 +87,7 @@ authorTagClickDecoder uniqueAncestor id_ email =
     D.succeed <|
         InitiateEdit id_
             (Field "author_email" email)
-            (descendantOf uniqueAncestor (S (".tags[id='author-" ++ id_ ++ "']")))
+            (descendantOf uniqueAncestor (selector (".tags[id='author-" ++ id_ ++ "']")))
 
 
 orgLocalNameOrEmail : String -> String

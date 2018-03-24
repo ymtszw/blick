@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
 import Window
-import Blick.Type exposing (Msg(..), Route(..), Selector(S), Material, Url(Url))
+import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url), selector)
 import Blick.Constant exposing (singleColumnMaxWidthPx)
 import Blick.View.Parts exposing (..)
 
@@ -34,7 +34,7 @@ detailContents width id_ { title, url, thumbnail_url, author_email } =
             ]
         , div [ class "column" ]
             [ h1 [ class "title" ] [ text title ]
-            , div [ class "tags" ] [ authorTag (S (".modal[id='detail-" ++ id_ ++ "']")) id_ author_email ]
+            , div [ class "tags" ] [ authorTag (selector (".modal[id='detail-" ++ id_ ++ "']")) id_ author_email ]
             ]
         ]
 
