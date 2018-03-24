@@ -14,8 +14,8 @@ module Blick.Type
         , Email(Email)
         , Type_(..)
         , Exception
+        , rawStr
         , selector
-        , selectorStr
         , descendantOf
         , inputId
         , materialDecoder
@@ -86,6 +86,11 @@ type TaggedString tag
     = S String
 
 
+rawStr : TaggedString tag -> String
+rawStr (S str) =
+    str
+
+
 type SelectorTag
     = SelectorTag
 
@@ -97,11 +102,6 @@ type alias Selector =
 selector : String -> Selector
 selector str =
     S str
-
-
-selectorStr : Selector -> String
-selectorStr (S str) =
-    str
 
 
 descendantOf : Selector -> Selector -> Selector
