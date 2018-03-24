@@ -15,12 +15,12 @@ import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
 import Blick.Constant exposing (atOrgDomain)
-import Blick.Type exposing (Msg(..), Field, Selector, Url(Url), Email(Email), selector, descendantOf)
+import Blick.Type exposing (Msg(..), Field, Selector, Url, Email(Email), selector, descendantOf, rawStr)
 
 
 link : Url -> Html.Attribute msg
-link (Url url) =
-    href url
+link url =
+    href (rawStr url)
 
 
 onClickNoPropagate : msg -> Html.Attribute msg

@@ -10,7 +10,7 @@ module Blick.Type
         , Route(..)
         , EditState
         , Material
-        , Url(Url)
+        , Url
         , Email(Email)
         , Type_(..)
         , Exception
@@ -176,13 +176,22 @@ materialDecoder =
         |: D.field "exclude_reason" (D.maybe D.string)
 
 
-type Url
-    = Url String
+type alias Url =
+    TaggedString UrlTag
+
+
+type UrlTag
+    = UrlTag
+
+
+url : String -> Url
+url str =
+    S str
 
 
 urlDecoder : Decoder Url
 urlDecoder =
-    D.map Url D.string
+    D.map url D.string
 
 
 type Email

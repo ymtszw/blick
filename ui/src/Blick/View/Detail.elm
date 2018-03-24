@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
 import Window
-import Blick.Type exposing (Msg(..), Route(..), Material, Url(Url), selector)
+import Blick.Type exposing (Msg(..), Route(..), Material, Url, rawStr, selector)
 import Blick.Constant exposing (singleColumnMaxWidthPx)
 import Blick.View.Parts exposing (..)
 
@@ -50,9 +50,9 @@ detailColumnsClass width =
 detailThumbnail : Maybe Url -> Html Msg
 detailThumbnail maybeThumbnailUrl =
     case maybeThumbnailUrl of
-        Just (Url thumbnailUrl) ->
+        Just thumbnailUrl ->
             figure [ class "image is-16by9" ]
-                [ img [ src thumbnailUrl ] []
+                [ img [ src (rawStr thumbnailUrl) ] []
                 , div [ class "colmuns is-overlay" ]
                     [ div [ class "column" ] [ i [ class "fa fa-external-link-alt fa-5x" ] [] ]
                     ]

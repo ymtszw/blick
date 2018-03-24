@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Model, Msg(..), Route(..), Material, Url(Url), selector)
+import Blick.Type exposing (Model, Msg(..), Route(..), Material, Url, rawStr, selector)
 import Blick.View.Parts exposing (..)
 
 
@@ -146,9 +146,9 @@ columnScaleClass columnScale =
 tileThumbnail : Maybe Url -> Html Msg
 tileThumbnail maybeUrl =
     case maybeUrl of
-        Just (Url url) ->
+        Just url ->
             figure [ class "image is-16by9" ]
-                [ img [ src url ] [] ]
+                [ img [ src (rawStr url) ] [] ]
 
         Nothing ->
             figure [ class "image is-16by9" ]
