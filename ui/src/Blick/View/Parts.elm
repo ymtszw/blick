@@ -14,6 +14,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
+import Blick.Constant exposing (atOrgDomain)
 import Blick.Type exposing (Msg(..), Field, Selector(S), Url(Url), Email(Email), descendantOf)
 
 
@@ -91,7 +92,7 @@ authorTagClickDecoder uniqueAncestor id_ email =
 
 orgLocalNameOrEmail : String -> String
 orgLocalNameOrEmail email =
-    SE.replace "@access-company.com" "" email
+    SE.replace atOrgDomain "" email
 
 
 colorClassByName : String -> String

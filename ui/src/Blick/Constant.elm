@@ -9,6 +9,8 @@ module Blick.Constant
         , rowPerTable
         , tablePerPage
         , maxTablePage
+        , orgDomain
+        , atOrgDomain
         )
 
 
@@ -73,3 +75,13 @@ divCeiling dividend divisor =
 
         _ ->
             dividend // divisor + 1
+
+
+orgDomain : String
+orgDomain =
+    "access-company.com"
+
+
+atOrgDomain : String
+atOrgDomain =
+    "@" ++ orgDomain
