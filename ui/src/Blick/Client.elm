@@ -4,7 +4,7 @@ import Json.Encode as E exposing (Value)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:))
 import Http as H exposing (Request)
-import Blick.Type exposing (Msg(ClientRes), Success(..), Material, Field, Email(Email), materialDecoder)
+import Blick.Type exposing (Msg(ClientRes), Success(..), Material, Field, materialDecoder, emailDecoder)
 
 
 listMaterials : Cmd Msg
@@ -61,6 +61,6 @@ listMembers =
         dec =
             D.map ListMembers <|
                 D.field "members" <|
-                    D.list (D.map Email D.string)
+                    D.list emailDecoder
     in
         H.send ClientRes <| H.get "/api/members" dec

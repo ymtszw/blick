@@ -53,7 +53,7 @@ authorTag anc id_ author_email =
         Just (Email email) ->
             let
                 name =
-                    orgLocalNameOrEmail email
+                    orgLocalNameOrEmail (Email email)
             in
                 div
                     [ class "tags has-addons is-pulled-right"
@@ -83,15 +83,15 @@ authorTag anc id_ author_email =
 
 
 authorTagClickDecoder : Selector -> String -> String -> Decoder Msg
-authorTagClickDecoder uniqueAncestor id_ email =
+authorTagClickDecoder uniqueAncestor id_ currentValue =
     D.succeed <|
         InitiateEdit id_
-            (Field "author_email" email)
+            (Field "author_email" currentValue)
             (descendantOf uniqueAncestor (selector (".tags[id='author-" ++ id_ ++ "']")))
 
 
-orgLocalNameOrEmail : String -> String
-orgLocalNameOrEmail email =
+orgLocalNameOrEmail : Email -> String
+orgLocalNameOrEmail (Email email) =
     SE.replace atOrgDomain "" email
 
 

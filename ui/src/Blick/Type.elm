@@ -19,6 +19,7 @@ module Blick.Type
         , descendantOf
         , inputId
         , materialDecoder
+        , emailDecoder
         , fromHttpError
         )
 

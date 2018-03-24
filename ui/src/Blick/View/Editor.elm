@@ -7,7 +7,7 @@ import Window
 import String.Extra as SE
 import Blick.Type exposing (Model, Msg(..), EditState, Field, Email(Email), inputId)
 import Blick.Constant exposing (atOrgDomain, maxSuggestions)
-import Blick.View.Parts exposing (..)
+import Blick.View.Parts exposing (onClickNoPropagate, onWithoutPropagate, orgLocalNameOrEmail)
 import Blick.View.Suggestion as Suggestion
 
 
@@ -114,7 +114,7 @@ orgEmailInput memberNames id_ field =
                     , name field.name_
                     , placeholder "author.name"
                     , required True
-                    , value (orgLocalNameOrEmail field.value_)
+                    , value (orgLocalNameOrEmail (Email field.value_))
                     ]
                     []
             ]
