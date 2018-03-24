@@ -76,3 +76,11 @@ td.is-paddingless > a {
 .modal-close:hover {
   background: rgba(0, 0, 0, 0.5);
 }
+
+.dropdown {
+  display: block;
+}
+
+.dropdown .dropdown-menu {
+  width: 100%;
+}
