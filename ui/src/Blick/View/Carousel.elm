@@ -7,7 +7,7 @@ import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Model, Msg(..), Route(..), Material, Url, rawStr, selector)
+import Blick.Type exposing (Model, Msg(..), Route(..), Selector(Selector), Material, Url(Url))
 import Blick.View.Parts exposing (..)
 
 
@@ -146,9 +146,9 @@ columnScaleClass columnScale =
 tileThumbnail : Maybe Url -> Html Msg
 tileThumbnail maybeUrl =
     case maybeUrl of
-        Just url ->
+        Just (Url url) ->
             figure [ class "image is-16by9" ]
-                [ img [ src (rawStr url) ] [] ]
+                [ img [ src url ] [] ]
 
         Nothing ->
             figure [ class "image is-16by9" ]
@@ -158,4 +158,4 @@ tileThumbnail maybeUrl =
 tags : String -> Material -> Html Msg
 tags id_ { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ authorTag (selector (".card[id='" ++ id_ ++ "']")) id_ author_email ]
+        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) id_ author_email ]

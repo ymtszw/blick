@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
 import Window
-import Blick.Type exposing (Msg(..), Route(..), Material, Url, rawStr, selector)
+import Blick.Type exposing (Msg(..), Route(..), Selector(Selector), Material, Url(Url))
 import Blick.Constant exposing (singleColumnMaxWidthPx)
 import Blick.View.Parts exposing (..)
 
@@ -34,7 +34,7 @@ detailContents width id_ { title, url, thumbnail_url, author_email } =
             ]
         , div [ class "column" ]
             [ h1 [ class "title" ] [ text title ]
-            , div [ class "tags" ] [ authorTag (selector (".modal[id='detail-" ++ id_ ++ "']")) id_ author_email ]
+            , div [ class "tags" ] [ authorTag (Selector (".modal[id='detail-" ++ id_ ++ "']")) id_ author_email ]
             ]
         ]
 
@@ -50,9 +50,9 @@ detailColumnsClass width =
 detailThumbnail : Maybe Url -> Html Msg
 detailThumbnail maybeThumbnailUrl =
     case maybeThumbnailUrl of
-        Just thumbnailUrl ->
+        Just (Url thumbnailUrl) ->
             figure [ class "image is-16by9" ]
-                [ img [ src (rawStr thumbnailUrl) ] []
+                [ img [ src thumbnailUrl ] []
                 , div [ class "colmuns is-overlay" ]
                     [ div [ class "column" ] [ i [ class "fa fa-external-link-alt fa-5x" ] [] ]
                     ]

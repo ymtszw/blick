@@ -15,12 +15,12 @@ import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
 import Blick.Constant exposing (atOrgDomain)
-import Blick.Type exposing (Msg(..), Field, Selector, Url, Email(Email), selector, descendantOf, rawStr)
+import Blick.Type exposing (Msg(..), Field, Selector(Selector), Url(Url), Email(Email), descendantOf)
 
 
 link : Url -> Html.Attribute msg
-link url =
-    href (rawStr url)
+link (Url url) =
+    href url
 
 
 onClickNoPropagate : msg -> Html.Attribute msg
@@ -87,7 +87,7 @@ authorTagClickDecoder uniqueAncestor id_ currentValue =
     D.succeed <|
         InitiateEdit id_
             (Field "author_email" currentValue)
-            (descendantOf uniqueAncestor (selector (".tags[id='author-" ++ id_ ++ "']")))
+            (descendantOf uniqueAncestor (Selector (".tags[id='author-" ++ id_ ++ "']")))
 
 
 orgLocalNameOrEmail : Email -> String

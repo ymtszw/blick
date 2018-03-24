@@ -6,16 +6,14 @@ module Blick.Type
         , Success(..)
         , Field
         , DOMRect
-        , Selector
+        , Selector(Selector)
         , Route(..)
         , EditState
         , Material
-        , Url
+        , Url(Url)
         , Email(Email)
         , Type_(..)
         , Exception
-        , rawStr
-        , selector
         , descendantOf
         , inputId
         , materialDecoder
@@ -81,33 +79,13 @@ inputId id_ { name_ } =
     id_ ++ "-" ++ name_
 
 
-{-| Tagged String [Phantom Type]
--}
-type TaggedString tag
-    = S String
-
-
-rawStr : TaggedString tag -> String
-rawStr (S str) =
-    str
-
-
-type SelectorTag
-    = SelectorTag
-
-
-type alias Selector =
-    TaggedString SelectorTag
-
-
-selector : String -> Selector
-selector str =
-    S str
+type Selector
+    = Selector String
 
 
 descendantOf : Selector -> Selector -> Selector
-descendantOf (S ancestor) (S target) =
-    S (ancestor ++ " " ++ target)
+descendantOf (Selector ancestor) (Selector target) =
+    Selector (ancestor ++ " " ++ target)
 
 
 type alias DOMRect =
@@ -177,22 +155,13 @@ materialDecoder =
         |: D.field "exclude_reason" (D.maybe D.string)
 
 
-type alias Url =
-    TaggedString UrlTag
-
-
-type UrlTag
-    = UrlTag
-
-
-url : String -> Url
-url str =
-    S str
+type Url
+    = Url String
 
 
 urlDecoder : Decoder Url
 urlDecoder =
-    D.map url D.string
+    D.map Url D.string
 
 
 type Email
