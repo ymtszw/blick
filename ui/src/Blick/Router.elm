@@ -32,8 +32,8 @@ goto route =
         Root ->
             ( "/", [ unlockScroll () ] )
 
-        Detail (MatId id) ->
-            ( "/" ++ id, [ getMaterial (MatId id), lockScroll () ] )
+        Detail ((MatId id) as matId) ->
+            ( "/" ++ id, [ getMaterial matId, lockScroll () ] )
 
         NotFound ->
             -- Should not happen

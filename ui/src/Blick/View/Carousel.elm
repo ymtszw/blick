@@ -155,6 +155,6 @@ tileThumbnail maybeUrl =
 
 
 tags : MatId -> Material -> Html Msg
-tags (MatId id_) { author_email } =
+tags ((MatId id_) as matId) { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) (MatId id_) author_email ]
+        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) matId author_email ]

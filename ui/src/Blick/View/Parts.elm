@@ -74,7 +74,7 @@ authorTag anc ((MatId id_) as matId) author_email =
                 ]
                 [ span
                     [ class "tag tag-button is-rounded add-author"
-                    , onWithoutPropagate "click" (authorTagClickDecoder anc (MatId id_) "")
+                    , onWithoutPropagate "click" (authorTagClickDecoder anc matId "")
                     ]
                     [ span [ class "fa fa-plus" ] []
                     , text "Add author"
