@@ -35,5 +35,5 @@ menu items =
         _ ->
             div [ class "dropdown-menu", attribute "role" "menu" ]
                 [ div [ class "dropdown-content" ] <|
-                    List.map (\item -> span [ class "dropdown-item" ] [ text item ]) items
+                    List.map (\item -> a [ class "dropdown-item" ] [ text item ]) items
                 ]
