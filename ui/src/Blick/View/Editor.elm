@@ -3,6 +3,7 @@ module Blick.View.Editor exposing (modal)
 import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 import Window
 import String.Extra as SE
 import Blick.Type exposing (..)
@@ -27,7 +28,7 @@ materialFieldInput members windowSize ( matId, field, { left, top, width } ) =
             formTopAndSwitch windowSize.height top
     in
         Html.form
-            [ onWithoutPropagate "submit" (formInputDecoder matId field.name_)
+            [ onWithoutPropagate "submit" (formInputDecoder matId field)
             , floatingFormStyle (toFloat windowSize.width - left - width) formTop width
             ]
             (formContents buttonComesFirst members matId field)
@@ -41,6 +42,40 @@ floatingFormStyle right top width =
         , ( "top", toString top ++ "px" )
         , ( "min-width", toString width ++ "px" )
         ]
+
+
+formInputDecoder : MatId -> Field -> Decoder Msg
+formInputDecoder matId ({ name_, value_ } as field) =
+    let
+        baseDec =
+            D.at [ "target", name_, "value" ] D.string
+    in
+        case name_ of
+            "author_email" ->
+                D.map
+                    (\input ->
+                        SubmitEdit matId
+                            { field | value_ = { value_ | edit = sanitizeEmail input } }
+                    )
+                    baseDec
+
+            _ ->
+                D.map
+                    (\input ->
+                        SubmitEdit matId
+                            { field | value_ = { value_ | edit = Just input } }
+                    )
+                    baseDec
+
+
+sanitizeEmail : String -> Maybe String
+sanitizeEmail input =
+    if input == "" then
+        Nothing
+    else if String.contains "@" input then
+        Just input
+    else
+        Just (input ++ atOrgDomain)
 
 
 formTopAndSwitch : Int -> Float -> ( Float, Bool )
@@ -69,41 +104,45 @@ formHeightWithMargin =
     75.0
 
 
-formInputDecoder : MatId -> String -> Decoder Msg
-formInputDecoder matId name_ =
-    let
-        baseDec =
-            D.at [ "target", name_, "value" ] D.string
-
-        sanitizeEmail input =
-            if String.contains "@" input then
-                input
-            else
-                input ++ atOrgDomain
-    in
-        case name_ of
-            "author_email" ->
-                D.map (\input -> SubmitEdit matId (Field name_ (sanitizeEmail input))) baseDec
-
-            _ ->
-                D.map (\input -> SubmitEdit matId (Field name_ input)) baseDec
-
-
 inputByField : List Email -> MatId -> Field -> Html Msg
-inputByField members matId field =
-    case field.name_ of
+inputByField members matId ({ name_, value_ } as field) =
+    case name_ of
         "author_email" ->
-            if field.value_ == "" || String.endsWith atOrgDomain field.value_ then
-                orgEmailInput (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) members) matId field
-            else
-                rawTextInput True matId field
+            let
+                filteredMembers =
+                    filterMembers value_ members
+            in
+                case Maybe.map (String.endsWith atOrgDomain) value_.prev of
+                    Just False ->
+                        rawTextInput True matId field
+
+                    _ ->
+                        orgEmailInput
+                            (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) filteredMembers)
+                            matId
+                            field
 
         _ ->
             rawTextInput True matId field
 
 
+filterMembers : ValueState -> List Email -> List Email
+filterMembers { edit } members =
+    case edit of
+        Nothing ->
+            []
+
+        Just "" ->
+            []
+
+        Just v ->
+            List.filter
+                (\(Email email) -> String.startsWith v email || String.startsWith v (SE.rightOf "." email))
+                members
+
+
 orgEmailInput : List String -> MatId -> Field -> Html Msg
-orgEmailInput memberNames matId field =
+orgEmailInput memberNames matId ({ name_, value_ } as field) =
     div [ class "field has-addons" ]
         [ span [ class "control has-text-right" ]
             [ Suggestion.dropdown True (List.take maxSuggestions memberNames) <|
@@ -111,10 +150,12 @@ orgEmailInput memberNames matId field =
                     [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
                     , type_ "text"
                     , id (inputId matId field)
-                    , name field.name_
+                    , name name_
                     , placeholder "author.name"
+                    , autocomplete False
                     , required True
-                    , value (orgLocalNameOrEmail (Email field.value_))
+                    , defaultValue (orgLocalNameOrEmail (Email (Maybe.withDefault "" value_.prev)))
+                    , onInput InputEdit
                     ]
                     []
             ]
@@ -126,17 +167,17 @@ orgEmailInput memberNames matId field =
 
 
 rawTextInput : Bool -> MatId -> Field -> Html Msg
-rawTextInput isRequired matId field =
+rawTextInput isRequired matId ({ name_, value_ } as field) =
     div [ class "field" ]
         [ div [ class "control" ]
             [ input
                 [ class "input is-small is-rounded"
                 , type_ "text"
                 , id (inputId matId field)
-                , name field.name_
-                , placeholder field.name_
+                , name name_
+                , placeholder name_
                 , required isRequired
-                , value field.value_
+                , defaultValue (Maybe.withDefault "" value_.prev)
                 ]
                 []
             ]

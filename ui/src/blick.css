@@ -87,6 +87,7 @@ td.is-paddingless > a {
 }
 
 a.dropdown-item {
-  /* Explicitly set to the value of `.dropdown-item` */
-  padding-right: 1rem;
+  padding-right: 1rem; /* Explicitly set to the value of `.dropdown-item` */
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }

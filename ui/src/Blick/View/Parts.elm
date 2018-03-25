@@ -62,7 +62,7 @@ authorTag anc ((MatId id_) as matId) author_email =
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
                     , span
                         [ class "tag tag-button is-rounded"
-                        , onWithoutPropagate "click" (authorTagClickDecoder anc matId email)
+                        , onWithoutPropagate "click" (authorTagClickDecoder anc matId (Just email))
                         ]
                         [ span [ class "fa fa-pencil-alt" ] [] ]
                     ]
@@ -74,7 +74,7 @@ authorTag anc ((MatId id_) as matId) author_email =
                 ]
                 [ span
                     [ class "tag tag-button is-rounded add-author"
-                    , onWithoutPropagate "click" (authorTagClickDecoder anc matId "")
+                    , onWithoutPropagate "click" (authorTagClickDecoder anc matId Nothing)
                     ]
                     [ span [ class "fa fa-plus" ] []
                     , text "Add author"
@@ -82,11 +82,11 @@ authorTag anc ((MatId id_) as matId) author_email =
                 ]
 
 
-authorTagClickDecoder : Selector -> MatId -> String -> Decoder Msg
-authorTagClickDecoder uniqueAncestor ((MatId id_) as matId) currentValue =
+authorTagClickDecoder : Selector -> MatId -> Maybe String -> Decoder Msg
+authorTagClickDecoder uniqueAncestor ((MatId id_) as matId) maybePrev =
     D.succeed <|
         InitiateEdit matId
-            (Field "author_email" currentValue)
+            (Field "author_email" (ValueState maybePrev Nothing))
             (descendantOf uniqueAncestor (Selector (".tags[id='author-" ++ id_ ++ "']")))
 
 

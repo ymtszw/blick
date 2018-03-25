@@ -16,7 +16,7 @@ import Blick.Ports as Ports
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as model) =
+update msg ({ materials, editing, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -124,9 +124,20 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
                    else
                     [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
 
-        SubmitEdit id_ field ->
+        InputEdit input ->
+            { model
+                | editing =
+                    Maybe.map
+                        (\( matId, { value_ } as field, pos ) ->
+                            ( matId, { field | value_ = { value_ | edit = Just input } }, pos )
+                        )
+                        editing
+            }
+                => []
+
+        SubmitEdit matId field ->
             { model | editing = Nothing }
-                => [ updateMaterialField id_ field, Ports.unlockScroll () ]
+                => [ updateMaterialField matId field, Ports.unlockScroll () ]
 
         CancelEdit ->
             { model | editing = Nothing } => [ Ports.unlockScroll () ]

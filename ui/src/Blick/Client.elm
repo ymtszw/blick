@@ -35,11 +35,19 @@ singleMaterialDecoder =
 
 updateMaterialField : MatId -> Field -> Cmd Msg
 updateMaterialField (MatId id_) { name_, value_ } =
-    H.send ClientRes <|
-        put
-            ("/api/materials/" ++ id_ ++ "/" ++ name_)
-            (D.map UpdateMaterialField singleMaterialDecoder)
-            (E.object [ ( "value", E.string value_ ) ])
+    case ( value_.prev, value_.edit ) of
+        ( prev, (Just e) as edit ) ->
+            if prev /= edit then
+                H.send ClientRes <|
+                    put
+                        ("/api/materials/" ++ id_ ++ "/" ++ name_)
+                        (D.map UpdateMaterialField singleMaterialDecoder)
+                        (E.object [ ( "value", E.string e ) ])
+            else
+                Cmd.none
+
+        ( _, _ ) ->
+            Cmd.none
 
 
 put : String -> Decoder a -> Value -> Request a

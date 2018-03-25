@@ -5,6 +5,7 @@ module Blick.Type
         , Msg(..)
         , Success(..)
         , Field
+        , ValueState
         , DOMRect
         , Selector(Selector)
         , Route(..)
@@ -69,6 +70,7 @@ type Msg
     | Filter String
     | InitiateEdit MatId Field Selector
     | StartEdit EditState
+    | InputEdit String
     | SubmitEdit MatId Field
     | CancelEdit
 
@@ -82,7 +84,13 @@ type Success
 
 type alias Field =
     { name_ : String
-    , value_ : String
+    , value_ : ValueState
+    }
+
+
+type alias ValueState =
+    { prev : Maybe String
+    , edit : Maybe String
     }
 
 
