@@ -1,13 +1,12 @@
 module Blick.View.Carousel exposing (view)
 
-import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
-import Blick.Type exposing (Model, Msg(..), Route(..), Selector(Selector), Material, Url(Url))
+import Blick.Type exposing (..)
 import Blick.View.Parts exposing (..)
 
 
@@ -21,13 +20,13 @@ view { materials, windowSize, carouselPage } =
             [ div [ class "hero-body" ]
                 [ div [ class "container carousel is-fullhd" ]
                     [ materials
-                        |> Dict.toList
+                        |> matDictToList
                         |> Util.split (tilePerRow windowSize.width)
                         |> Util.split rowPerCarouselPage
                         |> List.indexedMap (carouselItem cs carouselPage)
                         |> fillByDummyPage cs
                         |> div [ class "carousel-container" ]
-                    , carouselNav (maxCarouselPage windowSize.width (Dict.size materials)) carouselPage
+                    , carouselNav (maxCarouselPage windowSize.width (dictSize materials)) carouselPage
                     ]
                 ]
             ]
@@ -62,7 +61,7 @@ carouselNav max carouselPage =
         ]
 
 
-carouselItem : Int -> Int -> Int -> List (List ( String, Material )) -> Html Msg
+carouselItem : Int -> Int -> Int -> List (List ( MatId, Material )) -> Html Msg
 carouselItem columnScale materialPage pageIndex materialsByPage =
     let
         contents =
@@ -79,7 +78,7 @@ carouselItem columnScale materialPage pageIndex materialsByPage =
             div [ class "carousel-item" ] []
 
 
-carouselItemContents : Int -> List (List ( String, Material )) -> Html Msg
+carouselItemContents : Int -> List (List ( MatId, Material )) -> Html Msg
 carouselItemContents columnScale materialsByPage =
     materialsByPage
         |> List.map (Z.lazy2 tileRow columnScale)
@@ -87,16 +86,16 @@ carouselItemContents columnScale materialsByPage =
         |> div []
 
 
-tileRow : Int -> List ( String, Material ) -> Html Msg
+tileRow : Int -> List ( MatId, Material ) -> Html Msg
 tileRow columnScale materialsPerRow =
     div [ class "columns is-mobile" ] <|
         List.map (Z.lazy2 tileColumn columnScale) materialsPerRow
 
 
-tileColumn : Int -> ( String, Material ) -> Html Msg
-tileColumn columnScale ( id_, material ) =
+tileColumn : Int -> ( MatId, Material ) -> Html Msg
+tileColumn columnScale ( (MatId id_) as matId, material ) =
     div [ class <| "material column" ++ columnScaleClass columnScale, title material.title ]
-        [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail id_)) ]
+        [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail matId)) ]
             [ article [ class "card", id id_ ]
                 [ div [ class "card-image" ]
                     [ tileThumbnail material.thumbnail_url
@@ -104,7 +103,7 @@ tileColumn columnScale ( id_, material ) =
                 , div [ class "card-content" ]
                     [ p [ class "is-size-7 text-nowrap" ] [ text material.title ]
                     ]
-                , tags id_ material
+                , tags matId material
                 ]
             ]
         ]
@@ -155,7 +154,7 @@ tileThumbnail maybeUrl =
                 []
 
 
-tags : String -> Material -> Html Msg
-tags id_ { author_email } =
+tags : MatId -> Material -> Html Msg
+tags (MatId id_) { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) id_ author_email ]
+        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) (MatId id_) author_email ]

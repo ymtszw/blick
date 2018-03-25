@@ -4,19 +4,19 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Lazy as Z
 import Window
-import Blick.Type exposing (Msg(..), Route(..), Selector(Selector), Material, Url(Url))
+import Blick.Type exposing (..)
 import Blick.Constant exposing (singleColumnMaxWidthPx)
 import Blick.View.Parts exposing (..)
 
 
-modal : Window.Size -> String -> Material -> Html Msg
-modal { width } id_ material =
+modal : Window.Size -> MatId -> Material -> Html Msg
+modal { width } ((MatId id_) as matId) material =
     div [ class "modal is-active", id <| "detail-" ++ id_ ]
         [ div [ class "modal-background", onClickNoPropagate (GoTo Root) ] []
         , div [ class "hero is-light" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container is-fullhd" ]
-                    [ detailContents width id_ material
+                    [ detailContents width matId material
                     ]
                 ]
             ]
@@ -24,8 +24,8 @@ modal { width } id_ material =
         ]
 
 
-detailContents : Int -> String -> Material -> Html Msg
-detailContents width id_ { title, url, thumbnail_url, author_email } =
+detailContents : Int -> MatId -> Material -> Html Msg
+detailContents width ((MatId id_) as matId) { title, url, thumbnail_url, author_email } =
     div [ class <| "columns" ++ detailColumnsClass width ]
         [ div [ class "column is-two-thirds" ]
             [ a [ link url, target "_blank" ]
@@ -34,7 +34,7 @@ detailContents width id_ { title, url, thumbnail_url, author_email } =
             ]
         , div [ class "column" ]
             [ h1 [ class "title" ] [ text title ]
-            , div [ class "tags" ] [ authorTag (Selector (".modal[id='detail-" ++ id_ ++ "']")) id_ author_email ]
+            , div [ class "tags" ] [ authorTag (Selector (".modal[id='detail-" ++ id_ ++ "']")) matId author_email ]
             ]
         ]
 

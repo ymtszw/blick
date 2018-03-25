@@ -1,13 +1,12 @@
 module Blick.View.Table exposing (view)
 
-import Dict
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (maxTablePage, rowPerTable, tablePerPage)
-import Blick.Type exposing (Model, Selector(Selector), Material, Msg(..), Route(..))
+import Blick.Type exposing (..)
 import Blick.View.Parts exposing (..)
 
 
@@ -20,9 +19,9 @@ view { materials, windowSize, tablePage } =
         div [ class "hero is-primary" ]
             [ div [ class "hero-body" ]
                 [ div [ class "container tables is-fullhd" ]
-                    [ tableNav (maxTablePage windowSize.width (Dict.size materials)) tablePage
+                    [ tableNav (maxTablePage windowSize.width (dictSize materials)) tablePage
                     , materials
-                        |> Dict.toList
+                        |> matDictToList
                         |> Util.split rowPerTable
                         |> Util.split tpp
                         |> List.indexedMap (tablesOfPage tpp tablePage)
@@ -47,7 +46,7 @@ tableNav max tablePage =
         ]
 
 
-tablesOfPage : Int -> Int -> Int -> List (List ( String, Material )) -> Html Msg
+tablesOfPage : Int -> Int -> Int -> List (List ( MatId, Material )) -> Html Msg
 tablesOfPage tpp tablePage pageIndex materials =
     if pageIndex == tablePage then
         div [ class "tables-item" ]
@@ -60,7 +59,7 @@ tablesOfPage tpp tablePage pageIndex materials =
         div [ class "tables-item", style [ ( "display", "none" ) ] ] []
 
 
-tableColumn : List ( String, Material ) -> Html Msg
+tableColumn : List ( MatId, Material ) -> Html Msg
 tableColumn materials =
     div [ class "column is-half" ]
         [ table [ class "table is-striped is-hoverable is-fullwidth" ]
@@ -72,13 +71,13 @@ tableColumn materials =
         ]
 
 
-rowOfTable : ( String, Material ) -> Html Msg
-rowOfTable ( id_, { title, author_email } ) =
+rowOfTable : ( MatId, Material ) -> Html Msg
+rowOfTable ( (MatId id_) as matId, { title, author_email } ) =
     tr [ id id_ ]
         [ td [ class "is-paddingless" ]
-            [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail id_)) ]
+            [ a [ class "text-nowrap", href ("/" ++ id_), onClickNoPropagate (GoTo (Detail matId)) ]
                 [ text title
-                , authorTag (Selector ("tr[id='" ++ id_ ++ "']")) id_ author_email
+                , authorTag (Selector ("tr[id='" ++ id_ ++ "']")) matId author_email
                 ]
             ]
         ]

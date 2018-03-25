@@ -1,10 +1,9 @@
 module Blick.View exposing (view)
 
-import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Util
-import Blick.Type exposing (Model, Msg(..), Route(..), Material)
+import Blick.Type exposing (..)
 import Blick.View.Hero as Hero
 import Blick.View.Carousel as Carousel
 import Blick.View.Table as Table
@@ -19,7 +18,7 @@ view model =
         ( withThumbs, withouts ) =
             model.materials
                 |> applyFilter model.matches
-                |> Dict.partition (\_ { thumbnail_url } -> Util.isJust thumbnail_url)
+                |> matDictSplit (\_ { thumbnail_url } -> Util.isJust thumbnail_url)
     in
         section [ class "main" ]
             [ modals model
@@ -30,24 +29,24 @@ view model =
             ]
 
 
-applyFilter : List String -> Dict String Material -> Dict String Material
+applyFilter : List MatId -> MaterialDict -> MaterialDict
 applyFilter matches materials =
     case matches of
         [] ->
             materials
 
         _ ->
-            Dict.filter (\id_ _ -> List.member id_ matches) materials
+            matDictFilter (\matId _ -> List.member matId matches) materials
 
 
 modals : Model -> Html Msg
 modals model =
     withEditor model <|
         case model.route of
-            Detail id_ ->
-                case Dict.get id_ model.materials of
+            Detail matId ->
+                case matDictGet matId model.materials of
                     Just material ->
-                        [ Detail.modal model.windowSize id_ material ]
+                        [ Detail.modal model.windowSize matId material ]
 
                     Nothing ->
                         []

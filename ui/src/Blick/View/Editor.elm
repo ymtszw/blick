@@ -5,7 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Window
 import String.Extra as SE
-import Blick.Type exposing (Model, Msg(..), EditState, Field, Email(Email), inputId)
+import Blick.Type exposing (..)
 import Blick.Constant exposing (atOrgDomain, maxSuggestions)
 import Blick.View.Parts exposing (onClickNoPropagate, onWithoutPropagate, orgLocalNameOrEmail)
 import Blick.View.Suggestion as Suggestion
@@ -21,16 +21,16 @@ modal { members, windowSize } editState =
 
 
 materialFieldInput : List Email -> Window.Size -> EditState -> Html Msg
-materialFieldInput members windowSize ( id_, field, { left, top, width } ) =
+materialFieldInput members windowSize ( matId, field, { left, top, width } ) =
     let
         ( formTop, buttonComesFirst ) =
             formTopAndSwitch windowSize.height top
     in
         Html.form
-            [ onWithoutPropagate "submit" (formInputDecoder id_ field.name_)
+            [ onWithoutPropagate "submit" (formInputDecoder matId field.name_)
             , floatingFormStyle (toFloat windowSize.width - left - width) formTop width
             ]
-            (formContents buttonComesFirst members id_ field)
+            (formContents buttonComesFirst members matId field)
 
 
 floatingFormStyle : Float -> Float -> Float -> Html.Attribute msg
@@ -51,12 +51,12 @@ formTopAndSwitch height clickedDomTop =
         ( clickedDomTop, False )
 
 
-formContents : Bool -> List Email -> String -> Field -> List (Html Msg)
-formContents buttonComesFirst members id_ field =
+formContents : Bool -> List Email -> MatId -> Field -> List (Html Msg)
+formContents buttonComesFirst members matId field =
     if buttonComesFirst then
-        [ submitButton, inputByField members id_ field ]
+        [ submitButton, inputByField members matId field ]
     else
-        [ inputByField members id_ field, submitButton ]
+        [ inputByField members matId field, submitButton ]
 
 
 buttonHeightAndGap : Float
@@ -69,8 +69,8 @@ formHeightWithMargin =
     75.0
 
 
-formInputDecoder : String -> String -> Decoder Msg
-formInputDecoder id_ name_ =
+formInputDecoder : MatId -> String -> Decoder Msg
+formInputDecoder matId name_ =
     let
         baseDec =
             D.at [ "target", name_, "value" ] D.string
@@ -83,34 +83,34 @@ formInputDecoder id_ name_ =
     in
         case name_ of
             "author_email" ->
-                D.map (\input -> SubmitEdit id_ (Field name_ (sanitizeEmail input))) baseDec
+                D.map (\input -> SubmitEdit matId (Field name_ (sanitizeEmail input))) baseDec
 
             _ ->
-                D.map (\input -> SubmitEdit id_ (Field name_ input)) baseDec
+                D.map (\input -> SubmitEdit matId (Field name_ input)) baseDec
 
 
-inputByField : List Email -> String -> Field -> Html Msg
-inputByField members id_ field =
+inputByField : List Email -> MatId -> Field -> Html Msg
+inputByField members matId field =
     case field.name_ of
         "author_email" ->
             if field.value_ == "" || String.endsWith atOrgDomain field.value_ then
-                orgEmailInput (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) members) id_ field
+                orgEmailInput (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) members) matId field
             else
-                rawTextInput True id_ field
+                rawTextInput True matId field
 
         _ ->
-            rawTextInput True id_ field
+            rawTextInput True matId field
 
 
-orgEmailInput : List String -> String -> Field -> Html Msg
-orgEmailInput memberNames id_ field =
+orgEmailInput : List String -> MatId -> Field -> Html Msg
+orgEmailInput memberNames matId field =
     div [ class "field has-addons" ]
         [ span [ class "control has-text-right" ]
             [ Suggestion.dropdown True (List.take maxSuggestions memberNames) <|
                 input
                     [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
                     , type_ "text"
-                    , id (inputId id_ field)
+                    , id (inputId matId field)
                     , name field.name_
                     , placeholder "author.name"
                     , required True
@@ -125,14 +125,14 @@ orgEmailInput memberNames id_ field =
         ]
 
 
-rawTextInput : Bool -> String -> Field -> Html Msg
-rawTextInput isRequired id_ field =
+rawTextInput : Bool -> MatId -> Field -> Html Msg
+rawTextInput isRequired matId field =
     div [ class "field" ]
         [ div [ class "control" ]
             [ input
                 [ class "input is-small is-rounded"
                 , type_ "text"
-                , id (inputId id_ field)
+                , id (inputId matId field)
                 , name field.name_
                 , placeholder field.name_
                 , required isRequired

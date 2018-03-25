@@ -1,6 +1,6 @@
 module Blick.Update exposing (update)
 
-import Dict exposing (Dict)
+import Dict
 import Regex
 import Task
 import Time
@@ -47,13 +47,13 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
 
         ClientRes (Ok (ListMaterials ms)) ->
             -- Caution: Members of FIRST dict has precedence at collision in Dict.union
-            { model | materials = Dict.union ms materials } => []
+            { model | materials = matDictUnion ms materials } => []
 
         ClientRes (Ok (GetMaterial ( id, m ))) ->
-            { model | materials = Dict.insert id m materials } => []
+            { model | materials = matDictInsert id m materials } => []
 
         ClientRes (Ok (UpdateMaterialField ( id, m ))) ->
-            { model | materials = Dict.insert id m materials } => []
+            { model | materials = matDictInsert id m materials } => []
 
         ClientRes (Ok (ListMembers members)) ->
             { model | members = members } => []
@@ -64,7 +64,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
         CarouselNext ->
             let
                 max =
-                    maxCarouselPage windowSize.width (Dict.size materials)
+                    maxCarouselPage windowSize.width (dictSize materials)
             in
                 if carouselPage > max then
                     { model | carouselPage = max } => []
@@ -84,7 +84,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
         TableNext ->
             let
                 max =
-                    maxTablePage windowSize.width (Dict.size materials)
+                    maxTablePage windowSize.width (dictSize materials)
             in
                 if tablePage > max then
                     { model | tablePage = max } => []
@@ -113,16 +113,16 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             }
                 => []
 
-        InitiateEdit id_ field (Selector s) ->
-            { model | toEdit = Just ( id_, field ) }
+        InitiateEdit ((MatId id_) as matId) field (Selector s) ->
+            { model | toEdit = Just ( matId, field ) }
                 => [ Ports.queryDOMOrigin ( id_, field, s ) ]
 
-        StartEdit ( id_, field, pos ) ->
-            { model | toEdit = Nothing, editing = Just ( id_, field, pos ) }
+        StartEdit ( matId, field, pos ) ->
+            { model | toEdit = Nothing, editing = Just ( matId, field, pos ) }
                 => if field.name_ == "author_email" then
-                    [ listMembers, Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
+                    [ listMembers, Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
                    else
-                    [ Dom.focus (inputId id_ field) |> Task.attempt (always NoOp) ]
+                    [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
 
         SubmitEdit id_ field ->
             { model | editing = Nothing }
@@ -132,7 +132,7 @@ update msg ({ materials, carouselPage, tablePage, exceptions, windowSize } as mo
             { model | editing = Nothing } => [ Ports.unlockScroll () ]
 
 
-findMatchingIds : Dict String Material -> String -> List String
+findMatchingIds : MaterialDict -> String -> List MatId
 findMatchingIds materials input =
     input
         |> String.toLower
@@ -146,12 +146,12 @@ whitespaces =
     Regex.regex "\\s+"
 
 
-findMatchingIdsImpl : Dict String Material -> List String -> List String
+findMatchingIdsImpl : MaterialDict -> List String -> List MatId
 findMatchingIdsImpl materials words =
-    materials |> Dict.toList |> List.filterMap (maybeMatchingId words)
+    materials |> matDictToList |> List.filterMap (maybeMatchingId words)
 
 
-maybeMatchingId : List String -> ( String, Material ) -> Maybe String
+maybeMatchingId : List String -> ( MatId, Material ) -> Maybe MatId
 maybeMatchingId words (( _, { excluded } ) as material) =
     if excluded then
         Nothing
@@ -159,7 +159,7 @@ maybeMatchingId words (( _, { excluded } ) as material) =
         List.foldl (maybeMatchingIdImpl material) Nothing words
 
 
-maybeMatchingIdImpl : ( String, Material ) -> String -> Maybe String -> Maybe String
+maybeMatchingIdImpl : ( MatId, Material ) -> String -> Maybe MatId -> Maybe MatId
 maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
     case maybeId of
         Just _ ->

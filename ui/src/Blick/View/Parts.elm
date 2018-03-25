@@ -15,7 +15,7 @@ import Html.Attributes exposing (..)
 import Html.Events
 import String.Extra as SE
 import Blick.Constant exposing (atOrgDomain)
-import Blick.Type exposing (Msg(..), Field, Selector(Selector), Url(Url), Email(Email), descendantOf)
+import Blick.Type exposing (..)
 
 
 link : Url -> Html.Attribute msg
@@ -47,8 +47,8 @@ withDisabled disabled_ others =
         others
 
 
-authorTag : Selector -> String -> Maybe Email -> Html Msg
-authorTag anc id_ author_email =
+authorTag : Selector -> MatId -> Maybe Email -> Html Msg
+authorTag anc ((MatId id_) as matId) author_email =
     case author_email of
         Just (Email email) ->
             let
@@ -62,7 +62,7 @@ authorTag anc id_ author_email =
                     [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
                     , span
                         [ class "tag tag-button is-rounded"
-                        , onWithoutPropagate "click" (authorTagClickDecoder anc id_ email)
+                        , onWithoutPropagate "click" (authorTagClickDecoder anc matId email)
                         ]
                         [ span [ class "fa fa-pencil-alt" ] [] ]
                     ]
@@ -74,7 +74,7 @@ authorTag anc id_ author_email =
                 ]
                 [ span
                     [ class "tag tag-button is-rounded add-author"
-                    , onWithoutPropagate "click" (authorTagClickDecoder anc id_ "")
+                    , onWithoutPropagate "click" (authorTagClickDecoder anc (MatId id_) "")
                     ]
                     [ span [ class "fa fa-plus" ] []
                     , text "Add author"
@@ -82,10 +82,10 @@ authorTag anc id_ author_email =
                 ]
 
 
-authorTagClickDecoder : Selector -> String -> String -> Decoder Msg
-authorTagClickDecoder uniqueAncestor id_ currentValue =
+authorTagClickDecoder : Selector -> MatId -> String -> Decoder Msg
+authorTagClickDecoder uniqueAncestor ((MatId id_) as matId) currentValue =
     D.succeed <|
-        InitiateEdit id_
+        InitiateEdit matId
             (Field "author_email" currentValue)
             (descendantOf uniqueAncestor (Selector (".tags[id='author-" ++ id_ ++ "']")))
 

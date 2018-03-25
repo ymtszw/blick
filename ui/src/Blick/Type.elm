@@ -9,14 +9,26 @@ module Blick.Type
         , Selector(Selector)
         , Route(..)
         , EditState
+        , MatId(MatId)
         , Material
+        , MaterialDict
         , Url(Url)
         , Email(Email)
         , Type_(..)
         , Exception
         , descendantOf
         , inputId
+        , dictSize
         , materialDecoder
+        , matIdDecoder
+        , matDictEmpty
+        , matDictDecoder
+        , matDictGet
+        , matDictInsert
+        , matDictFilter
+        , matDictSplit
+        , matDictUnion
+        , matDictToList
         , emailDecoder
         , fromHttpError
         )
@@ -55,16 +67,16 @@ type Msg
     | TableNext
     | TablePrev
     | Filter String
-    | InitiateEdit String Field Selector
+    | InitiateEdit MatId Field Selector
     | StartEdit EditState
-    | SubmitEdit String Field
+    | SubmitEdit MatId Field
     | CancelEdit
 
 
 type Success
-    = ListMaterials (Dict String Material)
-    | GetMaterial ( String, Material )
-    | UpdateMaterialField ( String, Material )
+    = ListMaterials MaterialDict
+    | GetMaterial ( MatId, Material )
+    | UpdateMaterialField ( MatId, Material )
     | ListMembers (List Email)
 
 
@@ -74,8 +86,8 @@ type alias Field =
     }
 
 
-inputId : String -> Field -> String
-inputId id_ { name_ } =
+inputId : MatId -> Field -> String
+inputId (MatId id_) { name_ } =
     id_ ++ "-" ++ name_
 
 
@@ -101,10 +113,10 @@ type alias DOMRect =
 
 
 type alias Model =
-    { materials : Dict String Material -- ID-Material Dict
-    , toEdit : Maybe ( String, Field )
+    { materials : MaterialDict
+    , toEdit : Maybe ( MatId, Field )
     , editing : Maybe EditState
-    , matches : List String -- List of IDs
+    , matches : List MatId
     , filterInput : String
     , members : List Email
     , carouselPage : Int
@@ -117,15 +129,81 @@ type alias Model =
 
 type Route
     = Root
-    | Detail String
+    | Detail MatId
     | NotFound
 
 
 type alias EditState =
-    ( String -- editor element's id
-    , Field -- editing field
+    ( MatId
+    , Field
     , DOMRect -- editor element's DOMRect
     )
+
+
+type TaggedStringKeyDict key val
+    = TaggedStringKeyDict (Dict String val)
+
+
+dictSize : TaggedStringKeyDict key val -> Int
+dictSize (TaggedStringKeyDict dict) =
+    Dict.size dict
+
+
+type alias MaterialDict =
+    TaggedStringKeyDict MatId Material
+
+
+matDictEmpty : MaterialDict
+matDictEmpty =
+    TaggedStringKeyDict Dict.empty
+
+
+matDictInsert : MatId -> Material -> MaterialDict -> MaterialDict
+matDictInsert (MatId id) material (TaggedStringKeyDict dict) =
+    TaggedStringKeyDict (Dict.insert id material dict)
+
+
+matDictGet : MatId -> MaterialDict -> Maybe Material
+matDictGet (MatId id) (TaggedStringKeyDict dict) =
+    Dict.get id dict
+
+
+matDictFilter : (MatId -> Material -> Bool) -> MaterialDict -> MaterialDict
+matDictFilter filter (TaggedStringKeyDict dict) =
+    TaggedStringKeyDict (Dict.filter (\strKey material -> filter (MatId strKey) material) dict)
+
+
+matDictSplit : (MatId -> Material -> Bool) -> MaterialDict -> ( MaterialDict, MaterialDict )
+matDictSplit splitter (TaggedStringKeyDict dict) =
+    let
+        ( trues, falses ) =
+            Dict.partition (\strKey material -> splitter (MatId strKey) material) dict
+    in
+        ( TaggedStringKeyDict trues, TaggedStringKeyDict falses )
+
+
+matDictUnion : MaterialDict -> MaterialDict -> MaterialDict
+matDictUnion (TaggedStringKeyDict dict1) (TaggedStringKeyDict dict2) =
+    TaggedStringKeyDict (Dict.union dict1 dict2)
+
+
+matDictToList : MaterialDict -> List ( MatId, Material )
+matDictToList (TaggedStringKeyDict dict) =
+    Dict.foldr (\idStr mat acc -> ( MatId idStr, mat ) :: acc) [] dict
+
+
+type MatId
+    = MatId String
+
+
+matIdDecoder : Decoder MatId
+matIdDecoder =
+    D.map MatId D.string
+
+
+matDictDecoder : Decoder MaterialDict
+matDictDecoder =
+    D.map TaggedStringKeyDict (D.dict (D.field "data" materialDecoder))
 
 
 type alias Material =

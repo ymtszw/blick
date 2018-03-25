@@ -1,6 +1,6 @@
 module Blick exposing (main)
 
-import Dict exposing (Dict)
+import Dict
 import Json.Decode as D
 import Json.Decode.Extra exposing ((|:))
 import Navigation exposing (Location)
@@ -38,17 +38,17 @@ init flags location =
             => [ listMaterials ]
 
 
-fromFlags : Flags -> ( Window.Size, Dict String Material )
+fromFlags : Flags -> ( Window.Size, MaterialDict )
 fromFlags flags =
     let
         dec =
             D.succeed (,)
                 |: D.field "windowSize" (D.map2 Window.Size (D.field "width" D.int) (D.field "height" D.int))
-                |: D.field "materials" (D.dict (D.field "data" materialDecoder))
+                |: D.field "materials" matDictDecoder
     in
         flags
             |> D.decodeValue dec
-            |> Result.withDefault ( fallbackSize, Dict.empty )
+            |> Result.withDefault ( fallbackSize, matDictEmpty )
 
 
 fallbackSize : Window.Size
@@ -67,7 +67,7 @@ subscriptions _ =
 
         -- Ideally, we want to subscribe `listenDOMOrigin` only when `queryDOMOrigin` is performed,
         -- though (inconveniently,) port response from JS coming faster than this function is evaluated again.
-        , Ports.listenDOMOrigin StartEdit
+        , Ports.listenDOMOrigin (\( id_, f, dr ) -> StartEdit ( MatId id_, f, dr ))
         ]
 
 

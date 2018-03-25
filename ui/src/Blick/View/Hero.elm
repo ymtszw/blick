@@ -23,7 +23,7 @@ view { filterInput, matches } =
         ]
 
 
-filter : List String -> String -> Html Msg
+filter : List id -> String -> Html Msg
 filter matches input_ =
     div [ class "field is-expanded" ]
         [ div [ class "control has-icons-left has-icons-right" ]
@@ -34,7 +34,7 @@ filter matches input_ =
         ]
 
 
-filterInput : List String -> String -> Html Msg
+filterInput : List id -> String -> Html Msg
 filterInput matches input_ =
     input
         [ type_ "text"
@@ -45,7 +45,7 @@ filterInput matches input_ =
         []
 
 
-filterInputColor : List String -> String -> String
+filterInputColor : List id -> String -> String
 filterInputColor matches input_ =
     if not (String.isEmpty input_) && List.isEmpty matches then
         " is-danger"
@@ -53,7 +53,7 @@ filterInputColor matches input_ =
         ""
 
 
-filterInputResult : List String -> String -> Html Msg
+filterInputResult : List id -> String -> Html Msg
 filterInputResult matches input_ =
     case input_ of
         "" ->

@@ -4,7 +4,7 @@ import Json.Encode as E exposing (Value)
 import Json.Decode as D exposing (Decoder)
 import Json.Decode.Extra exposing ((|:))
 import Http as H exposing (Request)
-import Blick.Type exposing (Msg(ClientRes), Success(..), Material, Field, materialDecoder, emailDecoder)
+import Blick.Type exposing (..)
 
 
 listMaterials : Cmd Msg
@@ -13,28 +13,28 @@ listMaterials =
         dec =
             D.map ListMaterials <|
                 D.field "materials" <|
-                    D.dict (D.field "data" materialDecoder)
+                    matDictDecoder
     in
         H.send ClientRes <| H.get "/api/materials" dec
 
 
-getMaterial : String -> Cmd Msg
-getMaterial id_ =
+getMaterial : MatId -> Cmd Msg
+getMaterial (MatId id_) =
     H.send ClientRes <|
         H.get
             ("/api/materials/" ++ id_)
             (D.map GetMaterial singleMaterialDecoder)
 
 
-singleMaterialDecoder : Decoder ( String, Material )
+singleMaterialDecoder : Decoder ( MatId, Material )
 singleMaterialDecoder =
     D.succeed (,)
-        |: D.field "_id" D.string
+        |: D.field "_id" matIdDecoder
         |: D.field "data" materialDecoder
 
 
-updateMaterialField : String -> Field -> Cmd Msg
-updateMaterialField id_ { name_, value_ } =
+updateMaterialField : MatId -> Field -> Cmd Msg
+updateMaterialField (MatId id_) { name_, value_ } =
     H.send ClientRes <|
         put
             ("/api/materials/" ++ id_ ++ "/" ++ name_)
