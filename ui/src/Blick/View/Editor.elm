@@ -151,7 +151,7 @@ orgEmailInput memberNames ({ matId, field } as editState) =
                     , autocomplete False
                     , required True
                     , valueOrDefaultValue (orgLocalNameOrEmail << Email << Maybe.withDefault "") field.value_
-                    , onInput InputEdit
+                    , onInput (InputEdit editState << Editable field.value_.prev << ManualInput)
                     ]
                     []
             ]
@@ -188,7 +188,7 @@ rawTextInput isRequired maybeSuggestions ({ matId, field } as editState) =
                 , autocomplete False
                 , required isRequired
                 , valueOrDefaultValue (Maybe.withDefault "") field.value_
-                , onInput InputEdit
+                , onInput (InputEdit editState << Editable field.value_.prev << ManualInput)
                 ]
                 []
     in

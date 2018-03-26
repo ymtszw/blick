@@ -71,7 +71,7 @@ type Msg
     | Filter String
     | InitiateEdit MatId Field Selector
     | StartEdit DOMRect
-    | InputEdit String
+    | InputEdit EditState Editable
     | CompleteEdit EditState Editable
     | SubmitEdit MatId Field
     | CancelEdit

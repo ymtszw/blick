@@ -130,8 +130,8 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
                     -- Should not happen
                     model => []
 
-        InputEdit input ->
-            { model | editing = editing |> Maybe.map (\({ field } as editState) -> { editState | field = { field | value_ = Editable field.value_.prev (ManualInput input) } }) }
+        InputEdit ({ field } as editState) newEditable ->
+            { model | editing = Just { editState | field = { field | value_ = newEditable } } }
                 => []
 
         CompleteEdit ({ matId, field } as editState) newEditable ->
