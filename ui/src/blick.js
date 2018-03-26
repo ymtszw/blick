@@ -4,9 +4,9 @@ export const blick = (flags) => {
   const Elm = require('./Blick.elm')
   const app = Elm.Blick.fullscreen(flags)
 
-  app.ports.queryDOMOrigin.subscribe(([id_, field, selector]) => {
+  app.ports.queryDOMOrigin.subscribe((selector) => {
     const { left, top, width, height } = document.querySelector(selector).getBoundingClientRect()
-    app.ports.listenDOMOrigin.send([id_, field, { left, top, width, height }])
+    app.ports.listenDOMOrigin.send({ left, top, width, height })
   })
 
   app.ports.lockScroll.subscribe(() => document.documentElement.classList.add('is-clipped'))

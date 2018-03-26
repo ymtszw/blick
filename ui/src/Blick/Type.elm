@@ -5,7 +5,8 @@ module Blick.Type
         , Msg(..)
         , Success(..)
         , Field
-        , ValueState
+        , Editable
+        , DirtyValue(..)
         , DOMRect
         , Selector(Selector)
         , Route(..)
@@ -69,7 +70,7 @@ type Msg
     | TablePrev
     | Filter String
     | InitiateEdit MatId Field Selector
-    | StartEdit EditState
+    | StartEdit DOMRect
     | InputEdit String
     | SubmitEdit MatId Field
     | CancelEdit
@@ -84,14 +85,20 @@ type Success
 
 type alias Field =
     { name_ : String
-    , value_ : ValueState
+    , value_ : Editable
     }
 
 
-type alias ValueState =
+type alias Editable =
     { prev : Maybe String
-    , edit : Maybe String
+    , edit : DirtyValue
     }
+
+
+type DirtyValue
+    = UnTouched
+    | ManualInput String
+    | AutoCompleted String
 
 
 inputId : MatId -> Field -> String
@@ -142,10 +149,10 @@ type Route
 
 
 type alias EditState =
-    ( MatId
-    , Field
-    , DOMRect -- editor element's DOMRect
-    )
+    { matId : MatId
+    , field : Field
+    , domRect : DOMRect -- editor element's DOMRect
+    }
 
 
 type TaggedStringKeyDict key val

@@ -67,7 +67,7 @@ subscriptions _ =
 
         -- Ideally, we want to subscribe `listenDOMOrigin` only when `queryDOMOrigin` is performed,
         -- though (inconveniently,) port response from JS coming faster than this function is evaluated again.
-        , Ports.listenDOMOrigin (\( id_, f, dr ) -> StartEdit ( MatId id_, f, dr ))
+        , Ports.listenDOMOrigin StartEdit
         ]
 
 

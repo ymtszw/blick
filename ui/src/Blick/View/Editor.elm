@@ -22,14 +22,14 @@ modal { members, windowSize } editState =
 
 
 materialFieldInput : List Email -> Window.Size -> EditState -> Html Msg
-materialFieldInput members windowSize ( matId, field, { left, top, width } ) =
+materialFieldInput members windowSize { matId, field, domRect } =
     let
         ( formTop, buttonComesFirst ) =
-            formTopAndSwitch windowSize.height top
+            formTopAndSwitch windowSize.height domRect.top
     in
         Html.form
-            [ onWithoutPropagate "submit" (formInputDecoder matId field)
-            , floatingFormStyle (toFloat windowSize.width - left - width) formTop width
+            [ onWithoutPropagate "submit" (D.succeed (SubmitEdit matId (finalizeEdit field)))
+            , floatingFormStyle (toFloat windowSize.width - domRect.left - domRect.width) formTop domRect.width
             ]
             (formContents buttonComesFirst members matId field)
 
@@ -44,38 +44,30 @@ floatingFormStyle right top width =
         ]
 
 
-formInputDecoder : MatId -> Field -> Decoder Msg
-formInputDecoder matId ({ name_, value_ } as field) =
-    let
-        baseDec =
-            D.at [ "target", name_, "value" ] D.string
-    in
-        case name_ of
-            "author_email" ->
-                D.map
-                    (\input ->
-                        SubmitEdit matId
-                            { field | value_ = { value_ | edit = sanitizeEmail input } }
-                    )
-                    baseDec
+finalizeEdit : Field -> Field
+finalizeEdit ({ name_, value_ } as field) =
+    case name_ of
+        "author_email" ->
+            case value_.edit of
+                ManualInput value ->
+                    { field | value_ = { value_ | edit = ManualInput (sanitizeEmail value) } }
 
-            _ ->
-                D.map
-                    (\input ->
-                        SubmitEdit matId
-                            { field | value_ = { value_ | edit = Just input } }
-                    )
-                    baseDec
+                AutoCompleted value ->
+                    { field | value_ = { value_ | edit = AutoCompleted (sanitizeEmail value) } }
+
+                UnTouched ->
+                    field
+
+        _ ->
+            field
 
 
-sanitizeEmail : String -> Maybe String
+sanitizeEmail : String -> String
 sanitizeEmail input =
-    if input == "" then
-        Nothing
-    else if String.contains "@" input then
-        Just input
+    if String.contains "@" input then
+        input
     else
-        Just (input ++ atOrgDomain)
+        input ++ atOrgDomain
 
 
 formTopAndSwitch : Int -> Float -> ( Float, Bool )
@@ -114,7 +106,10 @@ inputByField members matId ({ name_, value_ } as field) =
             in
                 case Maybe.map (String.endsWith atOrgDomain) value_.prev of
                     Just False ->
-                        rawTextInput True matId field
+                        rawTextInput True
+                            (Just (List.map (\(Email email) -> email) filteredMembers))
+                            matId
+                            field
 
                     _ ->
                         orgEmailInput
@@ -123,19 +118,22 @@ inputByField members matId ({ name_, value_ } as field) =
                             field
 
         _ ->
-            rawTextInput True matId field
+            rawTextInput True Nothing matId field
 
 
-filterMembers : ValueState -> List Email -> List Email
+filterMembers : Editable -> List Email -> List Email
 filterMembers { edit } members =
     case edit of
-        Nothing ->
+        UnTouched ->
             []
 
-        Just "" ->
+        AutoCompleted _ ->
             []
 
-        Just v ->
+        ManualInput "" ->
+            []
+
+        ManualInput v ->
             List.filter
                 (\(Email email) -> String.startsWith v email || String.startsWith v (SE.rightOf "." email))
                 members
@@ -166,22 +164,30 @@ orgEmailInput memberNames matId ({ name_, value_ } as field) =
         ]
 
 
-rawTextInput : Bool -> MatId -> Field -> Html Msg
-rawTextInput isRequired matId ({ name_, value_ } as field) =
-    div [ class "field" ]
-        [ div [ class "control" ]
-            [ input
+rawTextInput : Bool -> Maybe (List String) -> MatId -> Field -> Html Msg
+rawTextInput isRequired maybeSuggestions matId ({ name_, value_ } as field) =
+    let
+        textInput =
+            input
                 [ class "input is-small is-rounded"
                 , type_ "text"
                 , id (inputId matId field)
                 , name name_
                 , placeholder name_
+                , autocomplete False
                 , required isRequired
                 , defaultValue (Maybe.withDefault "" value_.prev)
+                , onInput InputEdit
                 ]
                 []
+    in
+        div [ class "field" ]
+            [ div [ class "control" ]
+                [ maybeSuggestions
+                    |> Maybe.map (\suggestions -> Suggestion.dropdown True (List.take maxSuggestions suggestions) textInput)
+                    |> Maybe.withDefault textInput
+                ]
             ]
-        ]
 
 
 submitButton : Html Msg

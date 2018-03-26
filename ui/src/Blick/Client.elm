@@ -35,19 +35,30 @@ singleMaterialDecoder =
 
 updateMaterialField : MatId -> Field -> Cmd Msg
 updateMaterialField (MatId id_) { name_, value_ } =
-    case ( value_.prev, value_.edit ) of
-        ( prev, (Just e) as edit ) ->
-            if prev /= edit then
-                H.send ClientRes <|
-                    put
-                        ("/api/materials/" ++ id_ ++ "/" ++ name_)
-                        (D.map UpdateMaterialField singleMaterialDecoder)
-                        (E.object [ ( "value", E.string e ) ])
-            else
-                Cmd.none
-
-        ( _, _ ) ->
+    case ( value_.edit, value_.prev ) of
+        ( UnTouched, _ ) ->
             Cmd.none
+
+        ( ManualInput value, prev ) ->
+            updateMaterialFieldImpl id_ name_ prev value
+
+        ( AutoCompleted value, prev ) ->
+            updateMaterialFieldImpl id_ name_ prev value
+
+
+updateMaterialFieldImpl : String -> String -> Maybe String -> String -> Cmd Msg
+updateMaterialFieldImpl id_ name_ prev value =
+    case Maybe.map ((==) value) prev of
+        Just True ->
+            Cmd.none
+
+        _ ->
+            -- No previous value, or value changed
+            H.send ClientRes <|
+                put
+                    ("/api/materials/" ++ id_ ++ "/" ++ name_)
+                    (D.map UpdateMaterialField singleMaterialDecoder)
+                    (E.object [ ( "value", E.string value ) ])
 
 
 put : String -> Decoder a -> Value -> Request a

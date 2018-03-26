@@ -14,7 +14,7 @@ ONLY IF there are no '.modal-background' elements present.
 port unlockScroll : () -> Cmd msg
 
 
-port queryDOMOrigin : ( String, Field, String ) -> Cmd msg
+port queryDOMOrigin : String -> Cmd msg
 
 
-port listenDOMOrigin : (( String, Field, DOMRect ) -> msg) -> Sub msg
+port listenDOMOrigin : (DOMRect -> msg) -> Sub msg

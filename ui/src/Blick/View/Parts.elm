@@ -86,7 +86,7 @@ authorTagClickDecoder : Selector -> MatId -> Maybe String -> Decoder Msg
 authorTagClickDecoder uniqueAncestor ((MatId id_) as matId) maybePrev =
     D.succeed <|
         InitiateEdit matId
-            (Field "author_email" (ValueState maybePrev Nothing))
+            (Field "author_email" (Editable maybePrev UnTouched))
             (descendantOf uniqueAncestor (Selector (".tags[id='author-" ++ id_ ++ "']")))
 
 

@@ -16,7 +16,7 @@ import Blick.Ports as Ports
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, editing, carouselPage, tablePage, exceptions, windowSize } as model) =
+update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -113,26 +113,25 @@ update msg ({ materials, editing, carouselPage, tablePage, exceptions, windowSiz
             }
                 => []
 
-        InitiateEdit ((MatId id_) as matId) field (Selector s) ->
+        InitiateEdit matId field (Selector s) ->
             { model | toEdit = Just ( matId, field ) }
-                => [ Ports.queryDOMOrigin ( id_, field, s ) ]
+                => [ Ports.queryDOMOrigin s ]
 
-        StartEdit ( matId, field, pos ) ->
-            { model | toEdit = Nothing, editing = Just ( matId, field, pos ) }
-                => if field.name_ == "author_email" then
-                    [ listMembers, Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
-                   else
-                    [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
+        StartEdit domRect ->
+            case toEdit of
+                Just ( matId, field ) ->
+                    { model | toEdit = Nothing, editing = Just (EditState matId field domRect) }
+                        => if field.name_ == "author_email" then
+                            [ listMembers, Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
+                           else
+                            [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
+
+                Nothing ->
+                    -- Should not happen
+                    model => []
 
         InputEdit input ->
-            { model
-                | editing =
-                    Maybe.map
-                        (\( matId, { value_ } as field, pos ) ->
-                            ( matId, { field | value_ = { value_ | edit = Just input } }, pos )
-                        )
-                        editing
-            }
+            { model | editing = editing |> Maybe.map (\({ field } as editState) -> { editState | field = { field | value_ = Editable field.value_.prev (ManualInput input) } }) }
                 => []
 
         SubmitEdit matId field ->
