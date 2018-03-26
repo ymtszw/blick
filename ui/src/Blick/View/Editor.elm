@@ -22,7 +22,7 @@ modal { members, windowSize } editState =
 
 
 materialFieldInput : List Email -> Window.Size -> EditState -> Html Msg
-materialFieldInput members windowSize { matId, field, domRect } =
+materialFieldInput members windowSize ({ matId, field, domRect } as editState) =
     let
         ( formTop, buttonComesFirst ) =
             formTopAndSwitch windowSize.height domRect.top
@@ -31,7 +31,7 @@ materialFieldInput members windowSize { matId, field, domRect } =
             [ onWithoutPropagate "submit" (D.succeed (SubmitEdit matId (finalizeEdit field)))
             , floatingFormStyle (toFloat windowSize.width - domRect.left - domRect.width) formTop domRect.width
             ]
-            (formContents buttonComesFirst members matId field)
+            (formContents buttonComesFirst members editState)
 
 
 floatingFormStyle : Float -> Float -> Float -> Html.Attribute msg
@@ -78,12 +78,12 @@ formTopAndSwitch height clickedDomTop =
         ( clickedDomTop, False )
 
 
-formContents : Bool -> List Email -> MatId -> Field -> List (Html Msg)
-formContents buttonComesFirst members matId field =
+formContents : Bool -> List Email -> EditState -> List (Html Msg)
+formContents buttonComesFirst members editState =
     if buttonComesFirst then
-        [ submitButton, inputByField members matId field ]
+        [ submitButton, inputByField members editState ]
     else
-        [ inputByField members matId field, submitButton ]
+        [ inputByField members editState, submitButton ]
 
 
 buttonHeightAndGap : Float
@@ -96,29 +96,27 @@ formHeightWithMargin =
     75.0
 
 
-inputByField : List Email -> MatId -> Field -> Html Msg
-inputByField members matId ({ name_, value_ } as field) =
-    case name_ of
+inputByField : List Email -> EditState -> Html Msg
+inputByField members ({ field } as editState) =
+    case field.name_ of
         "author_email" ->
             let
                 filteredMembers =
-                    filterMembers value_ members
+                    filterMembers field.value_ members
             in
-                case Maybe.map (String.endsWith atOrgDomain) value_.prev of
+                case Maybe.map (String.endsWith atOrgDomain) field.value_.prev of
                     Just False ->
                         rawTextInput True
                             (Just (List.map (\(Email email) -> email) filteredMembers))
-                            matId
-                            field
+                            editState
 
                     _ ->
                         orgEmailInput
                             (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) filteredMembers)
-                            matId
-                            field
+                            editState
 
         _ ->
-            rawTextInput True Nothing matId field
+            rawTextInput True Nothing editState
 
 
 filterMembers : Editable -> List Email -> List Email
@@ -139,20 +137,20 @@ filterMembers { edit } members =
                 members
 
 
-orgEmailInput : List String -> MatId -> Field -> Html Msg
-orgEmailInput memberNames matId ({ name_, value_ } as field) =
+orgEmailInput : List String -> EditState -> Html Msg
+orgEmailInput memberNames ({ matId, field } as editState) =
     div [ class "field has-addons" ]
         [ span [ class "control has-text-right" ]
-            [ Suggestion.dropdown True (List.take maxSuggestions memberNames) <|
+            [ Suggestion.dropdown editState (List.take maxSuggestions memberNames) <|
                 input
                     [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
                     , type_ "text"
                     , id (inputId matId field)
-                    , name name_
+                    , name field.name_
                     , placeholder "author.name"
                     , autocomplete False
                     , required True
-                    , defaultValue (orgLocalNameOrEmail (Email (Maybe.withDefault "" value_.prev)))
+                    , valueOrDefaultValue (orgLocalNameOrEmail << Email << Maybe.withDefault "") field.value_
                     , onInput InputEdit
                     ]
                     []
@@ -164,19 +162,32 @@ orgEmailInput memberNames matId ({ name_, value_ } as field) =
         ]
 
 
-rawTextInput : Bool -> Maybe (List String) -> MatId -> Field -> Html Msg
-rawTextInput isRequired maybeSuggestions matId ({ name_, value_ } as field) =
+valueOrDefaultValue : (Maybe String -> String) -> Editable -> Html.Attribute Msg
+valueOrDefaultValue transformPrev { prev, edit } =
+    case edit of
+        UnTouched ->
+            defaultValue (transformPrev prev)
+
+        AutoCompleted val ->
+            value val
+
+        ManualInput val ->
+            value val
+
+
+rawTextInput : Bool -> Maybe (List String) -> EditState -> Html Msg
+rawTextInput isRequired maybeSuggestions ({ matId, field } as editState) =
     let
         textInput =
             input
                 [ class "input is-small is-rounded"
                 , type_ "text"
                 , id (inputId matId field)
-                , name name_
-                , placeholder name_
+                , name field.name_
+                , placeholder field.name_
                 , autocomplete False
                 , required isRequired
-                , defaultValue (Maybe.withDefault "" value_.prev)
+                , valueOrDefaultValue (Maybe.withDefault "") field.value_
                 , onInput InputEdit
                 ]
                 []
@@ -184,7 +195,7 @@ rawTextInput isRequired maybeSuggestions matId ({ name_, value_ } as field) =
         div [ class "field" ]
             [ div [ class "control" ]
                 [ maybeSuggestions
-                    |> Maybe.map (\suggestions -> Suggestion.dropdown True (List.take maxSuggestions suggestions) textInput)
+                    |> Maybe.map (\suggestions -> Suggestion.dropdown editState (List.take maxSuggestions suggestions) textInput)
                     |> Maybe.withDefault textInput
                 ]
             ]

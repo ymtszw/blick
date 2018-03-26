@@ -134,6 +134,10 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
             { model | editing = editing |> Maybe.map (\({ field } as editState) -> { editState | field = { field | value_ = Editable field.value_.prev (ManualInput input) } }) }
                 => []
 
+        CompleteEdit ({ matId, field } as editState) newEditable ->
+            { model | editing = Just { editState | field = { field | value_ = newEditable } } }
+                => [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
+
         SubmitEdit matId field ->
             { model | editing = Nothing }
                 => [ updateMaterialField matId field, Ports.unlockScroll () ]

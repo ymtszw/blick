@@ -72,6 +72,7 @@ type Msg
     | InitiateEdit MatId Field Selector
     | StartEdit DOMRect
     | InputEdit String
+    | CompleteEdit EditState Editable
     | SubmitEdit MatId Field
     | CancelEdit
 
