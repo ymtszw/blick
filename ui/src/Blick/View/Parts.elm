@@ -8,12 +8,13 @@ module Blick.View.Parts
         , orgLocalNameOrEmail
         )
 
-import Char
 import Json.Decode as D exposing (Decoder)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events
+import Html.Lazy as Z
 import String.Extra as SE
+import MD5
 import Blick.Constant exposing (atOrgDomain)
 import Blick.Type exposing (..)
 
@@ -59,7 +60,7 @@ authorTag anc ((MatId id_) as matId) author_email =
                     [ class "tags has-addons is-pulled-right"
                     , id <| "author-" ++ id_
                     ]
-                    [ span [ class <| "tag is-rounded " ++ colorClassByName name ] [ text name ]
+                    [ Z.lazy roundTagOfName name
                     , span
                         [ class "tag tag-button is-rounded"
                         , onWithoutPropagate "click" (authorTagClickDecoder anc matId (Just email))
@@ -95,34 +96,98 @@ orgLocalNameOrEmail (Email email) =
     SE.replace atOrgDomain "" email
 
 
-colorClassByName : String -> String
-colorClassByName name =
-    name
-        |> String.foldl (\char acc -> acc + Char.toCode char) 0
-        |> (\sum -> rem sum 7)
-        |> colorClassByNumber
+roundTagOfName : String -> Html Msg
+roundTagOfName name =
+    let
+        hex =
+            String.slice 0 6 (MD5.hex name)
+    in
+        span
+            [ class "tag is-rounded"
+            , style
+                [ ( "background-color", "#" ++ hex )
+                , ( "color", contrastingFontColor hex )
+                ]
+            ]
+            [ text name ]
 
 
-colorClassByNumber : Int -> String
-colorClassByNumber num =
-    case num of
-        0 ->
-            "is-dark"
+contrastingFontColor : String -> String
+contrastingFontColor hex =
+    let
+        -- Taken from https://stackoverflow.com/a/1855903
+        weightedSum =
+            -- Just formatting using `0 +`
+            0
+                + (0.299 * toFloat (hexToInt (String.slice 0 2 hex)))
+                + (0.587 * toFloat (hexToInt (String.slice 2 4 hex)))
+                + (0.114 * toFloat (hexToInt (String.slice 4 6 hex)))
 
-        1 ->
-            "is-primary"
+        perceptiveLuminance =
+            1 - weightedSum / 255.0
+    in
+        if perceptiveLuminance < 0.5 then
+            "#333333"
+        else
+            "#ffffff"
 
-        2 ->
-            "is-link"
 
-        3 ->
-            "is-info"
+hexToInt : String -> Int
+hexToInt hex =
+    String.foldr
+        (\char ( index, acc ) -> ( index + 1, acc + (hexCharToInt char) * (16 ^ index) ))
+        ( 0, 0 )
+        hex
+        |> Tuple.second
 
-        4 ->
-            "is-success"
 
-        5 ->
-            "is-warning"
+hexCharToInt : Char -> Int
+hexCharToInt hexChar =
+    case hexChar of
+        '0' ->
+            0
+
+        '1' ->
+            1
+
+        '2' ->
+            2
+
+        '3' ->
+            3
+
+        '4' ->
+            4
+
+        '5' ->
+            5
+
+        '6' ->
+            6
+
+        '7' ->
+            7
+
+        '8' ->
+            8
+
+        '9' ->
+            9
+
+        'a' ->
+            10
+
+        'b' ->
+            11
+
+        'c' ->
+            12
+
+        'd' ->
+            13
+
+        'e' ->
+            14
 
         _ ->
-            "is-danger"
+            15
