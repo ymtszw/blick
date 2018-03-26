@@ -110,11 +110,11 @@ defmodule Blick.External.Google do
   @doc """
   Makes batch request.
   """
-  defun batch(token :: token_t, requests :: [multipart_req_t]) :: res_t do
-    _token, [] ->
+  defun batch(api_base_path :: SolomonLib.UnencodedPath.t, token :: token_t, requests :: [multipart_req_t]) :: res_t do
+    _api_base_path, _token, [] ->
       {:error, :empty_requests}
-    token, requests ->
-      request(token, :post, @batch_api_base_url, make_batch_request_body(token, requests), %{"content-type" => "multipart/mixed; boundary=#{@boundary}"})
+    api_base_path, token, requests ->
+      request(token, :post, @batch_api_base_url <> api_base_path, make_batch_request_body(token, requests), %{"content-type" => "multipart/mixed; boundary=#{@boundary}"})
   end
 
   defp make_batch_request_body(token, requests) do

@@ -10,7 +10,8 @@ defmodule Blick.External.Google.Drive do
   alias Blick.External.Google
 
   defmodule Files do
-    @base_url "https://www.googleapis.com/drive/v3"
+    @api_base_path "/drive/v3"
+    @base_url "https://www.googleapis.com#{@api_base_path}"
     @fields "id,name,mimeType,createdTime,owners,thumbnailLink"
 
     defun get(id :: v[String.t], token :: Google.token_t) :: Google.res_t do
@@ -45,7 +46,7 @@ defmodule Blick.External.Google.Drive do
     end
     defp batch_get_with_retry([chunk | chunks], token, acc, attempts_with_failure) do
       requests = Enum.map(chunk, fn id -> {:get, @base_url <> "/files/#{id}", "", %{}, params: %{"fields" => @fields}} end)
-      case Google.batch(token, requests) do
+      case Google.batch(@api_base_path, token, requests) do
         {:ok, results} ->
           {new_chunks, new_acc, new_attempts} =
             examine_batch_results(results, chunk, chunks, acc, attempts_with_failure)
