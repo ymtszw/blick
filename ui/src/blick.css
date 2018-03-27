@@ -1,4 +1,4 @@
-.exception {
+.exceptions {
   z-index: 200;
   position: fixed;
   bottom: 65px;
@@ -8,8 +8,15 @@
   pointer-events: none;
 }
 
-.exception .message {
+.exceptions .message {
   pointer-events: all;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.exceptions .message.is-closed {
+  opacity: 0;
+  transform: translateX(102%);
 }
 
 .text-nowrap {

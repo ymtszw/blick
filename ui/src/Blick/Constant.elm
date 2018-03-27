@@ -1,6 +1,9 @@
 module Blick.Constant
     exposing
-        ( singleColumnMaxWidthPx
+        ( exceptionCloseDelay
+        , exceptionCloseDuration
+        , exceptionCloseFullMs
+        , singleColumnMaxWidthPx
         , mobileMaxWidthPx
         , bulmaColumnScaleMax
         , tilePerRow
@@ -14,6 +17,23 @@ module Blick.Constant
         , atOrgDomain
         , maxSuggestions
         )
+
+import Time
+
+
+exceptionCloseDelay : Float
+exceptionCloseDelay =
+    100.0
+
+
+exceptionCloseDuration : Float
+exceptionCloseDuration =
+    400.0
+
+
+exceptionCloseFullMs : Time.Time
+exceptionCloseFullMs =
+    (exceptionCloseDelay + exceptionCloseDuration) * Time.millisecond
 
 
 singleColumnMaxWidthPx : Int

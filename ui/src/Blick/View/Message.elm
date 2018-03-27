@@ -7,13 +7,15 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Blick.Type exposing (..)
+import Blick.Constant exposing (exceptionCloseDelay, exceptionCloseDuration)
 
 
 view : Dict Time Exception -> Html Msg
 view exceptions =
-    div [ class "exception" ]
+    div [ class "exceptions" ]
         [ div [ class "columns" ]
-            [ exceptions
+            [ closeTransitionStyleElement
+            , exceptions
                 |> Dict.toList
                 |> List.map notification
                 |> div [ class "column is-offset-half is-half" ]
@@ -21,9 +23,25 @@ view exceptions =
         ]
 
 
+closeTransitionStyleElement : Html msg
+closeTransitionStyleElement =
+    node "style"
+        [ type_ "text/css" ]
+        [ text <|
+            ".exceptions .message.is-closed{transition:all ease-out "
+                ++ toString exceptionCloseDuration
+                ++ "ms "
+                ++ toString exceptionCloseDelay
+                ++ "ms}"
+        ]
+
+
 notification : ( Time, Exception ) -> Html Msg
-notification ( time_, { message, description, details } ) =
-    div [ class "message is-danger", id <| toString time_ ]
+notification ( time_, { message, description, details, isOpen } ) =
+    div
+        [ class <| "message is-danger" ++ isOpenClass isOpen
+        , id <| "exception-" ++ toString time_
+        ]
         [ div [ class "message-header" ]
             [ p [] [ text message ]
             , small [ class "is-size-7" ] [ text <| toString <| Date.fromTime time_ ]
@@ -34,6 +52,14 @@ notification ( time_, { message, description, details } ) =
             , detailList details
             ]
         ]
+
+
+isOpenClass : Bool -> String
+isOpenClass isOpen =
+    if isOpen then
+        ""
+    else
+        " is-closed"
 
 
 detailList : List String -> Html Msg

@@ -63,6 +63,7 @@ type Msg
     | WindowSize Window.Size
     | TimedErr H.Error Time
     | CloseErr Time
+    | PurgeErr Time
     | ClientRes (Result H.Error Success)
     | CarouselNext
     | CarouselPrev
@@ -307,6 +308,7 @@ type alias Exception =
     { message : String
     , description : String
     , details : List String
+    , isOpen : Bool
     }
 
 
@@ -314,19 +316,19 @@ fromHttpError : H.Error -> Exception
 fromHttpError err =
     case err of
         H.BadUrl badUrl ->
-            Exception "Malformed URL" badUrl []
+            Exception "Malformed URL" badUrl [] True
 
         H.Timeout ->
-            Exception "Server Timeout" "Check network connection" []
+            Exception "Server Timeout" "Check network connection" [] True
 
         H.NetworkError ->
-            Exception "Network Error" "Check network connection" []
+            Exception "Network Error" "Check network connection" [] True
 
         H.BadStatus { url, status, headers, body } ->
-            Exception (statusToString status) body (responseToList url headers body)
+            Exception (statusToString status) body (responseToList url headers body) True
 
         H.BadPayload errStr { url, status, headers, body } ->
-            Exception (statusToString status) errStr (responseToList url headers body)
+            Exception (statusToString status) errStr (responseToList url headers body) True
 
 
 statusToString : { code : Int, message : String } -> String

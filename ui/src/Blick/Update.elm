@@ -1,6 +1,7 @@
 module Blick.Update exposing (update)
 
 import Dict
+import Process
 import Regex
 import Task
 import Time
@@ -43,6 +44,10 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
             { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
 
         CloseErr time ->
+            { model | exceptions = Dict.update time (Maybe.map (\e -> { e | isOpen = False })) exceptions }
+                => [ Process.sleep exceptionCloseFullMs |> Task.perform (always (PurgeErr time)) ]
+
+        PurgeErr time ->
             { model | exceptions = Dict.remove time exceptions } => []
 
         ClientRes (Ok (ListMaterials ms)) ->
