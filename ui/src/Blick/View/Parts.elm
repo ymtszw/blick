@@ -135,7 +135,7 @@ contrastingFontColor hex =
 hexToInt : String -> Int
 hexToInt hex =
     String.foldr
-        (\char ( index, acc ) -> ( index + 1, acc + (hexCharToInt char) * (16 ^ index) ))
+        (\char ( index, acc ) -> ( index + 1, acc + hexCharToInt char * (16 ^ index) ))
         ( 0, 0 )
         hex
         |> Tuple.second

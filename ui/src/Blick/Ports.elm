@@ -1,6 +1,6 @@
 port module Blick.Ports exposing (lockScroll, unlockScroll, queryDOMOrigin, listenDOMOrigin)
 
-import Blick.Type exposing (Field, DOMRect)
+import Blick.Type exposing (DOMRect)
 
 
 {-| Put 'is-clipped' class to document root. Idempotent.
