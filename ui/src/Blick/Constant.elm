@@ -6,6 +6,7 @@ module Blick.Constant
         , tilePerRow
         , rowPerCarouselPage
         , maxCarouselPage
+        , carouselPreloadDelta
         , rowPerTable
         , tablePerPage
         , maxTablePage
@@ -48,6 +49,15 @@ rowPerCarouselPage =
 maxCarouselPage : Int -> Int -> Int
 maxCarouselPage width numberOfMaterials =
     divCeiling numberOfMaterials (tilePerRow width * rowPerCarouselPage)
+
+
+carouselPreloadDelta : Int -> Int
+carouselPreloadDelta bulmaColumnScale =
+    if bulmaColumnScale >= (bulmaColumnScaleMax // 2) then
+        -- Half or Full width column => mobile
+        1
+    else
+        2
 
 
 rowPerTable : Int

@@ -64,18 +64,22 @@ carouselNav max carouselPage =
 carouselItem : Int -> Int -> Int -> List (List ( MatId, Material )) -> Html Msg
 carouselItem columnScale materialPage pageIndex materialsByPage =
     let
+        preloadDelta =
+            carouselPreloadDelta columnScale
+
         contents =
-            if materialPage - 1 <= pageIndex && pageIndex <= materialPage + 1 then
-                -- Calculate VDOM already, even if it isn't used for now, ultimately use it via Z.lazy
-                Z.lazy2 carouselItemContents columnScale materialsByPage
+            if materialPage - preloadDelta <= pageIndex && pageIndex <= materialPage + preloadDelta then
+                -- Load neighboring pages early; in mobile, preloading range should be narrowed?
+                [ Z.lazy2 carouselItemContents columnScale materialsByPage ]
             else
-                -- Not used actually
-                text ""
+                []
     in
         if materialPage == pageIndex then
-            div [ class "carousel-item is-active" ] [ contents ]
+            div [ class "carousel-item is-active" ] contents
+        else if pageIndex < materialPage then
+            div [ class "carousel-item is-overlay is-left-deck" ] contents
         else
-            div [ class "carousel-item" ] []
+            div [ class "carousel-item is-overlay is-right-deck" ] contents
 
 
 carouselItemContents : Int -> List (List ( MatId, Material )) -> Html Msg

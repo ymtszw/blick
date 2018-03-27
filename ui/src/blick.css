@@ -49,13 +49,24 @@ td.is-paddingless > a {
   padding: .5em .75em;
 }
 
+.carousel {
+  overflow: hidden;
+}
+
 .carousel-item {
-  opacity: 0;
-  transition: all 200ms 100ms ease-out;
+  transition: transform 600ms 100ms ease-in-out;
 }
 
 .carousel-item.is-active {
-  opacity: 1;
+  transform: translateX(0);
+}
+
+.carousel-item.is-left-deck {
+  transform: translateX(-102%);
+}
+
+.carousel-item.is-right-deck {
+  transform: translateX(102%);
 }
 
 .tag.add-author {
