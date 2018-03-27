@@ -1,8 +1,10 @@
-module Blick.Keybinds exposing (decodeKeyboardEventSelectively, isTargetedKeybindEvent, subscriptions)
+module Blick.Keybinds exposing (decodeKeyboardEventSelectively, subscriptions)
 
 import Json.Decode exposing (Decoder)
+import Keyboard exposing (KeyCode)
 import Keyboard.Event exposing (KeyboardEvent, considerKeyboardEvent)
 import Keyboard.Key exposing (Key(..))
+import Util
 import Blick.Type exposing (..)
 
 
@@ -54,5 +56,27 @@ isTargetedKeybindEvent { altKey, ctrlKey, shiftKey, metaKey, keyCode } keys =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    if shouldListen model then
+        Keyboard.downs (globalKeydownHandler model)
+    else
+        Sub.none
+
+
+shouldListen : Model -> Bool
+shouldListen { editing } =
+    Util.isJust editing
+
+
+globalKeydownHandler : Model -> KeyCode -> Msg
+globalKeydownHandler { editing } keyCode =
+    case editing of
+        Just _ ->
+            if keyCode == 27 then
+                -- Escape
+                CancelEdit
+            else
+                NoOp
+
+        _ ->
+            NoOp
