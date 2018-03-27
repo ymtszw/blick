@@ -43,7 +43,6 @@ import Json.Decode.Extra exposing ((|:), date)
 import Http as H
 import Navigation exposing (Location)
 import Window
-import Keyboard exposing (KeyCode)
 
 
 -- FLAGS
@@ -77,7 +76,6 @@ type Msg
     | CompleteEdit EditState Editable
     | SubmitEdit MatId Field
     | CancelEdit
-    | KeyDown KeyCode
 
 
 type Success

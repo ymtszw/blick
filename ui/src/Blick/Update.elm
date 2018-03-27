@@ -13,7 +13,6 @@ import Blick.Type exposing (..)
 import Blick.Router exposing (route, goto)
 import Blick.Constant exposing (..)
 import Blick.Client exposing (updateMaterialField, listMembers)
-import Blick.Keybinds as Keybinds
 import Blick.Ports as Ports
 
 
@@ -150,9 +149,6 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
 
         CancelEdit ->
             { model | editing = Nothing } => [ Ports.unlockScroll () ]
-
-        KeyDown c ->
-            Keybinds.update c model
 
 
 findMatchingIds : MaterialDict -> String -> List MatId
