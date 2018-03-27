@@ -43,6 +43,7 @@ import Json.Decode.Extra exposing ((|:), date)
 import Http as H
 import Navigation exposing (Location)
 import Window
+import Keyboard exposing (KeyCode)
 
 
 -- FLAGS
@@ -76,6 +77,7 @@ type Msg
     | CompleteEdit EditState Editable
     | SubmitEdit MatId Field
     | CancelEdit
+    | KeyDown KeyCode
 
 
 type Success
@@ -133,6 +135,7 @@ type alias Model =
     { materials : MaterialDict
     , toEdit : Maybe ( MatId, Field )
     , editing : Maybe EditState
+    , selectedSuggestion : Maybe Int
     , matches : List MatId
     , filterInput : String
     , members : List Email

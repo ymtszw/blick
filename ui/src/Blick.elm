@@ -9,6 +9,7 @@ import Rocket exposing ((=>))
 import Blick.Type exposing (..)
 import Blick.Router exposing (route)
 import Blick.Ports as Ports
+import Blick.Keybinds as Keybinds
 import Blick.Client exposing (listMaterials)
 import Blick.Update exposing (update)
 import Blick.View exposing (view)
@@ -26,6 +27,7 @@ init flags location =
         { materials = ms
         , toEdit = Nothing
         , editing = Nothing
+        , selectedSuggestion = Nothing
         , matches = []
         , filterInput = ""
         , members = []
@@ -61,9 +63,10 @@ fallbackSize =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
+subscriptions model =
     Sub.batch
         [ resizes WindowSize
+        , Keybinds.subscriptions model
 
         -- Ideally, we want to subscribe `listenDOMOrigin` only when `queryDOMOrigin` is performed,
         -- though (inconveniently,) port response from JS coming faster than this function is evaluated again.
