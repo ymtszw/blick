@@ -132,9 +132,19 @@ filterMembers { edit } members =
             []
 
         ManualInput v ->
-            List.filter
-                (\(Email email) -> String.startsWith v email || String.startsWith v (SE.rightOf "." email))
-                members
+            let
+                lv =
+                    String.toLower v
+            in
+                List.filter
+                    (\(Email email) ->
+                        let
+                            le =
+                                String.toLower email
+                        in
+                            String.startsWith lv le || String.startsWith lv (SE.rightOf "." le)
+                    )
+                    members
 
 
 orgEmailInput : List String -> EditState -> Html Msg
