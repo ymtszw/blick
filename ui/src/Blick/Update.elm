@@ -17,7 +17,7 @@ import Blick.Ports as Ports
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, windowSize } as model) =
+update msg ({ materials, toEdit, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -125,7 +125,11 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
         StartEdit domRect ->
             case toEdit of
                 Just ( matId, field ) ->
-                    { model | toEdit = Nothing, editing = Just (EditState matId field domRect) }
+                    { model
+                        | toEdit = Nothing
+                        , editing = Just (EditState matId field domRect)
+                        , selectedSuggestion = Nothing
+                    }
                         => if field.name_ == "author_email" then
                             [ listMembers, Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
                            else
@@ -136,19 +140,29 @@ update msg ({ materials, toEdit, editing, carouselPage, tablePage, exceptions, w
                     model => []
 
         InputEdit ({ field } as editState) newEditable ->
-            { model | editing = Just { editState | field = { field | value_ = newEditable } } }
+            { model
+                | editing = Just { editState | field = { field | value_ = newEditable } }
+                , selectedSuggestion = Nothing
+            }
                 => []
 
         CompleteEdit ({ matId, field } as editState) newEditable ->
-            { model | editing = Just { editState | field = { field | value_ = newEditable } } }
+            { model
+                | editing = Just { editState | field = { field | value_ = newEditable } }
+                , selectedSuggestion = Nothing
+            }
                 => [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
 
+        SelectSuggestion index ->
+            { model | selectedSuggestion = Just index } => []
+
         SubmitEdit matId field ->
-            { model | editing = Nothing }
+            { model | editing = Nothing, selectedSuggestion = Nothing }
                 => [ updateMaterialField matId field, Ports.unlockScroll () ]
 
         CancelEdit ->
-            { model | editing = Nothing } => [ Ports.unlockScroll () ]
+            { model | editing = Nothing, selectedSuggestion = Nothing }
+                => [ Ports.unlockScroll () ]
 
 
 findMatchingIds : MaterialDict -> String -> List MatId

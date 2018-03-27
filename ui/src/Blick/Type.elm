@@ -74,6 +74,7 @@ type Msg
     | StartEdit DOMRect
     | InputEdit EditState Editable
     | CompleteEdit EditState Editable
+    | SelectSuggestion Int
     | SubmitEdit MatId Field
     | CancelEdit
 

@@ -1,10 +1,9 @@
 module Blick.View.Editor exposing (modal)
 
-import Json.Decode as D exposing (Decoder)
+import Json.Decode as D
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput)
-import Window
 import String.Extra as SE
 import Blick.Type exposing (..)
 import Blick.Constant exposing (atOrgDomain, maxSuggestions)
@@ -13,16 +12,16 @@ import Blick.View.Suggestion as Suggestion
 
 
 modal : Model -> EditState -> Html Msg
-modal { members, windowSize } editState =
+modal model editState =
     div [ class "modal is-active" ]
         [ div [ class "modal-background", onClickNoPropagate CancelEdit ] []
         , button [ class "modal-close is-large", attribute "aria-label" "close", onClickNoPropagate CancelEdit ] []
-        , materialFieldInput members windowSize editState
+        , materialFieldInput model editState
         ]
 
 
-materialFieldInput : List Email -> Window.Size -> EditState -> Html Msg
-materialFieldInput members windowSize ({ matId, field, domRect } as editState) =
+materialFieldInput : Model -> EditState -> Html Msg
+materialFieldInput ({ windowSize } as model) ({ matId, field, domRect } as editState) =
     let
         ( formTop, buttonComesFirst ) =
             formTopAndSwitch windowSize.height domRect.top
@@ -31,7 +30,7 @@ materialFieldInput members windowSize ({ matId, field, domRect } as editState) =
             [ onWithoutPropagate "submit" (D.succeed (SubmitEdit matId (finalizeEdit field)))
             , floatingFormStyle (toFloat windowSize.width - domRect.left - domRect.width) formTop domRect.width
             ]
-            (formContents buttonComesFirst members editState)
+            (formContents buttonComesFirst model editState)
 
 
 floatingFormStyle : Float -> Float -> Float -> Html.Attribute msg
@@ -78,12 +77,12 @@ formTopAndSwitch height clickedDomTop =
         ( clickedDomTop, False )
 
 
-formContents : Bool -> List Email -> EditState -> List (Html Msg)
-formContents buttonComesFirst members editState =
+formContents : Bool -> Model -> EditState -> List (Html Msg)
+formContents buttonComesFirst model editState =
     if buttonComesFirst then
-        [ submitButton, inputByField members editState ]
+        [ submitButton, inputByField model editState ]
     else
-        [ inputByField members editState, submitButton ]
+        [ inputByField model editState, submitButton ]
 
 
 buttonHeightAndGap : Float
@@ -96,8 +95,8 @@ formHeightWithMargin =
     75.0
 
 
-inputByField : List Email -> EditState -> Html Msg
-inputByField members ({ field } as editState) =
+inputByField : Model -> EditState -> Html Msg
+inputByField { selectedSuggestion, members } ({ field } as editState) =
     case field.name_ of
         "author_email" ->
             let
@@ -108,15 +107,17 @@ inputByField members ({ field } as editState) =
                     Just False ->
                         rawTextInput True
                             (Just (List.map (\(Email email) -> email) filteredMembers))
+                            selectedSuggestion
                             editState
 
                     _ ->
                         orgEmailInput
                             (List.map (\(Email email) -> SE.leftOfBack atOrgDomain email) filteredMembers)
+                            selectedSuggestion
                             editState
 
         _ ->
-            rawTextInput True Nothing editState
+            rawTextInput True Nothing selectedSuggestion editState
 
 
 filterMembers : Editable -> List Email -> List Email
@@ -147,23 +148,25 @@ filterMembers { edit } members =
                     members
 
 
-orgEmailInput : List String -> EditState -> Html Msg
-orgEmailInput memberNames ({ matId, field } as editState) =
+orgEmailInput : List String -> Maybe Int -> EditState -> Html Msg
+orgEmailInput memberNames selectedSuggestion ({ matId, field } as editState) =
     div [ class "field has-addons" ]
         [ span [ class "control has-text-right" ]
-            [ Suggestion.dropdown editState (List.take maxSuggestions memberNames) <|
-                input
-                    [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
-                    , type_ "text"
-                    , id (inputId matId field)
-                    , name field.name_
-                    , placeholder "author.name"
-                    , autocomplete False
-                    , required True
-                    , valueOrDefaultValue (orgLocalNameOrEmail << Email << Maybe.withDefault "") field.value_
-                    , onInput (InputEdit editState << Editable field.value_.prev << ManualInput)
-                    ]
-                    []
+            [ Suggestion.dropdown selectedSuggestion editState (List.take maxSuggestions memberNames) <|
+                \keydownHandler ->
+                    input
+                        [ class "input is-small is-rounded has-text-right" -- has-text-right required doubly
+                        , type_ "text"
+                        , id (inputId matId field)
+                        , name field.name_
+                        , placeholder "author.name"
+                        , autocomplete False
+                        , required True
+                        , valueOrDefaultValue (orgLocalNameOrEmail << Email << Maybe.withDefault "") field.value_
+                        , keydownHandler
+                        , onInput (InputEdit editState << Editable field.value_.prev << ManualInput)
+                        ]
+                        []
             ]
         , span [ class "control" ]
             [ span [ class "button is-small is-static is-rounded has-text-left" ]
@@ -185,10 +188,10 @@ valueOrDefaultValue transformPrev { prev, edit } =
             value val
 
 
-rawTextInput : Bool -> Maybe (List String) -> EditState -> Html Msg
-rawTextInput isRequired maybeSuggestions ({ matId, field } as editState) =
+rawTextInput : Bool -> Maybe (List String) -> Maybe Int -> EditState -> Html Msg
+rawTextInput isRequired maybeSuggestions selectedSuggestion ({ matId, field } as editState) =
     let
-        textInput =
+        textInput keydownHandler =
             input
                 [ class "input is-small is-rounded"
                 , type_ "text"
@@ -198,6 +201,7 @@ rawTextInput isRequired maybeSuggestions ({ matId, field } as editState) =
                 , autocomplete False
                 , required isRequired
                 , valueOrDefaultValue (Maybe.withDefault "") field.value_
+                , keydownHandler
                 , onInput (InputEdit editState << Editable field.value_.prev << ManualInput)
                 ]
                 []
@@ -205,8 +209,8 @@ rawTextInput isRequired maybeSuggestions ({ matId, field } as editState) =
         div [ class "field" ]
             [ div [ class "control" ]
                 [ maybeSuggestions
-                    |> Maybe.map (\suggestions -> Suggestion.dropdown editState (List.take maxSuggestions suggestions) textInput)
-                    |> Maybe.withDefault textInput
+                    |> Maybe.map (\suggestions -> Suggestion.dropdown selectedSuggestion editState (List.take maxSuggestions suggestions) textInput)
+                    |> Maybe.withDefault (textInput (style []))
                 ]
             ]
 
