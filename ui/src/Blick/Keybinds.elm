@@ -4,6 +4,7 @@ import Json.Decode exposing (Decoder)
 import Keyboard exposing (KeyCode)
 import Keyboard.Event exposing (KeyboardEvent, considerKeyboardEvent)
 import Keyboard.Key exposing (Key(..))
+import Util
 import Blick.Type exposing (..)
 
 
@@ -61,19 +62,14 @@ subscriptions model =
 
 globalKeydownHandler : Model -> KeyCode -> Msg
 globalKeydownHandler { editing, filter } keyCode =
-    if keyCode == 27 then
-        -- Escape
-        case editing of
-            Just _ ->
-                CancelEdit
-
-            Nothing ->
-                if filter.focused then
-                    FocusFilter False
-                else
-                    NoOp
-    else if keyCode == 191 || keyCode == 83 then
-        -- Slash or 'S' in JIS keyboard
+    if keyCode == 27 && Util.isJust editing then
+        -- Escape from editor
+        CancelEdit
+    else if keyCode == 27 && filter.focused then
+        -- Escape from filterBox
+        FocusFilter False
+    else if (keyCode == 191 || keyCode == 83) && not filter.focused then
+        -- '/' or 'S' in JIS keyboard without filterBox focus
         FocusFilter True
     else
         NoOp
