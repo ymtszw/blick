@@ -71,6 +71,7 @@ type Msg
     | TableNext
     | TablePrev
     | InputFilter String
+    | SetFilterFocus Bool
     | FocusFilter Bool
     | InitiateEdit MatId Field Selector
     | StartEdit DOMRect

@@ -1,6 +1,7 @@
 module Blick.Constant
     exposing
-        ( exceptionCloseDelay
+        ( filterBoxId
+        , exceptionCloseDelay
         , exceptionCloseDuration
         , exceptionCloseFullMs
         , singleColumnMaxWidthPx
@@ -19,6 +20,11 @@ module Blick.Constant
         )
 
 import Time
+
+
+filterBoxId : String
+filterBoxId =
+    "material-filter-box"
 
 
 exceptionCloseDelay : Float

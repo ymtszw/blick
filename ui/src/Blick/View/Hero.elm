@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onFocus, onBlur)
 import Blick.Type exposing (Msg(..), Model, FilterState)
+import Blick.Constant exposing (filterBoxId)
 
 
 view : Model -> Html Msg
@@ -40,9 +41,10 @@ filterInput matches value_ =
         [ type_ "text"
         , placeholder "OR filter"
         , onInput InputFilter
-        , onFocus (FocusFilter True)
-        , onBlur (FocusFilter False)
+        , onFocus (SetFilterFocus True)
+        , onBlur (SetFilterFocus False)
         , class <| "input is-flat" ++ filterInputColor matches value_
+        , id filterBoxId
         ]
         []
 

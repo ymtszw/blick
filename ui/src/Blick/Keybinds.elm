@@ -4,7 +4,6 @@ import Json.Decode exposing (Decoder)
 import Keyboard exposing (KeyCode)
 import Keyboard.Event exposing (KeyboardEvent, considerKeyboardEvent)
 import Keyboard.Key exposing (Key(..))
-import Util
 import Blick.Type exposing (..)
 
 
@@ -57,26 +56,24 @@ isTargetedKeybindEvent { altKey, ctrlKey, shiftKey, metaKey, keyCode } keys =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if shouldListen model then
-        Keyboard.downs (globalKeydownHandler model)
-    else
-        Sub.none
-
-
-shouldListen : Model -> Bool
-shouldListen { editing } =
-    Util.isJust editing
+    Keyboard.downs (globalKeydownHandler model)
 
 
 globalKeydownHandler : Model -> KeyCode -> Msg
-globalKeydownHandler { editing } keyCode =
-    case editing of
-        Just _ ->
-            if keyCode == 27 then
-                -- Escape
+globalKeydownHandler { editing, filter } keyCode =
+    if keyCode == 27 then
+        -- Escape
+        case editing of
+            Just _ ->
                 CancelEdit
-            else
-                NoOp
 
-        _ ->
-            NoOp
+            Nothing ->
+                if filter.focused then
+                    FocusFilter False
+                else
+                    NoOp
+    else if keyCode == 191 || keyCode == 83 then
+        -- Slash or 'S' in JIS keyboard
+        FocusFilter True
+    else
+        NoOp

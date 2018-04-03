@@ -118,8 +118,17 @@ update msg ({ materials, toEdit, filter, carouselPage, tablePage, exceptions, wi
             }
                 => []
 
-        FocusFilter focused ->
+        SetFilterFocus focused ->
             { model | filter = { filter | focused = focused } } => []
+
+        FocusFilter focusing ->
+            model
+                => [ Task.attempt (always NoOp) <|
+                        if focusing then
+                            Dom.focus filterBoxId
+                        else
+                            Dom.blur filterBoxId
+                   ]
 
         InitiateEdit matId field (Selector s) ->
             { model | toEdit = Just ( matId, field ) }
