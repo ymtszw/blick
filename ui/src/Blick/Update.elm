@@ -17,7 +17,7 @@ import Blick.Ports as Ports
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, toEdit, carouselPage, tablePage, exceptions, windowSize } as model) =
+update msg ({ materials, toEdit, filter, carouselPage, tablePage, exceptions, windowSize } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
@@ -106,17 +106,20 @@ update msg ({ materials, toEdit, carouselPage, tablePage, exceptions, windowSize
             else
                 model => []
 
-        Filter "" ->
-            { model | matches = [], filterInput = "" } => []
+        InputFilter "" ->
+            { model | matches = [], filter = { filter | value_ = "" } } => []
 
-        Filter input ->
+        InputFilter input ->
             { model
                 | matches = findMatchingIds materials input
-                , filterInput = input
+                , filter = { filter | value_ = input }
                 , carouselPage = 0
                 , tablePage = 0
             }
                 => []
+
+        FocusFilter focused ->
+            { model | filter = { filter | focused = focused } } => []
 
         InitiateEdit matId field (Selector s) ->
             { model | toEdit = Just ( matId, field ) }

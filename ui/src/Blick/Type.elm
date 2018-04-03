@@ -9,6 +9,7 @@ module Blick.Type
         , DirtyValue(..)
         , DOMRect
         , Selector(Selector)
+        , FilterState
         , Route(..)
         , EditState
         , MatId(MatId)
@@ -69,7 +70,8 @@ type Msg
     | CarouselPrev
     | TableNext
     | TablePrev
-    | Filter String
+    | InputFilter String
+    | FocusFilter Bool
     | InitiateEdit MatId Field Selector
     | StartEdit DOMRect
     | InputEdit EditState Editable
@@ -136,13 +138,19 @@ type alias Model =
     , editing : Maybe EditState
     , selectedSuggestion : Maybe Int
     , matches : List MatId
-    , filterInput : String
+    , filter : FilterState
     , members : List Email
     , carouselPage : Int
     , tablePage : Int
     , route : Route
     , exceptions : Dict Time Exception
     , windowSize : Window.Size
+    }
+
+
+type alias FilterState =
+    { focused : Bool
+    , value_ : String
     }
 
 

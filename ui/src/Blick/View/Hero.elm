@@ -2,12 +2,12 @@ module Blick.View.Hero exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
-import Blick.Type exposing (Msg(..), Model)
+import Html.Events exposing (onInput, onFocus, onBlur)
+import Blick.Type exposing (Msg(..), Model, FilterState)
 
 
 view : Model -> Html Msg
-view { filterInput, matches } =
+view { filter, matches } =
     div [ class "hero is-success" ]
         [ div [ class "hero-body" ]
             [ div [ class "container" ]
@@ -16,46 +16,48 @@ view { filterInput, matches } =
                         [ h1 [ class "title" ] [ text "Blick" ]
                         ]
                     , div [ class "column" ]
-                        [ filter matches filterInput ]
+                        [ filterBox matches filter ]
                     ]
                 ]
             ]
         ]
 
 
-filter : List id -> String -> Html Msg
-filter matches input_ =
+filterBox : List id -> FilterState -> Html Msg
+filterBox matches { value_ } =
     div [ class "field is-expanded" ]
         [ div [ class "control has-icons-left has-icons-right" ]
-            [ filterInput matches input_
+            [ filterInput matches value_
             , span [ class "icon is-small is-left" ] [ i [ class "fa fa-filter" ] [] ]
-            , filterInputResult matches input_
+            , filterInputResult matches value_
             ]
         ]
 
 
 filterInput : List id -> String -> Html Msg
-filterInput matches input_ =
+filterInput matches value_ =
     input
         [ type_ "text"
         , placeholder "OR filter"
-        , onInput Filter
-        , class <| "input is-flat" ++ filterInputColor matches input_
+        , onInput InputFilter
+        , onFocus (FocusFilter True)
+        , onBlur (FocusFilter False)
+        , class <| "input is-flat" ++ filterInputColor matches value_
         ]
         []
 
 
 filterInputColor : List id -> String -> String
-filterInputColor matches input_ =
-    if not (String.isEmpty input_) && List.isEmpty matches then
+filterInputColor matches value_ =
+    if not (String.isEmpty value_) && List.isEmpty matches then
         " is-danger"
     else
         ""
 
 
 filterInputResult : List id -> String -> Html Msg
-filterInputResult matches input_ =
-    case input_ of
+filterInputResult matches value_ =
+    case value_ of
         "" ->
             text ""
 
