@@ -26,15 +26,20 @@ split pathname =
         |> List.filter (not << String.isEmpty)
 
 
-goto : Route -> ( String, List (Cmd Msg) )
+goto : Route -> List (Cmd Msg)
 goto route =
     case route of
         Root ->
-            ( "/", [ unlockScroll () ] )
+            [ Navigation.newUrl "/"
+            , unlockScroll ()
+            ]
 
         Detail ((MatId id) as matId) ->
-            ( "/" ++ id, [ getMaterial matId, lockScroll () ] )
+            [ Navigation.newUrl ("/" ++ id)
+            , getMaterial matId
+            , lockScroll ()
+            ]
 
         NotFound ->
             -- Should not happen
-            ( "/", [ Cmd.none ] )
+            [ Cmd.none ]

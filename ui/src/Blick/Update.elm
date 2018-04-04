@@ -6,7 +6,6 @@ import Regex
 import Task
 import Time
 import Dom
-import Navigation
 import Window
 import Rocket exposing ((=>))
 import Blick.Type exposing (..)
@@ -17,28 +16,19 @@ import Blick.Ports as Ports
 
 
 update : Msg -> Model -> ( Model, List (Cmd Msg) )
-update msg ({ materials, toEdit, filter, carouselPage, tablePage, exceptions, windowSize } as model) =
+update msg ({ materials, filter, exceptions } as model) =
     case msg of
         Loc location ->
             { model | route = route location } => []
 
         GoTo r ->
-            let
-                ( path, cmds ) =
-                    goto r
-            in
-                model => (Navigation.newUrl path :: cmds)
+            model => goto r
 
         NoOp ->
             model => []
 
         WindowSize newSize ->
-            if crossedMobileMax windowSize newSize then
-                { model | windowSize = newSize, carouselPage = 0, tablePage = 0 } => []
-            else if crossedSingleColumnMax windowSize newSize then
-                { model | windowSize = newSize, carouselPage = 0 } => []
-            else
-                { model | windowSize = newSize } => []
+            resetPagesAtWindowSizeThresholds model newSize => []
 
         TimedErr err time ->
             { model | exceptions = Dict.insert time (fromHttpError err) exceptions } => []
@@ -66,104 +56,39 @@ update msg ({ materials, toEdit, filter, carouselPage, tablePage, exceptions, wi
         ClientRes (Err err) ->
             model => [ Task.perform (TimedErr err) Time.now ]
 
-        CarouselNext ->
-            let
-                max =
-                    maxCarouselPage windowSize.width (dictSize materials)
-            in
-                if carouselPage > max then
-                    { model | carouselPage = max } => []
-                else if carouselPage < max then
-                    { model | carouselPage = model.carouselPage + 1 } => []
-                else
-                    model => []
+        SetCarouselPage cPage ->
+            { model | carouselPage = cPage } => []
 
-        CarouselPrev ->
-            if carouselPage < 0 then
-                { model | carouselPage = 0 } => []
-            else if carouselPage > 0 then
-                { model | carouselPage = model.carouselPage - 1 } => []
-            else
-                model => []
-
-        TableNext ->
-            let
-                max =
-                    maxTablePage windowSize.width (dictSize materials)
-            in
-                if tablePage > max then
-                    { model | tablePage = max } => []
-                else if tablePage < max then
-                    { model | tablePage = model.tablePage + 1 } => []
-                else
-                    model => []
-
-        TablePrev ->
-            if tablePage < 0 then
-                { model | tablePage = 0 } => []
-            else if tablePage > 0 then
-                { model | tablePage = model.tablePage - 1 } => []
-            else
-                model => []
+        SetTablePage tPage ->
+            { model | tablePage = tPage } => []
 
         InputFilter "" ->
             { model | matches = [], filter = { filter | value_ = "" } } => []
 
         InputFilter input ->
-            { model
-                | matches = findMatchingIds materials input
-                , filter = { filter | value_ = input }
-                , carouselPage = 0
-                , tablePage = 0
-            }
+            { model | matches = findMatchingIds materials input, filter = { filter | value_ = input }, carouselPage = 0, tablePage = 0 }
                 => []
 
         SetFilterFocus focused ->
             { model | filter = { filter | focused = focused } } => []
 
         FocusFilter focusing ->
-            model
-                => [ Task.attempt (always NoOp) <|
-                        if focusing then
-                            Dom.focus filterBoxId
-                        else
-                            Dom.blur filterBoxId
-                   ]
+            model => [ toggleFocus filterBoxId focusing ]
 
-        InitiateEdit matId field (Selector s) ->
-            { model | toEdit = Just ( matId, field ) }
-                => [ Ports.queryDOMOrigin s ]
+        InitiateEdit matId field selector ->
+            model => [ Ports.queryEditorDOMRect matId field selector ]
 
-        StartEdit domRect ->
-            case toEdit of
-                Just ( matId, field ) ->
-                    { model
-                        | toEdit = Nothing
-                        , editing = Just (EditState matId field domRect)
-                        , selectedSuggestion = Nothing
-                    }
-                        => if field.name_ == "author_email" then
-                            [ listMembers, Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
-                           else
-                            [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
-
-                Nothing ->
-                    -- Should not happen
-                    model => []
+        StartEdit matId field domRect ->
+            { model | editing = Just (EditState matId field domRect), selectedSuggestion = Nothing }
+                => (extraCmdsByEditingField field ++ [ toggleFocus (inputId matId field) True ])
 
         InputEdit ({ field } as editState) newEditable ->
-            { model
-                | editing = Just { editState | field = { field | value_ = newEditable } }
-                , selectedSuggestion = Nothing
-            }
+            { model | editing = Just { editState | field = { field | value_ = newEditable } }, selectedSuggestion = Nothing }
                 => []
 
         CompleteEdit ({ matId, field } as editState) newEditable ->
-            { model
-                | editing = Just { editState | field = { field | value_ = newEditable } }
-                , selectedSuggestion = Nothing
-            }
-                => [ Dom.focus (inputId matId field) |> Task.attempt (always NoOp) ]
+            { model | editing = Just { editState | field = { field | value_ = newEditable } }, selectedSuggestion = Nothing }
+                => [ toggleFocus (inputId matId field) True ]
 
         SelectSuggestion index ->
             { model | selectedSuggestion = Just index } => []
@@ -224,6 +149,16 @@ maybeMatchingIdImpl ( id, { title, author_email } ) word maybeId =
                     author_email
 
 
+resetPagesAtWindowSizeThresholds : Model -> Window.Size -> Model
+resetPagesAtWindowSizeThresholds ({ windowSize } as model) newSize =
+    if crossedMobileMax windowSize newSize then
+        { model | windowSize = newSize, carouselPage = 0, tablePage = 0 }
+    else if crossedSingleColumnMax windowSize newSize then
+        { model | windowSize = newSize, carouselPage = 0 }
+    else
+        { model | windowSize = newSize }
+
+
 crossedMobileMax : Window.Size -> Window.Size -> Bool
 crossedMobileMax oldSize newSize =
     (oldSize.width <= mobileMaxWidthPx && newSize.width > mobileMaxWidthPx)
@@ -234,3 +169,20 @@ crossedSingleColumnMax : Window.Size -> Window.Size -> Bool
 crossedSingleColumnMax oldSize newSize =
     (oldSize.width <= singleColumnMaxWidthPx && newSize.width > singleColumnMaxWidthPx)
         || (oldSize.width > singleColumnMaxWidthPx && newSize.width <= singleColumnMaxWidthPx)
+
+
+extraCmdsByEditingField : Field -> List (Cmd Msg)
+extraCmdsByEditingField { name_ } =
+    if name_ == "author_email" then
+        [ listMembers ]
+    else
+        []
+
+
+toggleFocus : String -> Bool -> Cmd Msg
+toggleFocus elementId focusing =
+    Task.attempt (always NoOp) <|
+        if focusing then
+            Dom.focus elementId
+        else
+            Dom.blur elementId

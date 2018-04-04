@@ -39,9 +39,9 @@ tableNav max tablePage =
         , attribute "role" "navigation"
         , attribute "aria-label" "pagination"
         ]
-        [ button (withDisabled (tablePage <= 0) [ class "pagination-previous", onClick TablePrev ])
+        [ button (withDisabled (tablePage <= 0) [ onClick (SetTablePage (tablePage - 1)) ] [ class "pagination-previous" ])
             [ i [ class "fa fa-chevron-left" ] [] ]
-        , button (withDisabled (tablePage >= max - 1) [ class "pagination-next", onClick TableNext ])
+        , button (withDisabled (tablePage >= max - 1) [ onClick (SetTablePage (tablePage + 1)) ] [ class "pagination-next" ])
             [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 

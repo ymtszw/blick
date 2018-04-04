@@ -25,7 +25,6 @@ init flags location =
             fromFlags flags
     in
         { materials = ms
-        , toEdit = Nothing
         , editing = Nothing
         , selectedSuggestion = Nothing
         , matches = []
@@ -67,10 +66,7 @@ subscriptions model =
     Sub.batch
         [ resizes WindowSize
         , Keybinds.subscriptions model
-
-        -- Ideally, we want to subscribe `listenDOMOrigin` only when `queryDOMOrigin` is performed,
-        -- though (inconveniently,) port response from JS coming faster than this function is evaluated again.
-        , Ports.listenDOMOrigin StartEdit
+        , Ports.listenEditorDOMRect StartEdit
         ]
 
 

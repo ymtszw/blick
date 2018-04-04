@@ -40,12 +40,12 @@ onWithoutPropagate event dec =
         dec
 
 
-withDisabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg)
-withDisabled disabled_ others =
+withDisabled : Bool -> List (Html.Attribute msg) -> List (Html.Attribute msg) -> List (Html.Attribute msg)
+withDisabled disabled_ attrsWhenEnabled otherAttrs =
     if disabled_ then
-        attribute "disabled" "disabled" :: others
+        attribute "disabled" "disabled" :: otherAttrs
     else
-        others
+        attrsWhenEnabled ++ otherAttrs
 
 
 authorTag : Selector -> MatId -> Maybe Email -> Html Msg

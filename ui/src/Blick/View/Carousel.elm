@@ -54,9 +54,9 @@ carouselNav max carouselPage =
         , attribute "role" "navigation"
         , attribute "aria-label" "pagination"
         ]
-        [ button (withDisabled (carouselPage <= 0) [ class "pagination-previous", onClick CarouselPrev ])
+        [ button (withDisabled (carouselPage <= 0) [ onClick (SetCarouselPage (carouselPage - 1)) ] [ class "pagination-previous" ])
             [ i [ class "fa fa-chevron-left" ] [] ]
-        , button (withDisabled (carouselPage >= max - 1) [ class "pagination-next", onClick CarouselNext ])
+        , button (withDisabled (carouselPage >= max - 1) [ onClick (SetCarouselPage (carouselPage + 1)) ] [ class "pagination-next" ])
             [ i [ class "fa fa-chevron-right" ] [] ]
         ]
 

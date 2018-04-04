@@ -66,15 +66,13 @@ type Msg
     | CloseErr Time
     | PurgeErr Time
     | ClientRes (Result H.Error Success)
-    | CarouselNext
-    | CarouselPrev
-    | TableNext
-    | TablePrev
+    | SetCarouselPage Int
+    | SetTablePage Int
     | InputFilter String
     | SetFilterFocus Bool
     | FocusFilter Bool
     | InitiateEdit MatId Field Selector
-    | StartEdit DOMRect
+    | StartEdit MatId Field DOMRect
     | InputEdit EditState Editable
     | CompleteEdit EditState Editable
     | SelectSuggestion Int
@@ -135,7 +133,6 @@ type alias DOMRect =
 
 type alias Model =
     { materials : MaterialDict
-    , toEdit : Maybe ( MatId, Field )
     , editing : Maybe EditState
     , selectedSuggestion : Maybe Int
     , matches : List MatId
