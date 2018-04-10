@@ -40,7 +40,7 @@ filterInput matches value_ =
     input
         [ type_ "text"
         , placeholder "OR filter"
-        , onInput InputFilter
+        , onInput (DebLift 6 << InputFilter)
         , onFocus (SetFilterFocus True)
         , onBlur (SetFilterFocus False)
         , class <| "input is-flat" ++ filterInputColor matches value_
