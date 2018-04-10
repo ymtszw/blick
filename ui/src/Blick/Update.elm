@@ -69,6 +69,15 @@ update msg ({ materials, filter, exceptions } as model) =
             { model | matches = findMatchingIds materials input, filter = { filter | value_ = input }, carouselPage = 0, tablePage = 0 }
                 => []
 
+        DebLift ticksToHold msg ->
+            { model | deb = Excited ticksToHold msg } => []
+
+        DebTick remainingTicks msg ->
+            { model | deb = Excited remainingTicks msg } => []
+
+        DebDrop ->
+            { model | deb = Grounded } => []
+
         SetFilterFocus focused ->
             { model | filter = { filter | focused = focused } } => []
 

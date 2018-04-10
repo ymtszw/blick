@@ -19,6 +19,7 @@ module Blick.Type
         , Email(Email)
         , Type_(..)
         , Exception
+        , Deb(..)
         , descendantOf
         , inputId
         , dictSize
@@ -71,6 +72,9 @@ type Msg
     | InputFilter String
     | SetFilterFocus Bool
     | FocusFilter Bool
+    | DebLift Int Msg
+    | DebTick Int Msg
+    | DebDrop
     | InitiateEdit MatId Field Selector
     | StartEdit MatId Field DOMRect
     | InputEdit EditState Editable
@@ -143,7 +147,13 @@ type alias Model =
     , route : Route
     , exceptions : Dict Time Exception
     , windowSize : Window.Size
+    , deb : Deb
     }
+
+
+type Deb
+    = Grounded
+    | Excited Int Msg
 
 
 type alias FilterState =

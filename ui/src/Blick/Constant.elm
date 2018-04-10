@@ -17,6 +17,7 @@ module Blick.Constant
         , orgDomain
         , atOrgDomain
         , maxSuggestions
+        , debTick
         )
 
 import Time
@@ -127,3 +128,8 @@ atOrgDomain =
 maxSuggestions : Int
 maxSuggestions =
     10
+
+
+debTick : Time.Time
+debTick =
+    100 * Time.millisecond

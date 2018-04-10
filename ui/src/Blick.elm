@@ -1,12 +1,14 @@
 module Blick exposing (main)
 
 import Dict
+import Time
 import Json.Decode as D
 import Json.Decode.Extra exposing ((|:))
 import Navigation exposing (Location)
 import Window exposing (resizes)
 import Rocket exposing ((=>))
 import Blick.Type exposing (..)
+import Blick.Constant exposing (debTick)
 import Blick.Router exposing (route)
 import Blick.Ports as Ports
 import Blick.Keybinds as Keybinds
@@ -35,6 +37,7 @@ init flags location =
         , route = route location
         , exceptions = Dict.empty
         , windowSize = ws
+        , deb = Grounded
         }
             => [ listMaterials ]
 
@@ -67,7 +70,24 @@ subscriptions model =
         [ resizes WindowSize
         , Keybinds.subscriptions model
         , Ports.listenEditorDOMRect StartEdit
+        , debounceSub model
         ]
+
+
+debounceSub : Model -> Sub Msg
+debounceSub { deb } =
+    case deb of
+        Grounded ->
+            Sub.none
+
+        Excited 0 msg ->
+            Sub.batch
+                [ Time.every debTick (always DebDrop)
+                , Time.every debTick (always msg)
+                ]
+
+        Excited remainingTicks msg ->
+            Time.every debTick <| \_ -> DebTick (remainingTicks - 1) msg
 
 
 
