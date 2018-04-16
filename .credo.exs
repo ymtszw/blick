@@ -1,1 +1,1 @@
-deps/solomon/.credo.exs
+deps/solomon_acs/.credo.exs
