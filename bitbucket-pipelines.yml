@@ -1,7 +1,0 @@
-# Use atlassian/default-image
-pipelines:
-  branches:
-    master:
-      - step:
-          script:
-            - ./ss/deploy
