@@ -15,9 +15,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://gitbucket.tok.access-company.com:8080/git/Yu.Matsuzawa/blick.git"
+    "url": "https://github.com/ymtszw/blick.git"
   },
-  "author": "aYuMatsuzawa",
+  "author": "ymtszw",
   "private": true,
   "devDependencies": {
     "babel-core": "^6.26.0",

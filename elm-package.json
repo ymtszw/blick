@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Blick wall with whole lota slides on it",
-    "repository": "https://github.com/user/project.git",
+    "repository": "https://github.com/ymtszw/blick.git",
     "license": "BSD3",
     "source-directories": [
         "ui/src"

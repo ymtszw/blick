@@ -11,7 +11,7 @@
     "try:refresh": "heroku run --app blick-ss-refresh node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "aYuMatsuzawa",
+  "author": "ymtszw",
   "private": true,
   "dependencies": {
     "puppeteer": "^1.0.0",
