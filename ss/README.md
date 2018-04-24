@@ -44,6 +44,8 @@ heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encry
 サブディレクトリをデプロイするために、`git-subtree`を使っていたが、
 GitHub移行に際して[timanovsky/subdir-heroku-buildpack](https://github.com/timanovsky/subdir-heroku-buildpack)にしてみた。
 
+HerokuのUIからdeploy設定し、GitHub連携を選ぶ。Repositoryをセットして"Enable auto deploy"を設定しておけば、master pushでdeployされる。
+
 `REFRESH=true`付きのジョブについてはapp名を`blick-ss-refresh`と読み替える。
 また、`config:set`の際は`REFRESH=true`をつける。
 
