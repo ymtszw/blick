@@ -36,6 +36,7 @@ Herokuでは[Heroku Scheduler]を使って、2通りのジョブを動かす。
 ```
 heroku apps:add blick-ss-init
 heroku buildpacks:set --app=blick-ss-init https://github.com/timanovsky/subdir-heroku-buildpack
+heroku buildpacks:add --app=blick-ss-init heroku/nodejs
 heroku buildpacks:add --app=blick-ss-init https://github.com/CoffeeAndCode/puppeteer-heroku-buildpack
 heroku addons:add --app=blick-ss-init scheduler:standard
 heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encrypted_worker_key> PROJECT_PATH=ss/
