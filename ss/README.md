@@ -35,23 +35,14 @@ Herokuでは[Heroku Scheduler]を使って、2通りのジョブを動かす。
 
 ```
 heroku apps:add blick-ss-init
+heroku buildpacks:set --app=blick-ss-init https://github.com/timanovsky/subdir-heroku-buildpack
 heroku buildpacks:add --app=blick-ss-init https://github.com/CoffeeAndCode/puppeteer-heroku-buildpack
 heroku addons:add --app=blick-ss-init scheduler:standard
-heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encrypted_worker_key>
+heroku config:set --app=blick-ss-init PROMISES=1 WORKER_ENV=cloud API_KEY=<encrypted_worker_key> PROJECT_PATH=ss/
 ```
 
-サブディレクトリをデプロイするために、`git-subtree`を使う。プロジェクトrootで、
-
-```
-git push --force git@heroku.com:blick-ss-init.git $(git subtree split --prefix=ss --branch heroku):master
-(./deploy)
-```
-
-`git-remote`を追加しておいてもいいが、このコマンドを直接打つことはまずないので`./deploy`スクリプトに埋め込んでしまう。
-BitBucket PipelinesにHerokuへのデプロイをやらせるためにも、この方式は楽。
-また、単に`subtree push`だと`--force`オプションがないため、手元から何度かデプロイを試したあと、
-BitBucketやJenkinsに自動デプロイさせようとするとリジェクトされる。
-(`subtree`までレポジトリ間で共有するのは正直面倒なので`force push`で楽したい)
+サブディレクトリをデプロイするために、`git-subtree`を使っていたが、
+GitHub移行に際して[timanovsky/subdir-heroku-buildpack](https://github.com/timanovsky/subdir-heroku-buildpack)にしてみた。
 
 `REFRESH=true`付きのジョブについてはapp名を`blick-ss-refresh`と読み替える。
 また、`config:set`の際は`REFRESH=true`をつける。
