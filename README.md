@@ -19,8 +19,9 @@ It aims to provide centralized hub for browsing materials of internal tech-meeti
 ## Dev
 
 0. Install [asdf](https://github.com/asdf-vm/asdf) and Erlang, Elixir, Nodejs plugins
-1. `git clone http://github.com/ymtszw/blick.git`
-2. `asdf install`
-3. `npm install`
-4. `mix deps.get; mix deps.get`
-5. `npm start`
+0. Install `yarn`
+0. `git clone http://github.com/ymtszw/blick.git`
+0. `asdf install`
+0. `mix deps.get; mix deps.get`
+0. `yarn`
+0. `yarn start`
