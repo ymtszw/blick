@@ -18,7 +18,7 @@ defmodule Blick.Controller.Admin do
       admin: admin,
       authorize_url: authorize_url!(conn.context.start_time)
     ]
-    render(conn, 200, "authorize", params, layout: :admin)
+    Conn.render(conn, 200, "authorize", params, layout: :admin)
   end
 
   defp authorize_url!(start_time) do
@@ -47,7 +47,7 @@ defmodule Blick.Controller.Admin do
     case conn.request.headers["x-forwarded-host"] do
       "localhost:8079" <> _ ->
         # Via webpack-dev-server proxy; rerouting to gear host
-        redirect(conn, "http://blick.localhost:8080" <> Blick.Router.callback_path() <> "?" <> URI.encode_query(conn.request.query_params))
+        Conn.redirect(conn, "http://blick.localhost:8080" <> Blick.Router.callback_path() <> "?" <> URI.encode_query(conn.request.query_params))
       _ ->
         authorize_callback_impl(conn)
     end
@@ -59,7 +59,7 @@ defmodule Blick.Controller.Admin do
         handle_callback_params(conn, conn.request.query_params)
       {:error, _} = e ->
         Blick.Logger.debug("Invalid request to callback path. Got: " <> inspect(e))
-        redirect(conn, Blick.Router.authorize_path())
+        Conn.redirect(conn, Blick.Router.authorize_path())
     end
   end
 
@@ -86,14 +86,14 @@ defmodule Blick.Controller.Admin do
         render_with_params(conn, admin_token.data.owner)
       otherwise ->
         Blick.Logger.error("Something went wrong on Admin authorization. Got: " <> inspect(otherwise))
-        redirect(conn, Blick.Router.authorize_path())
+        Conn.redirect(conn, Blick.Router.authorize_path())
     end
   end
   defp handle_callback_params(conn, %{"error" => "access_denied"}) do
-    redirect(conn, Blick.Router.authorize_path())
+    Conn.redirect(conn, Blick.Router.authorize_path())
   end
   defp handle_callback_params(conn, params) do
     Blick.Logger.debug("Unusual response params from Google. Got: " <> inspect(params))
-    redirect(conn, Blick.Router.authorize_path())
+    Conn.redirect(conn, Blick.Router.authorize_path())
   end
 end

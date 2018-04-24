@@ -20,9 +20,9 @@ defmodule Blick.Controller.Screenshot do
       end
     case Repo.Material.retrieve_list(query, key) do
       {:ok, materials} ->
-        json(conn, 200, %{materials: materials})
+        Conn.json(conn, 200, %{materials: materials})
       {:error, %_error{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
     end
   end
 
@@ -32,9 +32,9 @@ defmodule Blick.Controller.Screenshot do
   def request_upload_start(%Conn{request: req, assigns: %{key: key}} = conn) do
     case upsert(req.path_matches.id, req.body["size"], key) do
       {:ok, %Screenshot{} = ss} ->
-        json(conn, 200, ss)
+        Conn.json(conn, 200, ss)
       {:error, %_error{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
     end
   end
 
@@ -51,6 +51,6 @@ defmodule Blick.Controller.Screenshot do
 
   def notify_upload_finish(%Conn{request: req, assigns: %{key: key}} = conn) do
     ScreenshotSetter.exec(req.path_matches.id, key)
-    put_status(conn, 204)
+    Conn.put_status(conn, 204)
   end
 end

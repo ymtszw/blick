@@ -8,7 +8,7 @@ defmodule Blick.Controller.Root do
   plug Blick.Plug.Auth, :ensure_admin_authorization, [], except: [:public_login]
 
   def public_login(conn) do
-    json(conn, 403, %{"error" => "Access from public network is under development"})
+    Conn.json(conn, 403, %{"error" => "Access from public network is under development"})
   end
 
   def index(conn) do
@@ -17,7 +17,7 @@ defmodule Blick.Controller.Root do
 
   defp render_with_20_materials(%Conn{assigns: %{key: key}} = conn, clipped?, pair \\ %{}) do
     document_class = if clipped?, do: "is-clipped", else: ""
-    render(conn, 200, "root", [
+    Conn.render(conn, 200, "root", [
       document_class: document_class,
       title: "Blick",
       description: "ACCESSの勉強会資料ポータルサイト",
@@ -41,7 +41,7 @@ defmodule Blick.Controller.Root do
       show_impl(conn, id_in_path)
     else
       # Handles favicon.ico, robot.txt, etc...
-      put_status(conn, 404)
+      Conn.put_status(conn, 404)
     end
   end
 
@@ -54,5 +54,5 @@ defmodule Blick.Controller.Root do
     end
   end
 
-  def fallback(conn), do: redirect(conn, "/")
+  def fallback(conn), do: Conn.redirect(conn, "/")
 end

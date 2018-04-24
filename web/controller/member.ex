@@ -11,10 +11,10 @@ defmodule Blick.Controller.Member do
     case Repo.MemberCache.retrieve_with_refresh(key) do
       {:ok, %MemberCache{data: %MemberCache.Data{list: members}}} ->
         conn
-        |> put_resp_header("cache-control", "private, max-age=#{@max_age}")
-        |> json(200, %{members: members})
+        |> Conn.put_resp_header("cache-control", "private, max-age=#{@max_age}")
+        |> Conn.json(200, %{members: members})
       {:error, %_error_struct{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
     end
   end
 end

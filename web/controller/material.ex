@@ -12,18 +12,18 @@ defmodule Blick.Controller.Material do
     query = Repo.Material.only_included(%{})
     case Repo.Material.retrieve_list(query, key) do
       {:ok, ms} ->
-        json(conn, 200, %{"materials" => Map.new(ms, fn m -> {m._id, m} end)}) # Pass in KVS
+        Conn.json(conn, 200, %{"materials" => Map.new(ms, fn m -> {m._id, m} end)}) # Pass in KVS
       {:error, %_error{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
     end
   end
 
   defun get(%Conn{request: req, assigns: %{key: key}} = conn) :: Conn.t do
     case Repo.Material.retrieve_with_refresh(req.path_matches.id, key, conn.context.start_time) do
       {:ok, %Material{} = material} ->
-        json(conn, 200, material)
+        Conn.json(conn, 200, material)
       {:error, %_error{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
     end
   end
 
@@ -45,11 +45,11 @@ defmodule Blick.Controller.Material do
     end
     |> case do
       {:ok, %Material{} = material} ->
-        json(conn, 200, material)
+        Conn.json(conn, 200, material)
       {:error, %_error{status_code: code, body: body}} ->
-        json(conn, code, body)
+        Conn.json(conn, code, body)
       {:error, _} ->
-        json(conn, 400, %{error: "BadRequest"})
+        Conn.json(conn, 400, %{error: "BadRequest"})
     end
   end
 

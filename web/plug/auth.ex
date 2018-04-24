@@ -18,11 +18,11 @@ defmodule Blick.Plug.Auth do
     authenticate_or_identify_sender(conn0, fn conn1 ->
       case sender_identity(conn1.request.sender) do
         :g2g ->
-          json(conn1, 403, %{error: "g2g request is forbidden"})
+          Conn.json(conn1, 403, %{error: "g2g request is forbidden"})
         :intra ->
-          conn1 |> assign(:from, :intra) |> assign(:key, Blick.Dodai.root_key())
+          conn1 |> Conn.assign(:from, :intra) |> Conn.assign(:key, Blick.Dodai.root_key())
         :public ->
-          redirect(conn1, Blick.Router.public_login_path())
+          Conn.redirect(conn1, Blick.Router.public_login_path())
       end
     end)
   end
@@ -41,9 +41,9 @@ defmodule Blick.Plug.Auth do
     worker_key = Blick.get_env("worker_key")
     case Blick.decrypt_base64(api_key) do
       {:ok, ^worker_key} ->
-        conn |> assign(:from, :worker) |> assign(:key, Blick.Dodai.root_key())
+        conn |> Conn.assign(:from, :worker) |> Conn.assign(:key, Blick.Dodai.root_key())
       _otherwise ->
-        json(conn, 401, %{error: "Unauthorized"})
+        Conn.json(conn, 401, %{error: "Unauthorized"})
     end
   end
 
@@ -82,9 +82,9 @@ defmodule Blick.Plug.Auth do
   """
   def ensure_admin_authorization(conn, _opts) do
     if admin() do
-      assign(conn, :authorized?, true)
+      Conn.assign(conn, :authorized?, true)
     else
-      redirect(conn, Blick.Router.authorize_path())
+      Conn.redirect(conn, Blick.Router.authorize_path())
     end
   end
 
