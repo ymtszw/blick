@@ -7,6 +7,25 @@ Thumbnail APIを持っていないサービスに存在する資料のScreenshot
 
 [puppeteer]: https://github.com/GoogleChrome/puppeteer
 
+## As CLI
+
+単一のサイトをrenderしてSSを撮るCLIとしても使える。
+
+```
+cd ss/
+asdf install # nodejs 8.9.4
+node index.js 'https://github.com/ymtszw/blick'
+node index.js 'https://github.com/ymtszw/blick' ~/path/to/output.png
+```
+
+![cli](cli_example.png)
+
+- `imgcat`という名前で画像をterminal上にプリントするCLIが入っている場合は、上記画像のようにプレビューできる
+    - iTerm2なら[こちら](https://www.iterm2.com/documentation-images.html)から
+    - ほかのterminalを使用している場合でも、似たようなCLIはあるはず
+- GitHubやQiitaでは上記画像のように特定の（それっぽい）要素部分にフォーカスして撮影する
+- それ以外のサイトは単に最上部を撮る。アスペクト比は16:9固定。フォーマットはpng固定。
+
 ## 認証
 
 Blick gearは`worker_key`という固定文字列の認証鍵をgear configに持っている。
