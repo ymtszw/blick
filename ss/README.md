@@ -24,7 +24,7 @@ node index.js 'https://github.com/ymtszw/blick' ~/path/to/output.png
     - iTerm2なら[こちら](https://www.iterm2.com/documentation-images.html)から
     - ほかのterminalを使用している場合でも、似たようなCLIはあるはず
 - GitHubやQiitaでは上記画像のように特定の（それっぽい）要素部分にフォーカスして撮影する
-- それ以外のサイトは単に最上部を撮る。アスペクト比は16:9固定。フォーマットはpng固定。
+- それ以外のサイトは単に最上部から撮る。CLIの場合node全体を撮影する（クローラー状態ではアスペクト比16:9固定）。フォーマットはpng固定。
 
 ## 認証
 
