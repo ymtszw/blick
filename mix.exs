@@ -1,4 +1,4 @@
-solomon_instance_dep = {:solomon_acs, [git: "git@github.com:access-company/solomon_acs.git"]}
+instance_dep = {:solomon_acs, [git: "git@github.com:access-company/solomon_acs.git"]}
 
 try do
   parent_dir = Path.expand("..", __DIR__)
@@ -11,27 +11,25 @@ try do
 
   defmodule Blick.Mixfile do
     use Solomon.GearProject, [
-      solomon_instance_dep: solomon_instance_dep,
-      source_url:           "https://bitbucket.org/aYuMatsuzawa/blick",
+      solomon_instance_dep: instance_dep,
+      source_url:           "https://github.com/ymtszw/blick",
     ]
 
     defp gear_name(), do: :blick
     defp version()  , do: "0.0.1"
     defp gear_deps() do
-      [
-        {:gear_lib, [git: "git@github.com:access-company/gear_lib.git"]},
-      ]
+      []
     end
   end
 rescue
   _any_error ->
-    defmodule SolomonGearInitialSetup.Mixfile do
+    defmodule AntikytheraGearInitialSetup.Mixfile do
       use Mix.Project
 
       def project() do
         [
           app:  :just_to_fetch_solomon_instance_as_a_dependency,
-          deps: [unquote(solomon_instance_dep)],
+          deps: [unquote(instance_dep)],
         ]
       end
     end
