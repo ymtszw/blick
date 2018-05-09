@@ -4,7 +4,7 @@ defmodule Blick.Controller.Admin do
   use SolomonLib.Controller
   alias Croma.Result, as: R
   alias SolomonLib.Time
-  alias GearLib.Oauth2
+  alias AntikytheraAcs.Oauth2
   alias Blick.Repo
 
   plug Blick.Plug.Auth, :authenticate_by_sender, []

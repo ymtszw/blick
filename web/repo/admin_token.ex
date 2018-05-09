@@ -10,8 +10,8 @@ defmodule Blick.Repo.AdminToken do
 
   alias OAuth2.AccessToken
   alias SolomonLib.Time
-  alias GearLib.Oauth2
-  alias GearLib.Oauth2.Provider.Google
+  alias AntikytheraAcs.Oauth2
+  alias AntikytheraAcs.Oauth2.Provider.Google
   alias Blick.SecretString, as: SS
   alias Blick.Dodai
   alias Blick.Model.AdminToken
