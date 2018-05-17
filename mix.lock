@@ -1,5 +1,5 @@
 %{"antikythera": {:git, "git@github.com:access-company/antikythera.git", "67ba650c7885eee89ec672d147f1d2c469916f6d", [ref: "67ba650c7885eee89ec672d147f1d2c469916f6d"]},
-  "antikythera_acs": {:git, "git@github.com:access-company/antikythera_acs.git", "8fe6f0203f06673057189feb6547e9d025b2eb45", []},
+  "antikythera_acs": {:git, "git@github.com:access-company/antikythera_acs.git", "e64d120a03d0ea6c3c9a459d490f473234576795", []},
   "antikythera_aws": {:git, "git@github.com:access-company/antikythera_aws.git", "7206bc138beda7338ba8946541876e646ee4a705", [ref: "7206bc138beda7338ba8946541876e646ee4a705"]},
   "bbmustache": {:hex, :bbmustache, "1.0.4", "7ba94f971c5afd7b6617918a4bb74705e36cab36eb84b19b6a1b7ee06427aa38", [:rebar], [], "hexpm"},
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
