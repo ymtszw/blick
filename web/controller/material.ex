@@ -2,7 +2,7 @@ use Croma
 
 defmodule Blick.Controller.Material do
   alias Croma.Result, as: R
-  use SolomonLib.Controller
+  use Antikythera.Controller
   alias Blick.Repo
   alias Blick.Model.Material
 

@@ -1,8 +1,8 @@
 use Croma
 
 defmodule Blick.Plug.Auth do
-  use SolomonLib.Controller
-  alias SolomonLib.IpAddress.V4
+  use Antikythera.Controller
+  alias Antikythera.IpAddress.V4
 
   @doc """
   Authenticate requests by their sender.
@@ -47,7 +47,7 @@ defmodule Blick.Plug.Auth do
     end
   end
 
-  defunp sender_identity(sender :: SolomonLib.Request.Sender.t) :: :intra | :public | :g2g do
+  defunp sender_identity(sender :: Antikythera.Request.Sender.t) :: :intra | :public | :g2g do
     {:web, ip_str} ->
       case V4.parse(ip_str) do
         {:ok, ip} ->
@@ -59,8 +59,8 @@ defmodule Blick.Plug.Auth do
       :g2g
   end
 
-  if SolomonLib.Env.compiling_for_cloud?() do
-    @intra_ranges SolomonAcs.IpAddress.Access.ranges() -- [V4.parse_range!("221.112.40.64/29")] # Removing visitor/artifact/proxy
+  if Antikythera.Env.compiling_for_cloud?() do
+    @intra_ranges AntikytheraAcs.IpAddress.Access.ranges() -- [V4.parse_range!("221.112.40.64/29")] # Removing visitor/artifact/proxy
     defp intra_or_public(ip) do
       if Enum.any?(@intra_ranges, &V4.range_include?(&1, ip)) do
         :intra
@@ -98,6 +98,6 @@ defmodule Blick.Plug.Auth do
   # Helper
 
   def generate_api_key(worker_key, encryption_key) do
-    worker_key |> SolomonLib.Crypto.Aes.ctr128_encrypt(encryption_key) |> Base.encode64()
+    worker_key |> Antikythera.Crypto.Aes.ctr128_encrypt(encryption_key) |> Base.encode64()
   end
 end

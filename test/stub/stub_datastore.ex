@@ -3,8 +3,8 @@ use Croma
 defmodule StubDatastore do
   alias Croma.Result, as: R
   alias Dodai.{Client, GroupId, CollectionName}
-  alias SolomonAcs.Dodai.Repo
-  alias SolomonAcs.Dodai.Repo.Datastore, as: RD
+  alias AntikytheraAcs.Dodai.Repo
+  alias AntikytheraAcs.Dodai.Repo.Datastore, as: RD
 
   defun retrieve_list(_list_action     :: RD.list_action_t,
                       _key             :: String.t,

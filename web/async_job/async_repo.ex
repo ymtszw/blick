@@ -1,5 +1,5 @@
 defmodule Blick.AsyncJob.AsyncRepo do
-  use SolomonLib.AsyncJob
+  use Antikythera.AsyncJob
   alias Blick.Repo
 
   @impl true

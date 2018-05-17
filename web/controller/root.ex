@@ -1,6 +1,6 @@
 defmodule Blick.Controller.Root do
   alias Croma.Result, as: R
-  use SolomonLib.Controller
+  use Antikythera.Controller
   alias Blick.Repo
   alias Blick.Model.Material
 
@@ -21,7 +21,7 @@ defmodule Blick.Controller.Root do
       document_class: document_class,
       title: "Blick",
       description: "ACCESSの勉強会資料ポータルサイト",
-      url: SolomonLib.Env.default_base_url(:blick),
+      url: Antikythera.Env.default_base_url(:blick),
       thumbnail: Blick.Asset.url("img/blick_480.png"),
       flags: first_20_in_kvs(key) |> Map.merge(pair),
     ])

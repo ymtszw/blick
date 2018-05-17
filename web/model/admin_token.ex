@@ -1,18 +1,18 @@
 use Croma
 
 defmodule Blick.Model.AdminToken do
-  alias SolomonLib.Time
+  alias Antikythera.Time
 
   @id "global_admin_token"
   def id(), do: @id
 
-  use SolomonAcs.Dodai.Model.Datastore, [
+  use AntikytheraAcs.Dodai.Model.Datastore, [
     id_pattern: ~r/\A#{@id}\Z/, # There can be only one AdminToken
     data_fields: [
       access_token: Blick.SecretString,
       refresh_token: Blick.SecretString,
-      expires_at: SolomonLib.Time,
-      owner: SolomonLib.Email,
+      expires_at: Antikythera.Time,
+      owner: Antikythera.Email,
     ],
   ]
 

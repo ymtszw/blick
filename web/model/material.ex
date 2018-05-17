@@ -2,7 +2,7 @@ use Croma
 
 defmodule Blick.Model.Material do
   import Croma.TypeGen, only: [nilable: 1]
-  alias SolomonLib.Url
+  alias Antikythera.Url
 
   defmodule Type do
     use Croma.SubtypeOfAtom, values: [
@@ -20,14 +20,14 @@ defmodule Blick.Model.Material do
     title: Croma.String,
     url: Url,
     thumbnail_url: nilable(Url),
-    created_time: nilable(SolomonLib.Time),
-    author_email: nilable(SolomonLib.Email),
+    created_time: nilable(Antikythera.Time),
+    author_email: nilable(Antikythera.Email),
     type: Type,
     public: {Croma.Boolean, default: false},   # Indicates the material is publicly viewable, in terms of authorization and contents; TODO use section
     excluded: {Croma.Boolean, default: false}, # Indicates the material is collected but manually excluded for reasons; TODO use section
     exclude_reason: nilable(Croma.String),
   ]
-  use SolomonAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: @data_fields
+  use AntikytheraAcs.Dodai.Model.Datastore, id_pattern: ~r/\A[A-Z2-7]{26}\Z/, data_fields: @data_fields
 
   def data_fields(), do: @data_fields
 

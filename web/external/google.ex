@@ -2,8 +2,8 @@ use Croma
 
 defmodule Blick.External.Google do
   alias Croma.Result, as: R
-  alias SolomonLib.{Httpc, Url}
-  alias SolomonLib.Http.{Method, Headers, Status}
+  alias Antikythera.{Httpc, Url}
+  alias Antikythera.Http.{Method, Headers, Status}
   alias Blick.Model.AdminToken
 
   @type token_t         :: AdminToken.t | String.t
@@ -110,7 +110,7 @@ defmodule Blick.External.Google do
   @doc """
   Makes batch request.
   """
-  defun batch(api_base_path :: SolomonLib.UnencodedPath.t, token :: token_t, requests :: [multipart_req_t]) :: res_t do
+  defun batch(api_base_path :: Antikythera.UnencodedPath.t, token :: token_t, requests :: [multipart_req_t]) :: res_t do
     _api_base_path, _token, [] ->
       {:error, :empty_requests}
     api_base_path, token, requests ->

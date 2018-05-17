@@ -9,14 +9,14 @@ defmodule Blick.Repo.AdminToken do
   """
 
   alias OAuth2.AccessToken
-  alias SolomonLib.Time
+  alias Antikythera.Time
   alias AntikytheraAcs.Oauth2
   alias AntikytheraAcs.Oauth2.Provider.Google
   alias Blick.SecretString, as: SS
   alias Blick.Dodai
   alias Blick.Model.AdminToken
   alias Blick.External.Google.OpenidConnect
-  use SolomonAcs.Dodai.Repo.Datastore, [
+  use AntikytheraAcs.Dodai.Repo.Datastore, [
     datastore_models: [AdminToken],
     read_permission:  :root,
     write_permission: :root,
@@ -29,7 +29,7 @@ defmodule Blick.Repo.AdminToken do
       AdminToken.Data.new!(%{
         access_token: %{value: at},
         refresh_token: %{value: rt},
-        expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
+        expires_at: Antikythera.Time.from_epoch_milliseconds(ea * 1_000),
         owner: email,
       })
     upsert(%{data: %{"$set" => data}, data_on_insert: data}, AdminToken.id(), Dodai.root_key())
@@ -66,7 +66,7 @@ defmodule Blick.Repo.AdminToken do
       %{
         access_token: %SS{value: at},
         refresh_token: %SS{value: rt},
-        expires_at: SolomonLib.Time.from_epoch_milliseconds(ea * 1_000),
+        expires_at: Antikythera.Time.from_epoch_milliseconds(ea * 1_000),
       }
     update(%{data: %{"$set" => data}}, AdminToken.id(), Dodai.root_key())
   end
@@ -100,8 +100,8 @@ defmodule Blick.Repo.AdminToken do
 
   # Internals
 
-  if SolomonLib.Env.compiling_for_cloud?() do
-    defp redirect_url(), do: SolomonLib.Env.default_base_url(:blick) <> Blick.Router.callback_path()
+  if Antikythera.Env.compiling_for_cloud?() do
+    defp redirect_url(), do: Antikythera.Env.default_base_url(:blick) <> Blick.Router.callback_path()
   else
     # Google only allows "http://localhost" for local development.
     # webpack-dev-server's (http-proxy-middleware's) proxy function will redirect to gear

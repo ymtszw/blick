@@ -3,7 +3,7 @@ defmodule StubAdminTokenRepo do
   Stub of `Blick.Repo.AdminToken`.
   """
 
-  alias SolomonLib.Time
+  alias Antikythera.Time
   alias Blick.Model.AdminToken
 
   @stub_admin_token %AdminToken{

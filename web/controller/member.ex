@@ -1,5 +1,5 @@
 defmodule Blick.Controller.Member do
-  use SolomonLib.Controller
+  use Antikythera.Controller
   alias Blick.Repo
   alias Blick.Model.MemberCache
 

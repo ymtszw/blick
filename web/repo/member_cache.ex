@@ -4,10 +4,10 @@ defmodule Blick.Model.MemberCache do
   @id "global_cache"
   def id(), do: @id
 
-  use SolomonAcs.Dodai.Model.Datastore, [
+  use AntikytheraAcs.Dodai.Model.Datastore, [
     id_pattern: ~r/\A#{@id}\Z/,
     data_fields: [
-      list: Croma.TypeGen.list_of(SolomonLib.Email)
+      list: Croma.TypeGen.list_of(Antikythera.Email)
     ]
   ]
 end
@@ -18,11 +18,11 @@ defmodule Blick.Repo.MemberCache do
   """
 
   alias Croma.Result, as: R
-  alias SolomonLib.Time
+  alias Antikythera.Time
   alias Blick.Model.MemberCache
   alias Blick.External.Google.Directory.Users
   alias Blick.Repo.AdminToken
-  use SolomonAcs.Dodai.Repo.Datastore, [
+  use AntikytheraAcs.Dodai.Repo.Datastore, [
     datastore_models: [MemberCache],
   ]
 

@@ -1,0 +1,660 @@
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$toChar = function (key) {
+	var _p0 = key;
+	switch (_p0.ctor) {
+		case 'Spacebar':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr(' '));
+		case 'Zero':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('0'));
+		case 'One':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('1'));
+		case 'Two':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('2'));
+		case 'Three':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('3'));
+		case 'Four':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('4'));
+		case 'Five':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('5'));
+		case 'Six':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('6'));
+		case 'Seven':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('7'));
+		case 'Eight':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('8'));
+		case 'Nine':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('9'));
+		case 'A':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('A'));
+		case 'B':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('B'));
+		case 'C':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('C'));
+		case 'D':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('D'));
+		case 'E':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('E'));
+		case 'F':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('F'));
+		case 'G':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('G'));
+		case 'H':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('H'));
+		case 'I':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('I'));
+		case 'J':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('J'));
+		case 'K':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('K'));
+		case 'L':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('L'));
+		case 'M':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('M'));
+		case 'N':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('N'));
+		case 'O':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('O'));
+		case 'P':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('P'));
+		case 'Q':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('Q'));
+		case 'R':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('R'));
+		case 'S':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('S'));
+		case 'T':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('T'));
+		case 'U':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('U'));
+		case 'V':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('V'));
+		case 'W':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('W'));
+		case 'X':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('X'));
+		case 'Y':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('Y'));
+		case 'Z':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('Z'));
+		case 'NumpadZero':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('0'));
+		case 'NumpadOne':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('1'));
+		case 'NumpadTwo':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('2'));
+		case 'NumpadThree':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('3'));
+		case 'NumpadFour':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('4'));
+		case 'NumpadFive':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('5'));
+		case 'NumpadSix':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('6'));
+		case 'NumpadSeven':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('7'));
+		case 'NumpadEight':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('8'));
+		case 'NumpadNine':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('9'));
+		case 'Multiply':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('*'));
+		case 'Add':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('+'));
+		case 'Subtract':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('-'));
+		case 'Divide':
+			return _elm_lang$core$Maybe$Just(
+				_elm_lang$core$Native_Utils.chr('/'));
+		default:
+			return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Unknown = function (a) {
+	return {ctor: 'Unknown', _0: a};
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Ambiguous = function (a) {
+	return {ctor: 'Ambiguous', _0: a};
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Divide = {ctor: 'Divide'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Decimal = {ctor: 'Decimal'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Subtract = {ctor: 'Subtract'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Add = {ctor: 'Add'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Multiply = {ctor: 'Multiply'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadNine = {ctor: 'NumpadNine'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadEight = {ctor: 'NumpadEight'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadSeven = {ctor: 'NumpadSeven'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadSix = {ctor: 'NumpadSix'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadFive = {ctor: 'NumpadFive'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadFour = {ctor: 'NumpadFour'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadThree = {ctor: 'NumpadThree'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadTwo = {ctor: 'NumpadTwo'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadOne = {ctor: 'NumpadOne'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadZero = {ctor: 'NumpadZero'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F12 = {ctor: 'F12'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F11 = {ctor: 'F11'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F10 = {ctor: 'F10'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F9 = {ctor: 'F9'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F8 = {ctor: 'F8'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F7 = {ctor: 'F7'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F6 = {ctor: 'F6'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F5 = {ctor: 'F5'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F4 = {ctor: 'F4'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F3 = {ctor: 'F3'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F2 = {ctor: 'F2'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F1 = {ctor: 'F1'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$ScrollLock = {ctor: 'ScrollLock'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumLock = {ctor: 'NumLock'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$ChromeSearch = {ctor: 'ChromeSearch'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Command = {ctor: 'Command'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Windows = {ctor: 'Windows'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$code = function (key) {
+	var _p1 = key;
+	switch (_p1.ctor) {
+		case 'Backspace':
+			return _elm_lang$core$Maybe$Just(8);
+		case 'Tab':
+			return _elm_lang$core$Maybe$Just(9);
+		case 'Enter':
+			return _elm_lang$core$Maybe$Just(13);
+		case 'Shift':
+			return _elm_lang$core$Maybe$Just(16);
+		case 'Ctrl':
+			return _elm_lang$core$Maybe$Just(17);
+		case 'Alt':
+			return _elm_lang$core$Maybe$Just(18);
+		case 'PauseBreak':
+			return _elm_lang$core$Maybe$Just(19);
+		case 'CapsLock':
+			return _elm_lang$core$Maybe$Just(20);
+		case 'Escape':
+			return _elm_lang$core$Maybe$Just(27);
+		case 'Spacebar':
+			return _elm_lang$core$Maybe$Just(32);
+		case 'PageUp':
+			return _elm_lang$core$Maybe$Just(33);
+		case 'PageDown':
+			return _elm_lang$core$Maybe$Just(34);
+		case 'End':
+			return _elm_lang$core$Maybe$Just(35);
+		case 'Home':
+			return _elm_lang$core$Maybe$Just(36);
+		case 'Left':
+			return _elm_lang$core$Maybe$Just(37);
+		case 'Up':
+			return _elm_lang$core$Maybe$Just(38);
+		case 'Right':
+			return _elm_lang$core$Maybe$Just(39);
+		case 'Down':
+			return _elm_lang$core$Maybe$Just(40);
+		case 'PrintScreen':
+			return _elm_lang$core$Maybe$Just(44);
+		case 'Insert':
+			return _elm_lang$core$Maybe$Just(45);
+		case 'Delete':
+			return _elm_lang$core$Maybe$Just(46);
+		case 'Zero':
+			return _elm_lang$core$Maybe$Just(48);
+		case 'One':
+			return _elm_lang$core$Maybe$Just(49);
+		case 'Two':
+			return _elm_lang$core$Maybe$Just(50);
+		case 'Three':
+			return _elm_lang$core$Maybe$Just(51);
+		case 'Four':
+			return _elm_lang$core$Maybe$Just(52);
+		case 'Five':
+			return _elm_lang$core$Maybe$Just(53);
+		case 'Six':
+			return _elm_lang$core$Maybe$Just(54);
+		case 'Seven':
+			return _elm_lang$core$Maybe$Just(55);
+		case 'Eight':
+			return _elm_lang$core$Maybe$Just(56);
+		case 'Nine':
+			return _elm_lang$core$Maybe$Just(57);
+		case 'A':
+			return _elm_lang$core$Maybe$Just(65);
+		case 'B':
+			return _elm_lang$core$Maybe$Just(66);
+		case 'C':
+			return _elm_lang$core$Maybe$Just(67);
+		case 'D':
+			return _elm_lang$core$Maybe$Just(68);
+		case 'E':
+			return _elm_lang$core$Maybe$Just(69);
+		case 'F':
+			return _elm_lang$core$Maybe$Just(70);
+		case 'G':
+			return _elm_lang$core$Maybe$Just(71);
+		case 'H':
+			return _elm_lang$core$Maybe$Just(72);
+		case 'I':
+			return _elm_lang$core$Maybe$Just(73);
+		case 'J':
+			return _elm_lang$core$Maybe$Just(74);
+		case 'K':
+			return _elm_lang$core$Maybe$Just(75);
+		case 'L':
+			return _elm_lang$core$Maybe$Just(76);
+		case 'M':
+			return _elm_lang$core$Maybe$Just(77);
+		case 'N':
+			return _elm_lang$core$Maybe$Just(78);
+		case 'O':
+			return _elm_lang$core$Maybe$Just(79);
+		case 'P':
+			return _elm_lang$core$Maybe$Just(80);
+		case 'Q':
+			return _elm_lang$core$Maybe$Just(81);
+		case 'R':
+			return _elm_lang$core$Maybe$Just(82);
+		case 'S':
+			return _elm_lang$core$Maybe$Just(83);
+		case 'T':
+			return _elm_lang$core$Maybe$Just(84);
+		case 'U':
+			return _elm_lang$core$Maybe$Just(85);
+		case 'V':
+			return _elm_lang$core$Maybe$Just(86);
+		case 'W':
+			return _elm_lang$core$Maybe$Just(87);
+		case 'X':
+			return _elm_lang$core$Maybe$Just(88);
+		case 'Y':
+			return _elm_lang$core$Maybe$Just(89);
+		case 'Z':
+			return _elm_lang$core$Maybe$Just(90);
+		case 'Ambiguous':
+			return A2(
+				_elm_lang$core$List$all,
+				A2(
+					_elm_lang$core$Basics$flip,
+					_elm_lang$core$List$member,
+					{
+						ctor: '::',
+						_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$Windows,
+						_1: {
+							ctor: '::',
+							_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$Command,
+							_1: {
+								ctor: '::',
+								_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$ChromeSearch,
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_p1._0) ? _elm_lang$core$Maybe$Just(91) : _elm_lang$core$Maybe$Nothing;
+		case 'Windows':
+			return _elm_lang$core$Maybe$Just(91);
+		case 'Command':
+			return _elm_lang$core$Maybe$Just(91);
+		case 'ChromeSearch':
+			return _elm_lang$core$Maybe$Just(91);
+		case 'NumpadZero':
+			return _elm_lang$core$Maybe$Just(96);
+		case 'NumpadOne':
+			return _elm_lang$core$Maybe$Just(97);
+		case 'NumpadTwo':
+			return _elm_lang$core$Maybe$Just(98);
+		case 'NumpadThree':
+			return _elm_lang$core$Maybe$Just(99);
+		case 'NumpadFour':
+			return _elm_lang$core$Maybe$Just(100);
+		case 'NumpadFive':
+			return _elm_lang$core$Maybe$Just(101);
+		case 'NumpadSix':
+			return _elm_lang$core$Maybe$Just(102);
+		case 'NumpadSeven':
+			return _elm_lang$core$Maybe$Just(103);
+		case 'NumpadEight':
+			return _elm_lang$core$Maybe$Just(104);
+		case 'NumpadNine':
+			return _elm_lang$core$Maybe$Just(105);
+		case 'Multiply':
+			return _elm_lang$core$Maybe$Just(106);
+		case 'Add':
+			return _elm_lang$core$Maybe$Just(107);
+		case 'Subtract':
+			return _elm_lang$core$Maybe$Just(109);
+		case 'Decimal':
+			return _elm_lang$core$Maybe$Just(110);
+		case 'Divide':
+			return _elm_lang$core$Maybe$Just(111);
+		case 'F1':
+			return _elm_lang$core$Maybe$Just(112);
+		case 'F2':
+			return _elm_lang$core$Maybe$Just(113);
+		case 'F3':
+			return _elm_lang$core$Maybe$Just(114);
+		case 'F4':
+			return _elm_lang$core$Maybe$Just(115);
+		case 'F5':
+			return _elm_lang$core$Maybe$Just(116);
+		case 'F6':
+			return _elm_lang$core$Maybe$Just(117);
+		case 'F7':
+			return _elm_lang$core$Maybe$Just(118);
+		case 'F8':
+			return _elm_lang$core$Maybe$Just(119);
+		case 'F9':
+			return _elm_lang$core$Maybe$Just(120);
+		case 'F10':
+			return _elm_lang$core$Maybe$Just(121);
+		case 'F11':
+			return _elm_lang$core$Maybe$Just(122);
+		case 'F12':
+			return _elm_lang$core$Maybe$Just(123);
+		case 'NumLock':
+			return _elm_lang$core$Maybe$Just(144);
+		case 'ScrollLock':
+			return _elm_lang$core$Maybe$Just(145);
+		default:
+			return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$PauseBreak = {ctor: 'PauseBreak'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$PrintScreen = {ctor: 'PrintScreen'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Insert = {ctor: 'Insert'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Nine = {ctor: 'Nine'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Eight = {ctor: 'Eight'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Seven = {ctor: 'Seven'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Six = {ctor: 'Six'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Five = {ctor: 'Five'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Four = {ctor: 'Four'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Three = {ctor: 'Three'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Two = {ctor: 'Two'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$One = {ctor: 'One'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Zero = {ctor: 'Zero'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Home = {ctor: 'Home'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$End = {ctor: 'End'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$PageDown = {ctor: 'PageDown'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$PageUp = {ctor: 'PageUp'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Delete = {ctor: 'Delete'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Backspace = {ctor: 'Backspace'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Enter = {ctor: 'Enter'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Escape = {ctor: 'Escape'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Spacebar = {ctor: 'Spacebar'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$CapsLock = {ctor: 'CapsLock'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Tab = {ctor: 'Tab'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Alt = {ctor: 'Alt'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Ctrl = function (a) {
+	return {ctor: 'Ctrl', _0: a};
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Shift = function (a) {
+	return {ctor: 'Shift', _0: a};
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Down = {ctor: 'Down'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Up = {ctor: 'Up'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Right = {ctor: 'Right'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Left = {ctor: 'Left'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Z = {ctor: 'Z'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Y = {ctor: 'Y'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$X = {ctor: 'X'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$W = {ctor: 'W'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$V = {ctor: 'V'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$U = {ctor: 'U'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$T = {ctor: 'T'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$S = {ctor: 'S'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$R = {ctor: 'R'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$Q = {ctor: 'Q'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$P = {ctor: 'P'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$O = {ctor: 'O'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$N = {ctor: 'N'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$M = {ctor: 'M'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$L = {ctor: 'L'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$K = {ctor: 'K'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$J = {ctor: 'J'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$I = {ctor: 'I'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$H = {ctor: 'H'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$G = {ctor: 'G'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$F = {ctor: 'F'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$E = {ctor: 'E'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$D = {ctor: 'D'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$C = {ctor: 'C'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$B = {ctor: 'B'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$A = {ctor: 'A'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$fromCode = function (code) {
+	var _p2 = code;
+	switch (_p2) {
+		case 8:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Backspace;
+		case 9:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Tab;
+		case 13:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Enter;
+		case 16:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Shift(_elm_lang$core$Maybe$Nothing);
+		case 17:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Ctrl(_elm_lang$core$Maybe$Nothing);
+		case 18:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Alt;
+		case 19:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$PauseBreak;
+		case 20:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$CapsLock;
+		case 27:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Escape;
+		case 32:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Spacebar;
+		case 33:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$PageUp;
+		case 34:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$PageDown;
+		case 35:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$End;
+		case 36:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Home;
+		case 37:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Left;
+		case 38:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Up;
+		case 39:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Right;
+		case 40:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Down;
+		case 44:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$PrintScreen;
+		case 45:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Insert;
+		case 46:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Delete;
+		case 48:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Zero;
+		case 49:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$One;
+		case 50:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Two;
+		case 51:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Three;
+		case 52:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Four;
+		case 53:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Five;
+		case 54:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Six;
+		case 55:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Seven;
+		case 56:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Eight;
+		case 57:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Nine;
+		case 65:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$A;
+		case 66:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$B;
+		case 67:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$C;
+		case 68:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$D;
+		case 69:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$E;
+		case 70:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F;
+		case 71:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$G;
+		case 72:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$H;
+		case 73:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$I;
+		case 74:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$J;
+		case 75:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$K;
+		case 76:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$L;
+		case 77:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$M;
+		case 78:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$N;
+		case 79:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$O;
+		case 80:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$P;
+		case 81:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Q;
+		case 82:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$R;
+		case 83:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$S;
+		case 84:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$T;
+		case 85:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$U;
+		case 86:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$V;
+		case 87:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$W;
+		case 88:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$X;
+		case 89:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Y;
+		case 90:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Z;
+		case 91:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Ambiguous(
+				{
+					ctor: '::',
+					_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$Windows,
+					_1: {
+						ctor: '::',
+						_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$Command,
+						_1: {
+							ctor: '::',
+							_0: _SwiftsNamesake$proper_keyboard$Keyboard_Key$ChromeSearch,
+							_1: {ctor: '[]'}
+						}
+					}
+				});
+		case 96:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadZero;
+		case 97:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadOne;
+		case 98:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadTwo;
+		case 99:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadThree;
+		case 100:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadFour;
+		case 101:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadFive;
+		case 102:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadSix;
+		case 103:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadSeven;
+		case 104:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadEight;
+		case 105:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumpadNine;
+		case 106:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Multiply;
+		case 107:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Add;
+		case 109:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Subtract;
+		case 110:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Decimal;
+		case 111:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Divide;
+		case 112:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F1;
+		case 113:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F2;
+		case 114:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F3;
+		case 115:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F4;
+		case 116:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F5;
+		case 117:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F6;
+		case 118:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F7;
+		case 119:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F8;
+		case 120:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F9;
+		case 121:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F10;
+		case 122:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F11;
+		case 123:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$F12;
+		case 144:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$NumLock;
+		case 145:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$ScrollLock;
+		default:
+			return _SwiftsNamesake$proper_keyboard$Keyboard_Key$Unknown(code);
+	}
+};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$RightHand = {ctor: 'RightHand'};
+var _SwiftsNamesake$proper_keyboard$Keyboard_Key$LeftHand = {ctor: 'LeftHand'};

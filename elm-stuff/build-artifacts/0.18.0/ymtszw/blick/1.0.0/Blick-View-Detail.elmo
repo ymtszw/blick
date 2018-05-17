@@ -1,0 +1,271 @@
+var _ymtszw$blick$Blick_View_Detail$detailThumbnail = function (maybeThumbnailUrl) {
+	var _p0 = maybeThumbnailUrl;
+	if (_p0.ctor === 'Just') {
+		return A2(
+			_elm_lang$html$Html$figure,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('image is-16by9'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$img,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$src(_p0._0._0),
+						_1: {ctor: '[]'}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('colmuns is-overlay'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('column'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$i,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('fa fa-external-link-alt fa-5x'),
+											_1: {ctor: '[]'}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		return A2(
+			_elm_lang$html$Html$figure,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('image is-16by9'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$h1,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('title'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('No Thumbnail'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	}
+};
+var _ymtszw$blick$Blick_View_Detail$detailColumnsClass = function (width) {
+	return (_elm_lang$core$Native_Utils.cmp(width, _ymtszw$blick$Blick_Constant$singleColumnMaxWidthPx) < 1) ? '' : ' is-mobile';
+};
+var _ymtszw$blick$Blick_View_Detail$detailContents = F3(
+	function (width, _p2, _p1) {
+		var _p3 = _p2;
+		var _p4 = _p1;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'columns',
+						_ymtszw$blick$Blick_View_Detail$detailColumnsClass(width))),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('column is-two-thirds'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$a,
+							{
+								ctor: '::',
+								_0: _ymtszw$blick$Blick_View_Parts$link(_p4.url),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$target('_blank'),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(_elm_lang$html$Html_Lazy$lazy, _ymtszw$blick$Blick_View_Detail$detailThumbnail, _p4.thumbnail_url),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('column'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$h1,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('title'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(_p4.title),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('tags'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A3(
+											_ymtszw$blick$Blick_View_Parts$authorTag,
+											_ymtszw$blick$Blick_Type$Selector(
+												A2(
+													_elm_lang$core$Basics_ops['++'],
+													'.modal[id=\'detail-',
+													A2(_elm_lang$core$Basics_ops['++'], _p3._0, '\']'))),
+											_p3,
+											_p4.author_email),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _ymtszw$blick$Blick_View_Detail$modal = F3(
+	function (_p6, _p5, material) {
+		var _p7 = _p6;
+		var _p8 = _p5;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('modal is-active'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$id(
+						A2(_elm_lang$core$Basics_ops['++'], 'detail-', _p8._0)),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('modal-background'),
+						_1: {
+							ctor: '::',
+							_0: _ymtszw$blick$Blick_View_Parts$onClickNoPropagate(
+								_ymtszw$blick$Blick_Type$GoTo(_ymtszw$blick$Blick_Type$Root)),
+							_1: {ctor: '[]'}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('hero is-light'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('hero-body'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('container is-fullhd'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A3(_ymtszw$blick$Blick_View_Detail$detailContents, _p7.width, _p8, material),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('modal-close is-large'),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$html$Html_Attributes$attribute, 'aria-label', 'close'),
+									_1: {
+										ctor: '::',
+										_0: _ymtszw$blick$Blick_View_Parts$onClickNoPropagate(
+											_ymtszw$blick$Blick_Type$GoTo(_ymtszw$blick$Blick_Type$Root)),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});

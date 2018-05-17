@@ -5,7 +5,7 @@ defmodule Blick.Dodai.Repo.Filestore do
   Generator of easy-to-use wrapper functions of
   [Dodai Filestore APIs](https://github.com/access-company/Dodai-doc/blob/master/filestore_api.md).
 
-  Use `SolomonAcs.Dodai.Model.Filestore` in order to generate struct modules
+  Use `AntikytheraAcs.Dodai.Model.Filestore` in order to generate struct modules
   representing model object in your gear.
 
   ## Usage
@@ -56,9 +56,9 @@ defmodule Blick.Dodai.Repo.Filestore do
   ## Options
 
   - `:filestore_models` - List of struct modules that represent your models. Required. Must not be empty.
-      - See `SolomonAcs.Dodai.Repo` about handling of multiple models.
+      - See `AntikytheraAcs.Dodai.Repo` about handling of multiple models.
   - `:client_config` - `Dodai.Client.config_t`. Optional. If specified, it will be used on every request from the repo.
-      - Merged with config specified by `:default_client_config` when using `SolomonAcs.Dodai.GearModule`.
+      - Merged with config specified by `:default_client_config` when using `AntikytheraAcs.Dodai.GearModule`.
         For duplicated fields in config, ones from repo module will prevail.
   - `:shared?` - `boolean`. Optional. Defaults to `false`. Controls whether the backend Dodai collection for this repo is a shared collection or a dedicated one.
   - `:read_permission` and `:write_permission` - `Dodai.CustomCollectionPermissionLevel.t`. Optional. Both default to `:section_or_owner`.
@@ -68,8 +68,8 @@ defmodule Blick.Dodai.Repo.Filestore do
 
   alias Croma.Result, as: R
   alias Dodai.{Client, GroupId, GenericEntityId, CollectionName, CustomCollectionPermissionLevel, MaxVersions}
-  # alias SolomonLib.CodeUtil # XXX: to workaround compile error on Code.get_docs/2 without .beam file
-  alias SolomonAcs.Dodai.Repo
+  # alias Antikythera.CodeUtil # XXX: to workaround compile error on Code.get_docs/2 without .beam file
+  alias AntikytheraAcs.Dodai.Repo
   alias __MODULE__, as: RF
 
   @typedoc """
@@ -175,7 +175,7 @@ defmodule Blick.Dodai.Repo.Filestore do
   This can sometimes take longer time compared to other operations
   due to latencies of cloud file storage API.
   If you need to avoid unpredicted crash due to timeout,
-  you can execute this part in asynchronous manner, using `SolomonLib.AsyncJob`.
+  you can execute this part in asynchronous manner, using `Antikythera.AsyncJob`.
   """
   defun notify_upload_finish(id               :: v[GenericEntityId.t],
                              key              :: v[String.t],
@@ -425,11 +425,11 @@ defmodule Blick.Dodai.Repo.Filestore do
       Enum.each(filestore_models1, &Blick.Dodai.Model.Filestore.ensure_filestore_model_module!/1)
       filestore_models1
     _otherwise ->
-      raise(ArgumentError, message: "Non-empty :filestore_models list must be given in order to use SolomonAcs.Dodai.Repo.Filestore")
+      raise(ArgumentError, message: "Non-empty :filestore_models list must be given in order to use AntikytheraAcs.Dodai.Repo.Filestore")
   end
 
   @doc false
-  defun collection_name!(_gear_name :: SolomonLib.GearName.t, model_module :: v[atom]) :: CollectionName.t do
+  defun collection_name!(_gear_name :: Antikythera.GearName.t, model_module :: v[atom]) :: CollectionName.t do
     # top_module_str = SolomonCore.GearModule.top(gear_name) |> Macro.to_string()
     top_module_str = "Blick"
     case Module.split(model_module) do
@@ -444,7 +444,7 @@ defmodule Blick.Dodai.Repo.Filestore do
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       gear_name            = Mix.Project.config()[:app]
-      dodai_gear_module    = SolomonAcs.Dodai.GearModule.get!(gear_name)
+      dodai_gear_module    = AntikytheraAcs.Dodai.GearModule.get!(gear_name)
       filestore_models     = RF.ensure_filestore_models_given!(opts[:filestore_models])
       model_type_union_ast = filestore_models |> Enum.map(fn m -> quote do: unquote(m).t end) |> Croma.TypeUtil.list_to_type_union()
 

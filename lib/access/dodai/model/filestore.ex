@@ -4,7 +4,7 @@ defmodule Blick.Dodai.Model.Filestore do
   @moduledoc """
   Helper module to define data structure that represents Dodai file entities with the help of `Croma.Struct`.
 
-  See `SolomonAcs.Dodai.Model` for basic concepts and options.
+  See `AntikytheraAcs.Dodai.Model` for basic concepts and options.
 
   Note that `public_url` field will be implicitly converted to `https://` variant since why not?
 
@@ -31,14 +31,14 @@ defmodule Blick.Dodai.Model.Filestore do
     use Croma.Struct, accept_case: :lower_camel, recursive_new?: true, fields: [
       version_id: Croma.String,
       size:       Croma.NonNegInteger,
-      created_at: SolomonLib.Time,
+      created_at: Antikythera.Time,
     ]
   end
 
   defmodule DeleteMarker do
     use Croma.Struct, accept_case: :lower_camel, recursive_new?: true, fields: [
       version_id: Croma.String,
-      created_at: SolomonLib.Time,
+      created_at: Antikythera.Time,
     ]
   end
 
@@ -95,7 +95,7 @@ defmodule Blick.Dodai.Model.Filestore do
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       defmodule Id do
-        use SolomonAcs.Dodai.EntityId, pattern: opts[:id_pattern]
+        use AntikytheraAcs.Dodai.EntityId, pattern: opts[:id_pattern]
       end
 
       defmodule Data do
@@ -104,8 +104,8 @@ defmodule Blick.Dodai.Model.Filestore do
 
       use Croma.Struct, accept_case: :lower_camel, recursive_new?: true, fields: [
         _id:           Id,
-        created_at:    SolomonLib.Time,
-        updated_at:    SolomonLib.Time,
+        created_at:    Antikythera.Time,
+        updated_at:    Antikythera.Time,
         owner:         Dodai.Owner,
         sections:      Dodai.Sections,
         version:       Croma.NonNegInteger,
@@ -113,13 +113,13 @@ defmodule Blick.Dodai.Model.Filestore do
         filename:      Croma.String,
         content_type:  Croma.String,
         public_url:    nilable(PublicUrl),
-        upload_url:    nilable(SolomonLib.Url),
+        upload_url:    nilable(Antikythera.Url),
         upload_form:   nilable(Croma.Map),
-        download_url:  nilable(SolomonLib.Url),
+        download_url:  nilable(Antikythera.Url),
         file_versions: list_of(union([FileVersion, DeleteMarker])),
       ]
 
-      # @doc SolomonLib.CodeUtil.doc_by_mfa!(MF, :validate_on_insert, 4)
+      # @doc Antikythera.CodeUtil.doc_by_mfa!(MF, :validate_on_insert, 4)
       defun validate_on_insert(insert_action :: RF.insert_action_t) :: R.t({__MODULE__, RF.insert_action_t}) do
         MF.validate_on_insert(insert_action, __MODULE__, Id, Data)
       end

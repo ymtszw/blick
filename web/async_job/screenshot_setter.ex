@@ -1,5 +1,5 @@
 defmodule Blick.AsyncJob.ScreenshotSetter do
-  use SolomonLib.AsyncJob
+  use Antikythera.AsyncJob
   alias Blick.Repo
   alias Blick.Model.Screenshot
 

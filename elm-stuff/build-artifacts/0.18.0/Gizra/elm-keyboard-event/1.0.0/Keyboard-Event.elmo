@@ -1,0 +1,58 @@
+var _Gizra$elm_keyboard_event$Keyboard_Event$decodeKey = _elm_lang$core$Json_Decode$maybe(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (key) {
+			return _elm_lang$core$String$isEmpty(key) ? _elm_lang$core$Json_Decode$fail('empty key') : _elm_lang$core$Json_Decode$succeed(key);
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'key', _elm_lang$core$Json_Decode$string)));
+var _Gizra$elm_keyboard_event$Keyboard_Event$decodeNonZero = A2(
+	_elm_lang$core$Json_Decode$andThen,
+	function (code) {
+		return _elm_lang$core$Native_Utils.eq(code, 0) ? _elm_lang$core$Json_Decode$fail('code was zero') : _elm_lang$core$Json_Decode$succeed(code);
+	},
+	_elm_lang$core$Json_Decode$int);
+var _Gizra$elm_keyboard_event$Keyboard_Event$decodeKeyCode = _elm_lang$core$Json_Decode$oneOf(
+	{
+		ctor: '::',
+		_0: A2(_elm_lang$core$Json_Decode$field, 'keyCode', _Gizra$elm_keyboard_event$Keyboard_Event$decodeNonZero),
+		_1: {
+			ctor: '::',
+			_0: A2(_elm_lang$core$Json_Decode$field, 'which', _Gizra$elm_keyboard_event$Keyboard_Event$decodeNonZero),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$core$Json_Decode$field, 'charCode', _Gizra$elm_keyboard_event$Keyboard_Event$decodeNonZero),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$core$Json_Decode$succeed(0),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
+var _Gizra$elm_keyboard_event$Keyboard_Event$KeyboardEvent = F7(
+	function (a, b, c, d, e, f, g) {
+		return {altKey: a, ctrlKey: b, key: c, keyCode: d, metaKey: e, repeat: f, shiftKey: g};
+	});
+var _Gizra$elm_keyboard_event$Keyboard_Event$decodeKeyboardEvent = A8(
+	_elm_lang$core$Json_Decode$map7,
+	_Gizra$elm_keyboard_event$Keyboard_Event$KeyboardEvent,
+	A2(_elm_lang$core$Json_Decode$field, 'altKey', _elm_lang$core$Json_Decode$bool),
+	A2(_elm_lang$core$Json_Decode$field, 'ctrlKey', _elm_lang$core$Json_Decode$bool),
+	_Gizra$elm_keyboard_event$Keyboard_Event$decodeKey,
+	A2(_elm_lang$core$Json_Decode$map, _SwiftsNamesake$proper_keyboard$Keyboard_Key$fromCode, _Gizra$elm_keyboard_event$Keyboard_Event$decodeKeyCode),
+	A2(_elm_lang$core$Json_Decode$field, 'metaKey', _elm_lang$core$Json_Decode$bool),
+	A2(_elm_lang$core$Json_Decode$field, 'repeat', _elm_lang$core$Json_Decode$bool),
+	A2(_elm_lang$core$Json_Decode$field, 'shiftKey', _elm_lang$core$Json_Decode$bool));
+var _Gizra$elm_keyboard_event$Keyboard_Event$considerKeyboardEvent = function (func) {
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (event) {
+			var _p0 = func(event);
+			if (_p0.ctor === 'Just') {
+				return _elm_lang$core$Json_Decode$succeed(_p0._0);
+			} else {
+				return _elm_lang$core$Json_Decode$fail('Ignoring keyboard event');
+			}
+		},
+		_Gizra$elm_keyboard_event$Keyboard_Event$decodeKeyboardEvent);
+};

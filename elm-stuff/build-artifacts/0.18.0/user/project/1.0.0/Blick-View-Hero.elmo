@@ -1,0 +1,212 @@
+var _user$project$Blick_View_Hero$filterInputResult = F2(
+	function (matches, value_) {
+		var _p0 = value_;
+		if (_p0 === '') {
+			return _elm_lang$html$Html$text('');
+		} else {
+			return A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('icon is-small is-right'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$List$length(matches))),
+					_1: {ctor: '[]'}
+				});
+		}
+	});
+var _user$project$Blick_View_Hero$filterInputColor = F2(
+	function (matches, value_) {
+		return ((!_elm_lang$core$String$isEmpty(value_)) && _elm_lang$core$List$isEmpty(matches)) ? ' is-danger' : '';
+	});
+var _user$project$Blick_View_Hero$filterInput = F2(
+	function (matches, value_) {
+		return A2(
+			_elm_lang$html$Html$input,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$type_('text'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$placeholder('OR filter'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(
+							function (_p1) {
+								return A2(
+									_user$project$Blick_Type$DebLift,
+									6,
+									_user$project$Blick_Type$InputFilter(_p1));
+							}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onFocus(
+								_user$project$Blick_Type$SetFilterFocus(true)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onBlur(
+									_user$project$Blick_Type$SetFilterFocus(false)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class(
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											'input is-flat',
+											A2(_user$project$Blick_View_Hero$filterInputColor, matches, value_))),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$id(_user$project$Blick_Constant$filterBoxId),
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			{ctor: '[]'});
+	});
+var _user$project$Blick_View_Hero$filterBox = F2(
+	function (matches, _p2) {
+		var _p3 = _p2;
+		var _p4 = _p3.value_;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('field is-expanded'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('control has-icons-left has-icons-right'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(_user$project$Blick_View_Hero$filterInput, matches, _p4),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$span,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('icon is-small is-left'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$i,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('fa fa-filter'),
+											_1: {ctor: '[]'}
+										},
+										{ctor: '[]'}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Blick_View_Hero$filterInputResult, matches, _p4),
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Blick_View_Hero$view = function (_p5) {
+	var _p6 = _p5;
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('hero is-success'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('hero-body'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('container'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('columns'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('column is-half is-left'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$h1,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('title'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Blick'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('column'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: A2(_user$project$Blick_View_Hero$filterBox, _p6.matches, _p6.filter),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};

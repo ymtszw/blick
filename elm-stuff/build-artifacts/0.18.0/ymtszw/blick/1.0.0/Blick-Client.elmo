@@ -1,0 +1,111 @@
+var _ymtszw$blick$Blick_Client$listMembers = function () {
+	var dec = A2(
+		_elm_lang$core$Json_Decode$map,
+		_ymtszw$blick$Blick_Type$ListMembers,
+		A2(
+			_elm_lang$core$Json_Decode$field,
+			'members',
+			_elm_lang$core$Json_Decode$list(_ymtszw$blick$Blick_Type$emailDecoder)));
+	return A2(
+		_elm_lang$http$Http$send,
+		_ymtszw$blick$Blick_Type$ClientRes,
+		A2(_elm_lang$http$Http$get, '/api/members', dec));
+}();
+var _ymtszw$blick$Blick_Client$put = F3(
+	function (url, dec, value) {
+		return _elm_lang$http$Http$request(
+			{
+				method: 'PUT',
+				headers: {ctor: '[]'},
+				url: url,
+				body: _elm_lang$http$Http$jsonBody(value),
+				expect: _elm_lang$http$Http$expectJson(dec),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _ymtszw$blick$Blick_Client$singleMaterialDecoder = A2(
+	_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+	A2(
+		_elm_community$json_extra$Json_Decode_Extra_ops['|:'],
+		_elm_lang$core$Json_Decode$succeed(
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				})),
+		A2(_elm_lang$core$Json_Decode$field, '_id', _ymtszw$blick$Blick_Type$matIdDecoder)),
+	A2(_elm_lang$core$Json_Decode$field, 'data', _ymtszw$blick$Blick_Type$materialDecoder));
+var _ymtszw$blick$Blick_Client$updateMaterialFieldImpl = F4(
+	function (id_, name_, prev, value) {
+		var _p0 = A2(
+			_elm_lang$core$Maybe$map,
+			F2(
+				function (x, y) {
+					return _elm_lang$core$Native_Utils.eq(x, y);
+				})(value),
+			prev);
+		if ((_p0.ctor === 'Just') && (_p0._0 === true)) {
+			return _elm_lang$core$Platform_Cmd$none;
+		} else {
+			return A2(
+				_elm_lang$http$Http$send,
+				_ymtszw$blick$Blick_Type$ClientRes,
+				A3(
+					_ymtszw$blick$Blick_Client$put,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'/api/materials/',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							id_,
+							A2(_elm_lang$core$Basics_ops['++'], '/', name_))),
+					A2(_elm_lang$core$Json_Decode$map, _ymtszw$blick$Blick_Type$UpdateMaterialField, _ymtszw$blick$Blick_Client$singleMaterialDecoder),
+					_elm_lang$core$Json_Encode$object(
+						{
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'value',
+								_1: _elm_lang$core$Json_Encode$string(value)
+							},
+							_1: {ctor: '[]'}
+						})));
+		}
+	});
+var _ymtszw$blick$Blick_Client$updateMaterialField = F2(
+	function (_p2, _p1) {
+		var _p3 = _p2;
+		var _p8 = _p3._0;
+		var _p4 = _p1;
+		var _p7 = _p4.value_;
+		var _p6 = _p4.name_;
+		var _p5 = {ctor: '_Tuple2', _0: _p7.edit, _1: _p7.prev};
+		switch (_p5._0.ctor) {
+			case 'UnTouched':
+				return _elm_lang$core$Platform_Cmd$none;
+			case 'ManualInput':
+				return A4(_ymtszw$blick$Blick_Client$updateMaterialFieldImpl, _p8, _p6, _p5._1, _p5._0._0);
+			default:
+				return A4(_ymtszw$blick$Blick_Client$updateMaterialFieldImpl, _p8, _p6, _p5._1, _p5._0._0);
+		}
+	});
+var _ymtszw$blick$Blick_Client$getMaterial = function (_p9) {
+	var _p10 = _p9;
+	return A2(
+		_elm_lang$http$Http$send,
+		_ymtszw$blick$Blick_Type$ClientRes,
+		A2(
+			_elm_lang$http$Http$get,
+			A2(_elm_lang$core$Basics_ops['++'], '/api/materials/', _p10._0),
+			A2(_elm_lang$core$Json_Decode$map, _ymtszw$blick$Blick_Type$GetMaterial, _ymtszw$blick$Blick_Client$singleMaterialDecoder)));
+};
+var _ymtszw$blick$Blick_Client$listMaterials = function () {
+	var dec = A2(
+		_elm_lang$core$Json_Decode$map,
+		_ymtszw$blick$Blick_Type$ListMaterials,
+		A2(_elm_lang$core$Json_Decode$field, 'materials', _ymtszw$blick$Blick_Type$matDictDecoder));
+	return A2(
+		_elm_lang$http$Http$send,
+		_ymtszw$blick$Blick_Type$ClientRes,
+		A2(_elm_lang$http$Http$get, '/api/materials', dec));
+}();

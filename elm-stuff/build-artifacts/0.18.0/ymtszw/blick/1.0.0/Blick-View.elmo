@@ -1,0 +1,109 @@
+var _ymtszw$blick$Blick_View$withEditor = F2(
+	function (model, others) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$id('modals'),
+				_1: {ctor: '[]'}
+			},
+			function () {
+				var _p0 = model.editing;
+				if (_p0.ctor === 'Just') {
+					return A2(
+						_elm_lang$core$Basics_ops['++'],
+						others,
+						{
+							ctor: '::',
+							_0: A2(_ymtszw$blick$Blick_View_Editor$modal, model, _p0._0),
+							_1: {ctor: '[]'}
+						});
+				} else {
+					return others;
+				}
+			}());
+	});
+var _ymtszw$blick$Blick_View$modals = function (model) {
+	return A2(
+		_ymtszw$blick$Blick_View$withEditor,
+		model,
+		function () {
+			var _p1 = model.route;
+			if (_p1.ctor === 'Detail') {
+				var _p3 = _p1._0;
+				var _p2 = A2(_ymtszw$blick$Blick_Type$matDictGet, _p3, model.materials);
+				if (_p2.ctor === 'Just') {
+					return {
+						ctor: '::',
+						_0: A3(_ymtszw$blick$Blick_View_Detail$modal, model.windowSize, _p3, _p2._0),
+						_1: {ctor: '[]'}
+					};
+				} else {
+					return {ctor: '[]'};
+				}
+			} else {
+				return {ctor: '[]'};
+			}
+		}());
+};
+var _ymtszw$blick$Blick_View$applyFilter = F2(
+	function (matches, materials) {
+		var _p4 = matches;
+		if (_p4.ctor === '[]') {
+			return materials;
+		} else {
+			return A2(
+				_ymtszw$blick$Blick_Type$matDictFilter,
+				F2(
+					function (matId, _p5) {
+						return A2(_elm_lang$core$List$member, matId, matches);
+					}),
+				materials);
+		}
+	});
+var _ymtszw$blick$Blick_View$view = function (model) {
+	var _p6 = A2(
+		_ymtszw$blick$Blick_Type$matDictSplit,
+		F2(
+			function (_p8, _p7) {
+				var _p9 = _p7;
+				return _ymtszw$blick$Util$isJust(_p9.thumbnail_url);
+			}),
+		A2(_ymtszw$blick$Blick_View$applyFilter, model.matches, model.materials));
+	var withThumbs = _p6._0;
+	var withouts = _p6._1;
+	return A2(
+		_elm_lang$html$Html$section,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('main'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _ymtszw$blick$Blick_View$modals(model),
+			_1: {
+				ctor: '::',
+				_0: _ymtszw$blick$Blick_View_Hero$view(model),
+				_1: {
+					ctor: '::',
+					_0: _ymtszw$blick$Blick_View_Message$view(model.exceptions),
+					_1: {
+						ctor: '::',
+						_0: _ymtszw$blick$Blick_View_Carousel$view(
+							_elm_lang$core$Native_Utils.update(
+								model,
+								{materials: withThumbs})),
+						_1: {
+							ctor: '::',
+							_0: _ymtszw$blick$Blick_View_Table$view(
+								_elm_lang$core$Native_Utils.update(
+									model,
+									{materials: withouts})),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+};

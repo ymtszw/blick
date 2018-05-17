@@ -2,8 +2,8 @@ use Croma
 
 defmodule Blick.Repo.Material do
   alias Croma.Result, as: R
-  alias SolomonLib.Time
-  alias SolomonAcs.Dodai.Repo.Datastore
+  alias Antikythera.Time
+  alias AntikytheraAcs.Dodai.Repo.Datastore
   import Blick.Dodai, only: [root_key: 0]
   alias Blick.External.Google.Drive.Files
   alias Blick.Repo

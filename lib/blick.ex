@@ -1,7 +1,7 @@
 defmodule Blick do
-  use SolomonLib.GearApplication
-  alias SolomonLib.{ExecutorPool, Conn, Time}
-  alias SolomonLib.Crypto.Aes
+  use Antikythera.GearApplication
+  alias Antikythera.{ExecutorPool, Conn, Time}
+  alias Antikythera.Crypto.Aes
 
   @spec children :: [Supervisor.Spec.spec]
   def children() do

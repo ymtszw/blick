@@ -1,5 +1,5 @@
 defmodule Blick.Router do
-  use SolomonLib.Router
+  use Antikythera.Router
 
   get "/login", Root, :public_login, as: "public_login"
 

@@ -11,7 +11,7 @@ defmodule Blick.External.Google.OpenidConnect do
   """
 
   alias Croma.Result, as: R
-  alias SolomonLib.Httpc
+  alias Antikythera.Httpc
 
   @configuration_endpoint "https://accounts.google.com/.well-known/openid-configuration"
   @doc """

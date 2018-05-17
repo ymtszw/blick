@@ -6,7 +6,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
   alias Blick.External.Google.{Spreadsheets, Drive.Files}
   alias Blick.Repo
   alias Blick.Model.Material
-  use SolomonLib.AsyncJob
+  use Antikythera.AsyncJob
 
   @impl true
   def run(_payload, _metadata, _context) do
@@ -84,7 +84,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
     |> Enum.uniq_by(fn %Material.Data{title: title} -> title end)
   end
 
-  if SolomonLib.Env.compiling_for_cloud?() do
+  if Antikythera.Env.compiling_for_cloud?() do
     defp take_sample(materials), do: materials
   else
     defp take_sample(materials), do: materials |> Enum.shuffle() |> Enum.take(20) # Should better be kept in order to avoid hitting rate limit
@@ -163,7 +163,7 @@ defmodule Blick.AsyncJob.MaterialCollector do
                  "mimeType" => mimetype,
                  "createdTime" => created_time,
                  "owners" => [%{"emailAddress" => author_email} | _]} = file) do
-    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, SolomonLib.Time.from_iso_timestamp(created_time) |> R.get!()}
+    {file_id, mimetype, enlarge_thumbnail_size(file["thumbnailLink"]), author_email, Antikythera.Time.from_iso_timestamp(created_time) |> R.get!()}
   end
 
   # Also used in refresher

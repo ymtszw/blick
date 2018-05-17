@@ -1,7 +1,7 @@
 use Croma
 
 defmodule Blick.Controller.Screenshot do
-  use SolomonLib.Controller
+  use Antikythera.Controller
   alias Blick.Repo
   alias Blick.AsyncJob.ScreenshotSetter
   alias Blick.Model.Screenshot

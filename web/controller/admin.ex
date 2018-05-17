@@ -1,9 +1,9 @@
 use Croma
 
 defmodule Blick.Controller.Admin do
-  use SolomonLib.Controller
+  use Antikythera.Controller
   alias Croma.Result, as: R
-  alias SolomonLib.Time
+  alias Antikythera.Time
   alias AntikytheraAcs.Oauth2
   alias Blick.Repo
 

@@ -1,4 +1,4 @@
-instance_dep = {:solomon_acs, [git: "git@github.com:access-company/solomon_acs.git"]}
+instance_dep = {:antikythera_acs, [git: "git@github.com:access-company/antikythera_acs.git"]}
 
 try do
   parent_dir = Path.expand("..", __DIR__)
@@ -7,11 +7,11 @@ try do
       "deps" -> parent_dir                 # this gear project is used by another gear as a gear dependency
       _      -> Path.join(__DIR__, "deps") # this gear project is the toplevel mix project
     end
-  Code.require_file(Path.join([deps_dir, "solomon", "mix_common.exs"]))
+  Code.require_file(Path.join([deps_dir, "antikythera", "mix_common.exs"]))
 
   defmodule Blick.Mixfile do
-    use Solomon.GearProject, [
-      solomon_instance_dep: instance_dep,
+    use Antikythera.GearProject, [
+      antikythera_instance_dep: instance_dep,
       source_url:           "https://github.com/ymtszw/blick",
     ]
 
@@ -28,7 +28,7 @@ rescue
 
       def project() do
         [
-          app:  :just_to_fetch_solomon_instance_as_a_dependency,
+          app:  :just_to_fetch_antikythera_instance_as_a_dependency,
           deps: [unquote(instance_dep)],
         ]
       end

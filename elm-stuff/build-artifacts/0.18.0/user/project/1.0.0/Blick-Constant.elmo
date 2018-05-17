@@ -1,0 +1,45 @@
+var _user$project$Blick_Constant$debTick = 100 * _elm_lang$core$Time$millisecond;
+var _user$project$Blick_Constant$maxSuggestions = 10;
+var _user$project$Blick_Constant$orgDomain = 'access-company.com';
+var _user$project$Blick_Constant$atOrgDomain = A2(_elm_lang$core$Basics_ops['++'], '@', _user$project$Blick_Constant$orgDomain);
+var _user$project$Blick_Constant$divCeiling = F2(
+	function (dividend, divisor) {
+		var _p0 = A2(_elm_lang$core$Basics_ops['%'], dividend, divisor);
+		if (_p0 === 0) {
+			return (dividend / divisor) | 0;
+		} else {
+			return ((dividend / divisor) | 0) + 1;
+		}
+	});
+var _user$project$Blick_Constant$rowPerTable = 6;
+var _user$project$Blick_Constant$rowPerCarouselPage = 3;
+var _user$project$Blick_Constant$bulmaColumnScaleMax = 12;
+var _user$project$Blick_Constant$carouselPreloadDelta = function (bulmaColumnScale) {
+	return (_elm_lang$core$Native_Utils.cmp(bulmaColumnScale, (_user$project$Blick_Constant$bulmaColumnScaleMax / 2) | 0) > -1) ? 1 : 2;
+};
+var _user$project$Blick_Constant$mobileMaxWidthPx = 768;
+var _user$project$Blick_Constant$tablePerPage = function (width) {
+	return (_elm_lang$core$Native_Utils.cmp(width, _user$project$Blick_Constant$mobileMaxWidthPx) < 1) ? 1 : 2;
+};
+var _user$project$Blick_Constant$maxTablePage = F2(
+	function (width, numberOfMaterials) {
+		return A2(
+			_user$project$Blick_Constant$divCeiling,
+			numberOfMaterials,
+			_user$project$Blick_Constant$rowPerTable * _user$project$Blick_Constant$tablePerPage(width));
+	});
+var _user$project$Blick_Constant$singleColumnMaxWidthPx = 480;
+var _user$project$Blick_Constant$tilePerRow = function (width) {
+	return (_elm_lang$core$Native_Utils.cmp(width, _user$project$Blick_Constant$singleColumnMaxWidthPx) < 1) ? 1 : ((_elm_lang$core$Native_Utils.cmp(width, _user$project$Blick_Constant$mobileMaxWidthPx) < 1) ? 2 : 4);
+};
+var _user$project$Blick_Constant$maxCarouselPage = F2(
+	function (width, numberOfMaterials) {
+		return A2(
+			_user$project$Blick_Constant$divCeiling,
+			numberOfMaterials,
+			_user$project$Blick_Constant$tilePerRow(width) * _user$project$Blick_Constant$rowPerCarouselPage);
+	});
+var _user$project$Blick_Constant$exceptionCloseDuration = 400.0;
+var _user$project$Blick_Constant$exceptionCloseDelay = 100.0;
+var _user$project$Blick_Constant$exceptionCloseFullMs = (_user$project$Blick_Constant$exceptionCloseDelay + _user$project$Blick_Constant$exceptionCloseDuration) * _elm_lang$core$Time$millisecond;
+var _user$project$Blick_Constant$filterBoxId = 'material-filter-box';

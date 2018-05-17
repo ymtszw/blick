@@ -2,13 +2,13 @@ use Croma
 
 defmodule Blick.AsyncJob.MaterialRefresher do
   alias Croma.Result, as: R
-  alias SolomonLib.{Time, Cron}
-  alias SolomonAcs.Dodai.Repo.Datastore
+  alias Antikythera.{Time, Cron}
+  alias AntikytheraAcs.Dodai.Repo.Datastore
   alias Blick.External.Google
   alias Blick.External.Google.Drive.Files
   alias Blick.Repo
   alias Blick.Model.Material
-  use SolomonLib.AsyncJob
+  use Antikythera.AsyncJob
 
   @type refresh_option_t :: {:force, boolean}
 
@@ -26,7 +26,7 @@ defmodule Blick.AsyncJob.MaterialRefresher do
   end
 
   def status() do
-    SolomonLib.AsyncJob.status(@gear_pool, @id)
+    Antikythera.AsyncJob.status(@gear_pool, @id)
   end
 
   @doc """

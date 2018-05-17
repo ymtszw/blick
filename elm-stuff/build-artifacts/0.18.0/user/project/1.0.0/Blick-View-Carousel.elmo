@@ -1,0 +1,477 @@
+var _user$project$Blick_View_Carousel$tags = F2(
+	function (_p1, _p0) {
+		var _p2 = _p1;
+		var _p3 = _p0;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('is-overlay tags-on-tile'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A3(
+					_user$project$Blick_View_Parts$authorTag,
+					_user$project$Blick_Type$Selector(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'.card[id=\'',
+							A2(_elm_lang$core$Basics_ops['++'], _p2._0, '\']'))),
+					_p2,
+					_p3.author_email),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Blick_View_Carousel$tileThumbnail = function (maybeUrl) {
+	var _p4 = maybeUrl;
+	if (_p4.ctor === 'Just') {
+		return A2(
+			_elm_lang$html$Html$figure,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('image is-16by9'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$img,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$src(_p4._0._0),
+						_1: {ctor: '[]'}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			});
+	} else {
+		return A2(
+			_elm_lang$html$Html$figure,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('image is-16by9'),
+				_1: {ctor: '[]'}
+			},
+			{ctor: '[]'});
+	}
+};
+var _user$project$Blick_View_Carousel$columnScaleClass = function (columnScale) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		' is-',
+		_elm_lang$core$Basics$toString(columnScale));
+};
+var _user$project$Blick_View_Carousel$dummyRow = function (columnScale) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('columns is-mobile is-invisible'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'column',
+							_user$project$Blick_View_Carousel$columnScaleClass(columnScale))),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$article,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('material card'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('card-image'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _user$project$Blick_View_Carousel$tileThumbnail(_elm_lang$core$Maybe$Nothing),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('card-content'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$p,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('is-size-7 text-nowrap'),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Dummy'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Blick_View_Carousel$fillByDummyRow = F2(
+	function (columnScale, rows) {
+		var rowLength = _elm_lang$core$List$length(rows);
+		return (_elm_lang$core$Native_Utils.cmp(_user$project$Blick_Constant$rowPerCarouselPage, rowLength) > 0) ? A2(
+			_elm_lang$core$Basics_ops['++'],
+			rows,
+			A2(
+				_elm_lang$core$List$repeat,
+				_user$project$Blick_Constant$rowPerCarouselPage - rowLength,
+				_user$project$Blick_View_Carousel$dummyRow(columnScale))) : rows;
+	});
+var _user$project$Blick_View_Carousel$tileColumn = F2(
+	function (columnScale, _p5) {
+		var _p6 = _p5;
+		var _p9 = _p6._1;
+		var _p8 = _p6._0;
+		var _p7 = _p6._0._0;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class(
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'material column',
+						_user$project$Blick_View_Carousel$columnScaleClass(columnScale))),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$title(_p9.title),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$a,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$href(
+							A2(_elm_lang$core$Basics_ops['++'], '/', _p7)),
+						_1: {
+							ctor: '::',
+							_0: _user$project$Blick_View_Parts$onClickNoPropagate(
+								_user$project$Blick_Type$GoTo(
+									_user$project$Blick_Type$Detail(_p8))),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$article,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('card'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$id(_p7),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('card-image'),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _user$project$Blick_View_Carousel$tileThumbnail(_p9.thumbnail_url),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('card-content'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$p,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('is-size-7 text-nowrap'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(_p9.title),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(_user$project$Blick_View_Carousel$tags, _p8, _p9),
+										_1: {ctor: '[]'}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Blick_View_Carousel$tileRow = F2(
+	function (columnScale, materialsPerRow) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('columns is-mobile'),
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$List$map,
+				A2(_elm_lang$html$Html_Lazy$lazy2, _user$project$Blick_View_Carousel$tileColumn, columnScale),
+				materialsPerRow));
+	});
+var _user$project$Blick_View_Carousel$carouselItemContents = F2(
+	function (columnScale, materialsByPage) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			A2(
+				_user$project$Blick_View_Carousel$fillByDummyRow,
+				columnScale,
+				A2(
+					_elm_lang$core$List$map,
+					A2(_elm_lang$html$Html_Lazy$lazy2, _user$project$Blick_View_Carousel$tileRow, columnScale),
+					materialsByPage)));
+	});
+var _user$project$Blick_View_Carousel$carouselItem = F4(
+	function (columnScale, materialPage, pageIndex, materialsByPage) {
+		var preloadDelta = _user$project$Blick_Constant$carouselPreloadDelta(columnScale);
+		var contents = ((_elm_lang$core$Native_Utils.cmp(materialPage - preloadDelta, pageIndex) < 1) && (_elm_lang$core$Native_Utils.cmp(pageIndex, materialPage + preloadDelta) < 1)) ? {
+			ctor: '::',
+			_0: A3(_elm_lang$html$Html_Lazy$lazy2, _user$project$Blick_View_Carousel$carouselItemContents, columnScale, materialsByPage),
+			_1: {ctor: '[]'}
+		} : {ctor: '[]'};
+		return _elm_lang$core$Native_Utils.eq(materialPage, pageIndex) ? A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('carousel-item is-active'),
+				_1: {ctor: '[]'}
+			},
+			contents) : ((_elm_lang$core$Native_Utils.cmp(pageIndex, materialPage) < 0) ? A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('carousel-item is-overlay is-left-deck'),
+				_1: {ctor: '[]'}
+			},
+			contents) : A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('carousel-item is-overlay is-right-deck'),
+				_1: {ctor: '[]'}
+			},
+			contents));
+	});
+var _user$project$Blick_View_Carousel$carouselNav = F2(
+	function (max, carouselPage) {
+		return A2(
+			_elm_lang$html$Html$nav,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('carousel-navigation pagination is-centered'),
+				_1: {
+					ctor: '::',
+					_0: A2(_elm_lang$html$Html_Attributes$attribute, 'role', 'navigation'),
+					_1: {
+						ctor: '::',
+						_0: A2(_elm_lang$html$Html_Attributes$attribute, 'aria-label', 'pagination'),
+						_1: {ctor: '[]'}
+					}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					A3(
+						_user$project$Blick_View_Parts$withDisabled,
+						_elm_lang$core$Native_Utils.cmp(carouselPage, 0) < 1,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Blick_Type$SetCarouselPage(carouselPage - 1)),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('pagination-previous'),
+							_1: {ctor: '[]'}
+						}),
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$i,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('fa fa-chevron-left'),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						A3(
+							_user$project$Blick_View_Parts$withDisabled,
+							_elm_lang$core$Native_Utils.cmp(carouselPage, max - 1) > -1,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Blick_Type$SetCarouselPage(carouselPage + 1)),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('pagination-next'),
+								_1: {ctor: '[]'}
+							}),
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$i,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('fa fa-chevron-right'),
+									_1: {ctor: '[]'}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Blick_View_Carousel$fillByDummyPage = F2(
+	function (width, pages) {
+		var _p10 = pages;
+		if (_p10.ctor === '::') {
+			return pages;
+		} else {
+			return A2(
+				_user$project$Blick_View_Carousel$fillByDummyRow,
+				width,
+				{ctor: '[]'});
+		}
+	});
+var _user$project$Blick_View_Carousel$columnScale = function (width) {
+	return (_user$project$Blick_Constant$bulmaColumnScaleMax / _user$project$Blick_Constant$tilePerRow(width)) | 0;
+};
+var _user$project$Blick_View_Carousel$view = function (_p11) {
+	var _p12 = _p11;
+	var _p15 = _p12.windowSize;
+	var _p14 = _p12.materials;
+	var _p13 = _p12.carouselPage;
+	var cs = _user$project$Blick_View_Carousel$columnScale(_p15.width);
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('hero is-info'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('hero-body'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('container carousel is-fullhd'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('carousel-container'),
+									_1: {ctor: '[]'}
+								},
+								A2(
+									_user$project$Blick_View_Carousel$fillByDummyPage,
+									cs,
+									A2(
+										_elm_lang$core$List$indexedMap,
+										A2(_user$project$Blick_View_Carousel$carouselItem, cs, _p13),
+										A2(
+											_user$project$Util$split,
+											_user$project$Blick_Constant$rowPerCarouselPage,
+											A2(
+												_user$project$Util$split,
+												_user$project$Blick_Constant$tilePerRow(_p15.width),
+												_user$project$Blick_Type$matDictToList(_p14)))))),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_user$project$Blick_View_Carousel$carouselNav,
+									A2(
+										_user$project$Blick_Constant$maxCarouselPage,
+										_p15.width,
+										_user$project$Blick_Type$dictSize(_p14)),
+									_p13),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};

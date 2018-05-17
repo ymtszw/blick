@@ -1,0 +1,265 @@
+var _ymtszw$blick$Blick_View_Parts$hexCharToInt = function (hexChar) {
+	var _p0 = hexChar;
+	switch (_p0.valueOf()) {
+		case '0':
+			return 0;
+		case '1':
+			return 1;
+		case '2':
+			return 2;
+		case '3':
+			return 3;
+		case '4':
+			return 4;
+		case '5':
+			return 5;
+		case '6':
+			return 6;
+		case '7':
+			return 7;
+		case '8':
+			return 8;
+		case '9':
+			return 9;
+		case 'a':
+			return 10;
+		case 'b':
+			return 11;
+		case 'c':
+			return 12;
+		case 'd':
+			return 13;
+		case 'e':
+			return 14;
+		default:
+			return 15;
+	}
+};
+var _ymtszw$blick$Blick_View_Parts$hexToInt = function (hex) {
+	return _elm_lang$core$Tuple$second(
+		A3(
+			_elm_lang$core$String$foldr,
+			F2(
+				function ($char, _p1) {
+					var _p2 = _p1;
+					var _p3 = _p2._0;
+					return {
+						ctor: '_Tuple2',
+						_0: _p3 + 1,
+						_1: _p2._1 + (_ymtszw$blick$Blick_View_Parts$hexCharToInt($char) * Math.pow(16, _p3))
+					};
+				}),
+			{ctor: '_Tuple2', _0: 0, _1: 0},
+			hex));
+};
+var _ymtszw$blick$Blick_View_Parts$contrastingFontColor = function (hex) {
+	var weightedSum = ((0 + (0.299 * _elm_lang$core$Basics$toFloat(
+		_ymtszw$blick$Blick_View_Parts$hexToInt(
+			A3(_elm_lang$core$String$slice, 0, 2, hex))))) + (0.587 * _elm_lang$core$Basics$toFloat(
+		_ymtszw$blick$Blick_View_Parts$hexToInt(
+			A3(_elm_lang$core$String$slice, 2, 4, hex))))) + (0.114 * _elm_lang$core$Basics$toFloat(
+		_ymtszw$blick$Blick_View_Parts$hexToInt(
+			A3(_elm_lang$core$String$slice, 4, 6, hex))));
+	var perceptiveLuminance = 1 - (weightedSum / 255.0);
+	return (_elm_lang$core$Native_Utils.cmp(perceptiveLuminance, 0.5) < 0) ? '#333333' : '#ffffff';
+};
+var _ymtszw$blick$Blick_View_Parts$roundTagOfName = function (name) {
+	var hex = A3(
+		_elm_lang$core$String$slice,
+		0,
+		6,
+		_sanichi$elm_md5$MD5$hex(name));
+	return A2(
+		_elm_lang$html$Html$span,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('tag is-rounded'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'background-color',
+							_1: A2(_elm_lang$core$Basics_ops['++'], '#', hex)
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: 'color',
+								_1: _ymtszw$blick$Blick_View_Parts$contrastingFontColor(hex)
+							},
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(name),
+			_1: {ctor: '[]'}
+		});
+};
+var _ymtszw$blick$Blick_View_Parts$orgLocalNameOrEmail = function (_p4) {
+	var _p5 = _p4;
+	return A3(_elm_community$string_extra$String_Extra$replace, _ymtszw$blick$Blick_Constant$atOrgDomain, '', _p5._0);
+};
+var _ymtszw$blick$Blick_View_Parts$authorTagClickDecoder = F3(
+	function (uniqueAncestor, _p6, maybePrev) {
+		var _p7 = _p6;
+		return _elm_lang$core$Json_Decode$succeed(
+			A3(
+				_ymtszw$blick$Blick_Type$InitiateEdit,
+				_p7,
+				A2(
+					_ymtszw$blick$Blick_Type$Field,
+					'author_email',
+					A2(_ymtszw$blick$Blick_Type$Editable, maybePrev, _ymtszw$blick$Blick_Type$UnTouched)),
+				A2(
+					_ymtszw$blick$Blick_Type$descendantOf,
+					uniqueAncestor,
+					_ymtszw$blick$Blick_Type$Selector(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'.tags[id=\'author-',
+							A2(_elm_lang$core$Basics_ops['++'], _p7._0, '\']'))))));
+	});
+var _ymtszw$blick$Blick_View_Parts$withDisabled = F3(
+	function (disabled_, attrsWhenEnabled, otherAttrs) {
+		return disabled_ ? {
+			ctor: '::',
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'disabled', 'disabled'),
+			_1: otherAttrs
+		} : A2(_elm_lang$core$Basics_ops['++'], attrsWhenEnabled, otherAttrs);
+	});
+var _ymtszw$blick$Blick_View_Parts$onWithoutPropagate = F2(
+	function (event, dec) {
+		return A3(
+			_elm_lang$html$Html_Events$onWithOptions,
+			event,
+			A2(_elm_lang$html$Html_Events$Options, true, true),
+			dec);
+	});
+var _ymtszw$blick$Blick_View_Parts$authorTag = F3(
+	function (anc, _p8, author_email) {
+		var _p9 = _p8;
+		var _p13 = _p9;
+		var _p12 = _p9._0;
+		var _p10 = author_email;
+		if (_p10.ctor === 'Just') {
+			var _p11 = _p10._0._0;
+			var name = _ymtszw$blick$Blick_View_Parts$orgLocalNameOrEmail(
+				_ymtszw$blick$Blick_Type$Email(_p11));
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('tags has-addons is-pulled-right'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$id(
+							A2(_elm_lang$core$Basics_ops['++'], 'author-', _p12)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(_elm_lang$html$Html_Lazy$lazy, _ymtszw$blick$Blick_View_Parts$roundTagOfName, name),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$span,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('tag tag-button is-rounded'),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_ymtszw$blick$Blick_View_Parts$onWithoutPropagate,
+										'click',
+										A3(
+											_ymtszw$blick$Blick_View_Parts$authorTagClickDecoder,
+											anc,
+											_p13,
+											_elm_lang$core$Maybe$Just(_p11))),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$span,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('fa fa-pencil-alt'),
+										_1: {ctor: '[]'}
+									},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				});
+		} else {
+			return A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('tags is-pulled-right'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$id(
+							A2(_elm_lang$core$Basics_ops['++'], 'author-', _p12)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$span,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('tag tag-button is-rounded add-author'),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_ymtszw$blick$Blick_View_Parts$onWithoutPropagate,
+									'click',
+									A3(_ymtszw$blick$Blick_View_Parts$authorTagClickDecoder, anc, _p13, _elm_lang$core$Maybe$Nothing)),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$span,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('fa fa-plus'),
+									_1: {ctor: '[]'}
+								},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Add author'),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {ctor: '[]'}
+				});
+		}
+	});
+var _ymtszw$blick$Blick_View_Parts$onClickNoPropagate = function (msg) {
+	return A3(
+		_elm_lang$html$Html_Events$onWithOptions,
+		'click',
+		A2(_elm_lang$html$Html_Events$Options, true, true),
+		_elm_lang$core$Json_Decode$succeed(msg));
+};
+var _ymtszw$blick$Blick_View_Parts$link = function (_p14) {
+	var _p15 = _p14;
+	return _elm_lang$html$Html_Attributes$href(_p15._0);
+};

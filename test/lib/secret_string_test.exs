@@ -24,7 +24,7 @@ defmodule Blick.SecretStringTest do
     check all binary <- string(:printable) do
       ss = %SS{value: binary}
       assert ss |> Poison.encode!() |> Poison.decode!() |> SS.new!() == ss
-      refute ss |> Poison.encode!() |> Poison.decode!() |> SolomonLib.Crypto.Aes.ctr128_decrypt("wrong key") == ~s("#{binary}")
+      refute ss |> Poison.encode!() |> Poison.decode!() |> Antikythera.Crypto.Aes.ctr128_decrypt("wrong key") == ~s("#{binary}")
     end
   end
 end
