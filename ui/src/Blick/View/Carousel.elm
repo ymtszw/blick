@@ -3,6 +3,7 @@ module Blick.View.Carousel exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
+import Html.Keyed
 import Html.Lazy as Z
 import Util
 import Blick.Constant exposing (..)
@@ -92,12 +93,12 @@ carouselItemContents columnScale materialsByPage =
 
 tileRow : Int -> List ( MatId, Material ) -> Html Msg
 tileRow columnScale materialsPerRow =
-    div [ class "columns is-mobile" ] <|
-        List.map (Z.lazy2 tileColumn columnScale) materialsPerRow
+    Html.Keyed.node "div" [ class "columns is-mobile" ] <|
+        List.map (keyedTileColumn columnScale) materialsPerRow
 
 
-tileColumn : Int -> ( MatId, Material ) -> Html Msg
-tileColumn columnScale ( (MatId id_) as matId, material ) =
+keyedTileColumn : Int -> ( MatId, Material ) -> ( String, Html Msg )
+keyedTileColumn columnScale ( (MatId id_) as matId, material ) =
     div [ class <| "material column" ++ columnScaleClass columnScale, title material.title ]
         [ a [ href <| "/" ++ id_, onClickNoPropagate (GoTo (Detail matId)) ]
             [ article [ class "card", id id_ ]
@@ -111,6 +112,7 @@ tileColumn columnScale ( (MatId id_) as matId, material ) =
                 ]
             ]
         ]
+        |> (,) id_
 
 
 fillByDummyRow : Int -> List (Html Msg) -> List (Html Msg)
@@ -161,4 +163,4 @@ tileThumbnail maybeUrl =
 tags : MatId -> Material -> Html Msg
 tags ((MatId id_) as matId) { author_email } =
     div [ class "is-overlay tags-on-tile" ]
-        [ authorTag (Selector (".card[id='" ++ id_ ++ "']")) matId author_email ]
+        [ Z.lazy3 authorTag (Selector (".card[id='" ++ id_ ++ "']")) matId author_email ]
