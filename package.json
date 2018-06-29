@@ -10,7 +10,7 @@
     "build": "webpack",
     "start": "screen -c localserver_screenrc",
     "start:api": "LOG_LEVEL=debug BLICK_CONFIG_JSON=\"$(cat gear_config)\" iex -S mix",
-    "start:ui": "webpack-dev-server",
+    "start:ui": "webpack-serve",
     "antikythera_prepare_assets": "WEBPACK_BUILD_ENV=cloud webpack"
   },
   "repository": {
@@ -26,9 +26,9 @@
     "css-loader": "^0.28.9",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.4.0",
-    "style-loader": "^0.20.1",
-    "uglifyjs-webpack-plugin": "^1.1.6",
-    "webpack": "^3.10.0",
-    "webpack-dev-server": "^2.11.0"
+    "style-loader": "^0.21.0",
+    "webpack": "^4.13.0",
+    "webpack-cli": "^3.0.8",
+    "webpack-serve": "^1.0.4"
   }
 }

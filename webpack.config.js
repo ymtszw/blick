@@ -1,5 +1,3 @@
-const Uglifier = require('uglifyjs-webpack-plugin')
-
 const BASE = `${__dirname}/priv/static`
 
 const IS_CLOUD = (process.env.WEBPACK_BUILD_ENV === 'cloud')
@@ -39,8 +37,8 @@ module.exports = {
       }
     ]
   },
-  plugins: IS_CLOUD ? [new Uglifier()] : [],
-  devServer: {
+  mode: IS_CLOUD ? 'production' : 'development',
+  serve: {
     contentBase: BASE,
     port: '8079',
     proxy: {
