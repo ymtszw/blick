@@ -141,7 +141,7 @@ defmodule Blick.Repo.Material do
     case Files.get(file_id, token) do
       {:ok, file} ->
         {:ok, {200, file}}
-      {:error, %{code: code, body: res_body}} when code in 400..499 ->
+      {:error, %{status: code, body: res_body}} when code in 400..499 ->
         {:ok, {code, Poison.decode!(res_body)}}
       {:error, _} = e ->
         e

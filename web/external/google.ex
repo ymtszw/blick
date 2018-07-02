@@ -67,9 +67,11 @@ defmodule Blick.External.Google do
     Enum.reverse(acc)
   end
 
+  @res_parser :hackney_http.parser([:response])
+
   defp parse_response_part_body(part_body) do
-    res_parser = :hackney_http.parser([:response])
-    collect_with_http_parser(:hackney_http.execute(res_parser, part_body), nil, {200, ""})
+    parse_result = :hackney_http.execute(@res_parser, part_body)
+    collect_with_http_parser(parse_result, nil, {200, ""})
   end
 
   defp collect_with_http_parser({:response, _version, status, _reason, cont}, nil, {_, res_body}) do
