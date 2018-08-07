@@ -60,7 +60,7 @@ defmodule Blick.Plug.Auth do
   end
 
   if Antikythera.Env.compiling_for_cloud?() do
-    @intra_ranges AntikytheraAcs.IpAddress.Access.ranges() -- [V4.parse_range!("221.112.40.64/29")] # Removing visitor/artifact/proxy
+    @intra_ranges AntikytheraAcs.IpAddress.Access.Tokyo.ranges() -- [V4.parse_range!("221.112.40.64/29")] # Removing visitor/artifact/proxy
     defp intra_or_public(ip) do
       if Enum.any?(@intra_ranges, &V4.range_include?(&1, ip)) do
         :intra
