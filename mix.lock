@@ -1,6 +1,6 @@
 %{
-  "antikythera": {:git, "git@github.com:access-company/antikythera.git", "7e195e93839d0d0a640b3f6a52be8629c342d333", [ref: "7e195e93839d0d0a640b3f6a52be8629c342d333"]},
-  "antikythera_acs": {:git, "git@github.com:access-company/antikythera_acs.git", "46cc73fa373587ab73ebf95690926a96e47d491f", []},
+  "antikythera": {:git, "git@github.com:access-company/antikythera.git", "e9702397bf709fe8de5b9f6e49f3f7e03b60f132", [ref: "e9702397bf709fe8de5b9f6e49f3f7e03b60f132"]},
+  "antikythera_acs": {:git, "git@github.com:access-company/antikythera_acs.git", "2005dfb925d46b033c25ed2cb96d2ec6b6f2c3e3", []},
   "antikythera_aws": {:hex, :antikythera_aws, "0.1.2", "fe9eaeed765d9029b3434f98866f9d20a4fadfea52f18ad3930ea3c58a5b54c5", [:mix], [{:antikythera, "~> 0.2", [hex: :antikythera, repo: "hexpm", optional: false]}], "hexpm"},
   "base64url": {:hex, :base64url, "0.0.1", "36a90125f5948e3afd7be97662a1504b934dd5dac78451ca6e9abf85a10286be", [:rebar], [], "hexpm"},
   "batched_communication": {:hex, :batched_communication, "0.1.5", "3288e8428d1c6af9b326b1255494d5b62a4b430b1324cb186f9de6ee37430957", [:mix], [{:croma, "~> 0.9", [hex: :croma, repo: "hexpm", optional: false]}], "hexpm"},
@@ -52,7 +52,7 @@
   "providers": {:hex, :providers, "1.6.0", "db0e2f9043ae60c0155205fcd238d68516331d0e5146155e33d1e79dc452964a", [:rebar3], [{:getopt, "0.8.2", [hex: :getopt, repo: "hexpm", optional: false]}], "hexpm"},
   "raft_fleet": {:hex, :raft_fleet, "0.9.2", "1c15f09acb5fdbc3ae86338e94d53ecbaa94822e26ee3a35d64684bea03f908f", [:mix], [{:croma, "~> 0.9", [hex: :croma, repo: "hexpm", optional: false]}, {:rafted_value, "~> 0.9", [hex: :rafted_value, repo: "hexpm", optional: false]}], "hexpm"},
   "raft_kv": {:hex, :raft_kv, "0.2.4", "08008e6d8236771ccffb6e08f1389a2919dd1a64a9e92be537e5f49db9ea9e37", [:mix], [{:croma, "~> 0.9", [hex: :croma, repo: "hexpm", optional: false]}, {:raft_fleet, "~> 0.8", [hex: :raft_fleet, repo: "hexpm", optional: false]}, {:rafted_value, "~> 0.9", [hex: :rafted_value, repo: "hexpm", optional: false]}], "hexpm"},
-  "rafted_value": {:hex, :rafted_value, "0.10.2", "a9c6f22307e13292650c587669d6a84494d7677cab6f3bd29b7d8ca003d69e20", [:mix], [{:croma, "~> 0.9", [hex: :croma, repo: "hexpm", optional: false]}], "hexpm"},
+  "rafted_value": {:hex, :rafted_value, "0.10.3", "8f9611c8fb0efcad8c7477d5e3f790c30014b39ae53e8d698375800290f896f5", [:mix], [{:croma, "~> 0.9", [hex: :croma, repo: "hexpm", optional: false]}], "hexpm"},
   "ranch": {:hex, :ranch, "1.7.1", "6b1fab51b49196860b733a49c07604465a47bdb78aa10c1c16a3d199f7f8c881", [:rebar3], [], "hexpm"},
   "random_string": {:hex, :random_string, "0.3.0", "58f75b8efdee082118cfb48ae154e0b603b77ac9e1132635376ce725b7913d9d", [:mix], [], "hexpm"},
   "recon": {:hex, :recon, "2.3.6", "2bcad0cf621fb277cabbb6413159cd3aa30265c2dee42c968697988b30108604", [:rebar3], [], "hexpm"},
